@@ -1,0 +1,232 @@
+{
+  "application": {
+    "name": "ForensiVault Desktop Forensic Platform",
+    "version": "1.0.0 (Smart India Hackathon Edition)"
+  },
+  "report_metadata": {
+    "report_id": "REP-1788975658393",
+    "timestamp": "2026-09-09T17:40:58.393Z",
+    "classification": "CONFIDENTIAL // LAW ENFORCEMENT & FORENSIC AUDIT"
+  },
+  "case_information": {
+    "case_id": "SIH-DEMO-CASE-2026",
+    "case_name": "Demonstration Evidence Analysis & Sanitization",
+    "investigator": "Lead Examiner R. Sharma",
+    "agency": "National Cyber Crime Forensics Lab",
+    "description": "Forensic triage, carving, and recovery verification of synthetic evidence media.",
+    "created_timestamp": ""
+  },
+  "evidence_information": {
+    "evidence_id": "EVD-DEMO-001",
+    "source_path": "test_data/demo_workspace\\evidence\\evidence_demo.img",
+    "image_format": "Raw Forensic Image (.img / .dd)",
+    "total_bytes": 131072,
+    "sector_size": 512,
+    "total_sectors": 256,
+    "has_mbr_signature": false,
+    "intake_sha256": "6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa",
+    "intake_md5": "",
+    "acquired_timestamp": "",
+    "acquiring_examiner": "Lead Examiner R. Sharma"
+  },
+  "evidence_immutability_verification": {
+    "evidence_unmodified": true,
+    "pre_recovery_sha256": "6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa",
+    "post_recovery_sha256": "6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa",
+    "verification_status": "IMMUTABILITY VERIFIED: Pre-recovery SHA-256 matches post-recovery SHA-256."
+  },
+  "scan_configuration": {
+    "fragmented_reconstruction_enabled": true,
+    "cluster_size": 4096,
+    "min_file_size": 16,
+    "max_file_size": 52428800
+  },
+  "filesystem_information": {
+    "detected_filesystem": "None / Damaged",
+    "active_files_found": 0,
+    "deleted_candidates_found": 0
+  },
+  "recovery_statistics": {
+    "total_artifacts_discovered": 7,
+    "total_bytes_scanned": 131072,
+    "total_sectors_scanned": 256,
+    "counts_by_status": {
+      "successfully_recovered": 5,
+      "partially_recovered": 1,
+      "corrupted": 1,
+      "unvalidated": 0,
+      "not_recoverable": 0
+    },
+    "bytes_by_status": {
+      "successfully_recovered": 2623,
+      "partially_recovered": 90965,
+      "corrupted": 77,
+      "unvalidated": 0
+    },
+    "confidence_distribution": {
+      "very_high_95_100": 5,
+      "high_80_94": 0,
+      "medium_60_79": 1,
+      "low_40_59": 0,
+      "very_low_0_39": 1
+    }
+  },
+  "recovered_artifacts": [
+    {
+      "item_id": 1,
+      "filename": "carved_0x2048.jpg",
+      "relative_path": "carved/JPEG/carved_0x2048.jpg",
+      "file_type": "JPEG",
+      "extension": "jpg",
+      "byte_offset": 2048,
+      "byte_offset_hex": "0x00000800",
+      "sector_offset": 0,
+      "size_bytes": 149,
+      "sha256_hash": "35db403b284a7b50caeab84f9b33906703202f09ba07743cfc4ac67f5be97e17",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 95.00,
+      "confidence_level": "Very High",
+      "recovery_status": "Successfully Recovered",
+      "recovery_status_code": "SUCCESS",
+      "parser_validation_result": "VALID",
+      "reasons": ["Valid JPEG SOI (0xFFD8) start marker", "Valid JPEG EOI (0xFFD9) end marker", "Valid JPEG frame, quantization tables (DQT), and scan structure verified", "File size is consistent with standard photographic images", "Structural parser completed without fatal syntax errors", "JFIF or EXIF application metadata header present"],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "item_id": 2,
+      "filename": "carved_0x5120.png",
+      "relative_path": "carved/PNG/carved_0x5120.png",
+      "file_type": "PNG",
+      "extension": "png",
+      "byte_offset": 5120,
+      "byte_offset_hex": "0x00001400",
+      "sector_offset": 0,
+      "size_bytes": 70,
+      "sha256_hash": "4ff6ab670a58c14270e034e2090d9a432caa263a14e0a25785386b0c12f880b5",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 100.00,
+      "confidence_level": "Very High",
+      "recovery_status": "Successfully Recovered",
+      "recovery_status_code": "SUCCESS",
+      "parser_validation_result": "VALID",
+      "reasons": ["Valid PNG 8-byte magic header (89 50 4E 47 0D 0A 1A 0A)", "Valid PNG IEND terminating chunk verified", "Expected PNG internal structure (IHDR and IDAT chunks present)", "PNG chunk CRC32 checksums verified successfully", "File length matches chunk sequence total", "PNG chunk parser successfully reached clean termination"],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "item_id": 3,
+      "filename": "carved_0x10240.pdf",
+      "relative_path": "carved/PDF/carved_0x10240.pdf",
+      "file_type": "PDF",
+      "extension": "pdf",
+      "byte_offset": 10240,
+      "byte_offset_hex": "0x00002800",
+      "sector_offset": 0,
+      "size_bytes": 329,
+      "sha256_hash": "e04a0c9963113049f46edec0c293b9f9760c9661698957318fb9619c6e39de60",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 95.00,
+      "confidence_level": "Very High",
+      "recovery_status": "Successfully Recovered",
+      "recovery_status_code": "SUCCESS",
+      "parser_validation_result": "VALID",
+      "reasons": ["Valid %PDF- version banner", "Valid %%EOF trailer marker found", "Expected PDF internal structure (objects, xref table, trailer present)", "Document size is consistent with standard PDF bounds", "PDF cross-reference and object tree successfully traversed"],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "item_id": 4,
+      "filename": "carved_0x18432.docx",
+      "relative_path": "carved/DOCX/carved_0x18432.docx",
+      "file_type": "DOCX",
+      "extension": "docx",
+      "byte_offset": 18432,
+      "byte_offset_hex": "0x00004800",
+      "sector_offset": 0,
+      "size_bytes": 500,
+      "sha256_hash": "96b1819283f15f0c625b412961000029b600d5406764b1fe3c3d284db79900a0",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 95.00,
+      "confidence_level": "Very High",
+      "recovery_status": "Successfully Recovered",
+      "recovery_status_code": "SUCCESS",
+      "parser_validation_result": "VALID",
+      "reasons": ["Valid PK\\x03\\x04 local file header signature", "Valid End of Central Directory Record (EOCD) verified", "Central Directory file table entries verified", "OpenXML WordprocessingML metadata and document tree confirmed", "Archive size conforms to standard package constraints", "ZIP archive directory successfully parsed without decompression faults"],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "item_id": 5,
+      "filename": "carved_0x25600.jpg",
+      "relative_path": "carved/JPEG/carved_0x25600.jpg",
+      "file_type": "JPEG",
+      "extension": "jpg",
+      "byte_offset": 25600,
+      "byte_offset_hex": "0x00006400",
+      "sector_offset": 0,
+      "size_bytes": 1575,
+      "sha256_hash": "b8992362af8f901c73b91621ca81817a1f7d066ad40bc39ee04c0dca6d6fec6b",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 95.00,
+      "confidence_level": "Very High",
+      "recovery_status": "Successfully Recovered",
+      "recovery_status_code": "SUCCESS",
+      "parser_validation_result": "VALID",
+      "reasons": ["Valid JPEG SOI (0xFFD8) start marker", "Valid JPEG EOI (0xFFD9) end marker", "Valid JPEG frame, quantization tables (DQT), and scan structure verified", "File size is consistent with standard photographic images", "Structural parser completed without fatal syntax errors", "JFIF or EXIF application metadata header present"],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "item_id": 6,
+      "filename": "carved_0x35840.png",
+      "relative_path": "carved/PNG/carved_0x35840.png",
+      "file_type": "PNG",
+      "extension": "png",
+      "byte_offset": 35840,
+      "byte_offset_hex": "0x00008C00",
+      "sector_offset": 0,
+      "size_bytes": 77,
+      "sha256_hash": "d61843b6237addc5fa6d03dc0d2dadb07648af52bcfd6ab198297abf90067b22",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 25.00,
+      "confidence_level": "Very Low",
+      "recovery_status": "Corrupted",
+      "recovery_status_code": "CORRUPTED",
+      "parser_validation_result": "PARTIAL",
+      "reasons": ["Valid PNG 8-byte magic header (89 50 4E 47 0D 0A 1A 0A)", "Expected PNG internal structure (IHDR and IDAT chunks present)", "File length matches chunk sequence total"],
+      "warnings": ["Missing PNG IEND chunk (image is truncated or fragmented)", "CRC32 mismatch detected in one or more PNG chunks"],
+      "errors": []
+    },
+    {
+      "item_id": 7,
+      "filename": "carved_0x40107.mp3",
+      "relative_path": "carved/MP3/carved_0x40107.mp3",
+      "file_type": "MP3",
+      "extension": "mp3",
+      "byte_offset": 40107,
+      "byte_offset_hex": "0x00009CAB",
+      "sector_offset": 0,
+      "size_bytes": 90965,
+      "sha256_hash": "8c63bedbb9a019ddaafb31f1467f72f18330a9290eb58ce849c35fd50676e187",
+      "recovery_source": "Raw Signature Carving",
+      "confidence_score": 65.00,
+      "confidence_level": "Medium",
+      "recovery_status": "Partially Recovered",
+      "recovery_status_code": "PARTIAL",
+      "parser_validation_result": "VALID",
+      "reasons": ["MPEG-1/2 Audio Layer III sync frame header located", "Multiple contiguous MPEG audio sync frames detected", "Audio stream length is within expected audio track parameters"],
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "sanitization_operations": [
+  ],
+  "audit_blockchain": {
+    "total_entries": 0,
+    "chain_verified": true,
+    "latest_blockchain_hash": "",
+    "entries": [
+    ]
+  }
+}

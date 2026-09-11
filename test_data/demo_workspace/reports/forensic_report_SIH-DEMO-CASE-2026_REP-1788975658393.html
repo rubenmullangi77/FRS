@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forensic Examination Report - SIH-DEMO-CASE-2026</title>
+<style>
+
+:root {
+  --bg-main: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-alt: #1f2937;
+  --border-color: #374151;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --cyan-accent: #06b6d4;
+  --emerald-success: #10b981;
+  --amber-warning: #f59e0b;
+  --rose-danger: #f43f5e;
+  --indigo-accent: #6366f1;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.5;
+  padding: 30px;
+}
+
+.container { max-width: 1300px; margin: 0 auto; }
+
+/* Header & Banner */
+.report-header {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.brand-title { font-size: 26px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+.brand-title span { color: var(--cyan-accent); }
+.classification-banner {
+  display: inline-block;
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--rose-danger);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+.meta-right { text-align: right; font-size: 12px; color: var(--text-muted); }
+.meta-right strong { color: var(--text-main); }
+
+/* Executive Grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+}
+.summary-card .label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+.summary-card .value { font-size: 24px; font-weight: 700; margin-top: 4px; }
+.text-cyan { color: var(--cyan-accent); }
+.text-emerald { color: var(--emerald-success); }
+.text-amber { color: var(--amber-warning); }
+.text-rose { color: var(--rose-danger); }
+
+/* Section Styling */
+.section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 25px;
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.detail-item { font-size: 13px; }
+.detail-label { color: var(--text-muted); font-weight: 500; }
+.detail-val { color: var(--text-main); font-family: Consolas, monospace; word-break: break-all; }
+
+/* Immutability Seal */
+.immutability-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  margin-top: 15px;
+}
+.immutability-badge.failed {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 12px;
+}
+th {
+  text-align: left;
+  padding: 10px;
+  background: var(--bg-card-alt);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+  font-family: Consolas, monospace;
+}
+tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.badge-success { background: rgba(16, 185, 129, 0.15); color: var(--emerald-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-partial { background: rgba(245, 158, 11, 0.15); color: var(--amber-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-corrupted { background: rgba(244, 63, 94, 0.15); color: var(--rose-danger); border: 1px solid rgba(244, 63, 94, 0.3); }
+.badge-unvalidated { background: rgba(156, 163, 175, 0.15); color: var(--text-muted); border: 1px solid rgba(156, 163, 175, 0.3); }
+
+/* Signature Block */
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+.sig-line {
+  border-bottom: 1px dashed var(--border-color);
+  height: 45px;
+  margin-bottom: 8px;
+}
+
+/* Print CSS */
+@media print {
+  body { background: #fff; color: #111; padding: 10px; }
+  .section, .summary-card { background: #fff; border-color: #ccc; color: #111; page-break-inside: avoid; }
+  th { background: #f0f0f0; color: #111; }
+  td { color: #111; border-color: #eee; }
+  .classification-banner { border: 1px solid #111; color: #111; background: transparent; }
+  .immutability-badge { border: 1px solid #111; color: #111; background: transparent; }
+  .brand-title { color: #000; }
+  .brand-title span { color: #000; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="report-header">
+  <div>
+    <div class="brand-title">ForensiVault &bull; Court-Admissible Forensic Examination Report</div>
+    <div class="classification-banner">CONFIDENTIAL // LAW ENFORCEMENT &amp; FORENSIC AUDIT</div>
+  </div>
+  <div class="meta-right">
+    <div>Report ID: <strong>REP-1788975658393</strong></div>
+    <div>Generated: <strong>2026-09-09T17:40:58.393Z</strong></div>
+    <div>Engine: <strong>1.0.0 (Smart India Hackathon Edition)</strong></div>
+  </div>
+</div>
+<div class="summary-grid">
+  <div class="summary-card">
+    <div class="label">Total Discovered</div>
+    <div class="value text-cyan">7</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Successfully Recovered</div>
+    <div class="value text-emerald">5</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Partially Recovered</div>
+    <div class="value text-amber">1</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Corrupted / Invalid</div>
+    <div class="value text-rose">1</div>
+  </div>
+  <div class="summary-card">
+    <div class="label">Blockchain Audit Seal</div>
+    <div class="value text-emerald">VERIFIED INTACT</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">1. Case & Evidence Intake Context</div>
+  <div class="details-grid">
+    <div class="detail-item"><span class="detail-label">Case ID:</span> <span class="detail-val">SIH-DEMO-CASE-2026</span></div>
+    <div class="detail-item"><span class="detail-label">Case Name:</span> <span class="detail-val">Demonstration Evidence Analysis &amp; Sanitization</span></div>
+    <div class="detail-item"><span class="detail-label">Investigator / Examiner:</span> <span class="detail-val">Lead Examiner R. Sharma</span></div>
+    <div class="detail-item"><span class="detail-label">Agency / Division:</span> <span class="detail-val">National Cyber Crime Forensics Lab</span></div>
+    <div class="detail-item"><span class="detail-label">Evidence ID:</span> <span class="detail-val">EVD-DEMO-001</span></div>
+    <div class="detail-item"><span class="detail-label">Source Media:</span> <span class="detail-val">test_data/demo_workspace\evidence\evidence_demo.img</span></div>
+    <div class="detail-item"><span class="detail-label">Total Volume Size:</span> <span class="detail-val">131072 bytes (128.00 KB)</span></div>
+    <div class="detail-item"><span class="detail-label">Sector Geometry:</span> <span class="detail-val">256 sectors @ 512B</span></div>
+    <div class="detail-item"><span class="detail-label">Intake SHA-256:</span> <span class="detail-val">6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa</span></div>
+    <div class="detail-item"><span class="detail-label">Intake MD5:</span> <span class="detail-val"></span></div>
+  </div>
+  <div class="immutability-badge ">
+    <div><strong>FORENSIC IMMUTABILITY GUARANTEE:</strong> IMMUTABILITY VERIFIED: Pre-recovery SHA-256 matches post-recovery SHA-256.<br>
+    Pre-Recovery SHA-256: <code>6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa</code><br>
+    Post-Recovery SHA-256: <code>6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa</code></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">2. Discovered & Recovered Artifacts Catalog (Strict Classification)</div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Filename & Path</th>
+        <th>Type</th>
+        <th>Byte Offset</th>
+        <th>Size</th>
+        <th>Recovery Status</th>
+        <th>Confidence</th>
+        <th>SHA-256 Hash</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#1</td>
+        <td><strong>carved_0x2048.jpg</strong><br><small style="color:var(--text-muted)">carved/JPEG/carved_0x2048.jpg</small></td>
+        <td>JPEG</td>
+        <td>0x00000800 (2048)</td>
+        <td>149 bytes</td>
+        <td><span class="badge badge-success">Successfully Recovered</span></td>
+        <td>95.0% (Very High)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">35db403b284a7b50caeab84f9b33906703202f09ba07743cfc4ac67f5be97e17</td>
+      </tr>
+      <tr>
+        <td>#2</td>
+        <td><strong>carved_0x5120.png</strong><br><small style="color:var(--text-muted)">carved/PNG/carved_0x5120.png</small></td>
+        <td>PNG</td>
+        <td>0x00001400 (5120)</td>
+        <td>70 bytes</td>
+        <td><span class="badge badge-success">Successfully Recovered</span></td>
+        <td>100.0% (Very High)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">4ff6ab670a58c14270e034e2090d9a432caa263a14e0a25785386b0c12f880b5</td>
+      </tr>
+      <tr>
+        <td>#3</td>
+        <td><strong>carved_0x10240.pdf</strong><br><small style="color:var(--text-muted)">carved/PDF/carved_0x10240.pdf</small></td>
+        <td>PDF</td>
+        <td>0x00002800 (10240)</td>
+        <td>329 bytes</td>
+        <td><span class="badge badge-success">Successfully Recovered</span></td>
+        <td>95.0% (Very High)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">e04a0c9963113049f46edec0c293b9f9760c9661698957318fb9619c6e39de60</td>
+      </tr>
+      <tr>
+        <td>#4</td>
+        <td><strong>carved_0x18432.docx</strong><br><small style="color:var(--text-muted)">carved/DOCX/carved_0x18432.docx</small></td>
+        <td>DOCX</td>
+        <td>0x00004800 (18432)</td>
+        <td>500 bytes</td>
+        <td><span class="badge badge-success">Successfully Recovered</span></td>
+        <td>95.0% (Very High)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">96b1819283f15f0c625b412961000029b600d5406764b1fe3c3d284db79900a0</td>
+      </tr>
+      <tr>
+        <td>#5</td>
+        <td><strong>carved_0x25600.jpg</strong><br><small style="color:var(--text-muted)">carved/JPEG/carved_0x25600.jpg</small></td>
+        <td>JPEG</td>
+        <td>0x00006400 (25600)</td>
+        <td>1.54 KB</td>
+        <td><span class="badge badge-success">Successfully Recovered</span></td>
+        <td>95.0% (Very High)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">b8992362af8f901c73b91621ca81817a1f7d066ad40bc39ee04c0dca6d6fec6b</td>
+      </tr>
+      <tr>
+        <td>#6</td>
+        <td><strong>carved_0x35840.png</strong><br><small style="color:var(--text-muted)">carved/PNG/carved_0x35840.png</small></td>
+        <td>PNG</td>
+        <td>0x00008C00 (35840)</td>
+        <td>77 bytes</td>
+        <td><span class="badge badge-corrupted">Corrupted</span></td>
+        <td>25.0% (Very Low)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">d61843b6237addc5fa6d03dc0d2dadb07648af52bcfd6ab198297abf90067b22</td>
+      </tr>
+      <tr>
+        <td>#7</td>
+        <td><strong>carved_0x40107.mp3</strong><br><small style="color:var(--text-muted)">carved/MP3/carved_0x40107.mp3</small></td>
+        <td>MP3</td>
+        <td>0x00009CAB (40107)</td>
+        <td>88.83 KB</td>
+        <td><span class="badge badge-partial">Partially Recovered</span></td>
+        <td>65.0% (Medium)</td>
+        <td style="font-size:10px; max-width:220px; word-break:break-all;">8c63bedbb9a019ddaafb31f1467f72f18330a9290eb58ce849c35fd50676e187</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="section">
+  <div class="section-title">4. Cryptographic Forensic Audit Blockchain Log (0 Chained Entries)</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Timestamp</th>
+        <th>Operation</th>
+        <th>Operator</th>
+        <th>Status</th>
+        <th>Chained SHA-256 Hash</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="signature-grid">
+  <div>
+    <div class="sig-line"></div>
+    <strong>Lead Forensic Examiner Signature</strong><br>
+    Lead Examiner R. Sharma &bull; National Cyber Crime Forensics Lab
+  </div>
+  <div>
+    <div class="sig-line"></div>
+    <strong>Technical Laboratory Reviewer Signature</strong><br>
+    Quality Assurance &bull; Digital Forensics Unit
+  </div>
+</div>
+</div>
+</body>
+</html>

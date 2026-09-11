@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/SIH/build/cmake_install.cmake",
+		"D:/SIH/build/backend/cmake_install.cmake",
+		"D:/SIH/build/tests/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

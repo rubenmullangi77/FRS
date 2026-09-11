@@ -1,0 +1,3 @@
+[
+  {"evidence_id":"EVD-DEMO-001","filename":"evidence_demo.img","filepath":"test_data/demo_workspace\\evidence\\evidence_demo.img","size_bytes":131072,"sha256_hash":"6b5936c4d495aad23172f78502bee638d6c1356d886fb7576b6cdc464e3fb0aa","acquired_timestamp_iso":"2026-09-09T17:40:58.316Z","source_device":"test_data/evidence_demo.img","notes":"Synthetic multi-file evidence image"}
+]

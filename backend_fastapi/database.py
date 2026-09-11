@@ -1,0 +1,272 @@
+"""
+ForensiVault SQLite Database Layer
+Location: D:\\SIH\\database\\forensivault.db
+Provides relational persistence for cases, evidence custody, recovered artifacts,
+cryptographic audit log journal, settings, and examiner credentials.
+"""
+
+import sqlite3
+import json
+import os
+import hashlib
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Any, Optional
+
+DB_DIR = Path(r"D:\SIH\database")
+DB_PATH = DB_DIR / "forensivault.db"
+
+def get_connection() -> sqlite3.Connection:
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_database() -> None:
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # 1. Examiners table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS examiners (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            full_name TEXT NOT NULL,
+            role TEXT NOT NULL,
+            agency TEXT NOT NULL,
+            badge_number TEXT,
+            password_hash TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+    """)
+
+    # 2. Settings table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        )
+    """)
+
+    # 3. Cases table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS cases (
+            case_id TEXT PRIMARY KEY,
+            case_name TEXT NOT NULL,
+            investigator_name TEXT NOT NULL,
+            organization TEXT,
+            description TEXT,
+            status TEXT DEFAULT 'ACTIVE',
+            evidence_count INTEGER DEFAULT 0,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        )
+    """)
+
+    # 4. Evidence table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS evidence (
+            evidence_id TEXT PRIMARY KEY,
+            case_id TEXT,
+            name TEXT NOT NULL,
+            source_path TEXT NOT NULL,
+            file_size INTEGER NOT NULL,
+            sha256 TEXT NOT NULL,
+            md5 TEXT NOT NULL,
+            drive_type TEXT NOT NULL,
+            format TEXT NOT NULL,
+            is_read_only INTEGER DEFAULT 1,
+            intake_timestamp TEXT NOT NULL,
+            notes TEXT,
+            FOREIGN KEY (case_id) REFERENCES cases(case_id)
+        )
+    """)
+
+    # 5. Recovered files
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS recovered_files (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            file_id INTEGER,
+            case_id TEXT,
+            evidence_id TEXT,
+            file_name TEXT NOT NULL,
+            file_type TEXT NOT NULL,
+            extension TEXT NOT NULL,
+            mime_type TEXT,
+            start_offset INTEGER NOT NULL,
+            length_bytes INTEGER NOT NULL,
+            start_sector INTEGER,
+            sector_span INTEGER,
+            is_valid INTEGER DEFAULT 1,
+            confidence_score REAL NOT NULL,
+            confidence_level TEXT NOT NULL,
+            sha256 TEXT,
+            entropy REAL,
+            is_compressed_or_encrypted INTEGER DEFAULT 0,
+            recovery_method TEXT NOT NULL,
+            validation_notes TEXT,
+            recovered_file_path TEXT NOT NULL,
+            recovered_at TEXT NOT NULL
+        )
+    """)
+
+    # 6. Cryptographic Audit log
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS audit_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id TEXT UNIQUE NOT NULL,
+            timestamp TEXT NOT NULL,
+            event_type TEXT NOT NULL,
+            action TEXT NOT NULL,
+            case_id TEXT,
+            evidence_id TEXT,
+            user TEXT NOT NULL,
+            details_json TEXT,
+            prev_hash TEXT NOT NULL,
+            record_hash TEXT NOT NULL
+        )
+    """)
+
+    # 7. Recovery / Carve Jobs
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS jobs (
+            job_id TEXT PRIMARY KEY,
+            case_id TEXT,
+            evidence_id TEXT,
+            job_type TEXT NOT NULL,
+            status TEXT NOT NULL,
+            progress REAL DEFAULT 0.0,
+            total_items INTEGER DEFAULT 0,
+            error_message TEXT,
+            started_at TEXT NOT NULL,
+            completed_at TEXT
+        )
+    """)
+
+    # 8. Forensic Reports
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS reports (
+            report_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            examiner TEXT NOT NULL,
+            agency TEXT NOT NULL,
+            file_path TEXT NOT NULL,
+            format TEXT NOT NULL,
+            generated_at TEXT NOT NULL,
+            sha256 TEXT NOT NULL
+        )
+    """)
+
+    # Seed Default Examiner (Ruben / rube)
+    cursor.execute("SELECT id FROM examiners WHERE username = 'Ruben'")
+    if not cursor.fetchone():
+        rube_hash = hashlib.sha256("rube".encode("utf-8")).hexdigest()
+        now = datetime.now().isoformat()
+        cursor.execute("""
+            INSERT INTO examiners (username, full_name, role, agency, badge_number, password_hash, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            "Ruben",
+            "Ruben (Lead Forensic Investigator)",
+            "Lead Examiner / Forensic Analyst",
+            "ForensiVault Digital Forensics Lab",
+            "FV-LAB-042",
+            rube_hash,
+            now
+        ))
+
+    # Seed Default Settings
+    default_settings = {
+        "examinerName": "Ruben",
+        "agency": "ForensiVault Digital Forensics Lab",
+        "badgeNumber": "FV-LAB-042",
+        "carveDepth": "thorough",
+        "confidenceThreshold": "60",
+        "autoHashEvidence": "true",
+        "safeModeProtection": "true",
+        "evidenceExportDirectory": r"D:\SIH\recovered",
+        "caseDirectory": r"D:\SIH\test_data\disposable\cases",
+        "reportAuthor": "Ruben",
+        "appVersion": "1.0.0 (SIH 2026 Edition)",
+        "theme": "cream-orange"
+    }
+
+    now = datetime.now().isoformat()
+    for k, v in default_settings.items():
+        cursor.execute("SELECT key FROM settings WHERE key = ?", (k,))
+        if not cursor.fetchone():
+            cursor.execute("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)", (k, v, now))
+
+    # Seed Initial Audit Log Record if empty
+    cursor.execute("SELECT COUNT(*) as count FROM audit_logs")
+    if cursor.fetchone()[0] == 0:
+        genesis_prev = "0000000000000000000000000000000000000000000000000000000000000000"
+        genesis_content = f"{now}|GENESIS|SYSTEM_STARTUP|SYSTEM|ForensiVault Initialized|{genesis_prev}"
+        genesis_hash = hashlib.sha256(genesis_content.encode("utf-8")).hexdigest()
+        cursor.execute("""
+            INSERT INTO audit_logs (event_id, timestamp, event_type, action, case_id, evidence_id, user, details_json, prev_hash, record_hash)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            "EVT-000001",
+            now,
+            "SYSTEM",
+            "SYSTEM_INITIALIZED",
+            None,
+            None,
+            "SYSTEM",
+            json.dumps({"message": "ForensiVault Desktop Forensic System Initialized", "db": str(DB_PATH)}),
+            genesis_prev,
+            genesis_hash
+        ))
+
+    conn.commit()
+    conn.close()
+
+def log_audit_event(event_type: str, action: str, user: str, details: Dict[str, Any], case_id: Optional[str] = None, evidence_id: Optional[str] = None) -> str:
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT record_hash FROM audit_logs ORDER BY id DESC LIMIT 1")
+    row = cursor.fetchone()
+    prev_hash = row[0] if row else "0000000000000000000000000000000000000000000000000000000000000000"
+    
+    now = datetime.now().isoformat()
+    cursor.execute("SELECT COUNT(*) FROM audit_logs")
+    count = cursor.fetchone()[0] + 1
+    event_id = f"EVT-{count:06d}"
+    
+    details_str = json.dumps(details, sort_keys=True)
+    payload = f"{now}|{event_id}|{event_type}|{action}|{user}|{details_str}|{prev_hash}"
+    record_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    
+    cursor.execute("""
+        INSERT INTO audit_logs (event_id, timestamp, event_type, action, case_id, evidence_id, user, details_json, prev_hash, record_hash)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        event_id, now, event_type, action, case_id, evidence_id, user, details_str, prev_hash, record_hash
+    ))
+    conn.commit()
+    conn.close()
+    return record_hash
+
+def get_settings() -> Dict[str, str]:
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT key, value FROM settings")
+    rows = cursor.fetchall()
+    conn.close()
+    return {r["key"]: r["value"] for r in rows}
+
+def update_settings(settings_dict: Dict[str, str]) -> None:
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = datetime.now().isoformat()
+    for k, v in settings_dict.items():
+        cursor.execute("""
+            INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+        """, (k, str(v), now))
+    conn.commit()
+    conn.close()

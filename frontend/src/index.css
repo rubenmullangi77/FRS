@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+:root, [data-theme="light"] {
+  --bg-main: #F7F3EB;
+  --surface: #FFFDF8;
+  --surface-secondary: #F1EBDD;
+  --surface-hover: #F8F3EA;
+  --border: #DDD2C5;
+  --border-subtle: #EBE3D7;
+  
+  --primary-orange: #D96B27;
+  --dark-orange: #B95720;
+  --light-orange: #F3D5BF;
+  
+  --text-primary: #29231F;
+  --text-secondary: #756B63;
+  --text-muted: #9E9287;
+  
+  --status-success: #2E7D32;
+  --status-warning: #B7791F;
+  --status-danger: #C53030;
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Consolas", "Courier New", monospace;
+}
+
+html.dark, :root.dark, [data-theme="dark"] {
+  --bg-main: #121110;
+  --surface: #1C1917;
+  --surface-secondary: #26221E;
+  --surface-hover: #2E2924;
+  --border: #3A342E;
+  --border-subtle: #2D2823;
+  
+  --primary-orange: #EA7325;
+  --dark-orange: #C45F1E;
+  --light-orange: #4A2814;
+  
+  --text-primary: #F7F2E8;
+  --text-secondary: #A89D93;
+  --text-muted: #6E645C;
+  
+  --status-success: #34D399;
+  --status-warning: #FBBF24;
+  --status-danger: #F87171;
+}
+
+@theme {
+  --color-bg-main: var(--bg-main);
+  --color-surface: var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-primary-orange: var(--primary-orange);
+  --color-dark-orange: var(--dark-orange);
+  --color-light-orange: var(--light-orange);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+}
+
+html, body, #root {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  width: 100%;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.bg-main {
+  background-color: var(--bg-main) !important;
+}
+
+.bg-surface {
+  background-color: var(--surface) !important;
+}
+
+.bg-surface-secondary {
+  background-color: var(--surface-secondary) !important;
+}
+
+/* Custom Editorial Workstation Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Typography Hierarchy Utilities */
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.section-title {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-family: var(--font-mono);
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.metadata-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Workstation Cards with Thin Borders */
+.workstation-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+}
+
+.workstation-card:hover {
+  border-color: var(--primary-orange);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Editorial Table Styling */
+.workstation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.workstation-table th {
+  background-color: var(--surface-secondary);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.workstation-table td {
+  padding: 16px 22px;
+  min-height: 56px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  transition: background-color 0.15s ease;
+}
+
+.workstation-table tr:hover td {
+  background-color: var(--surface-hover);
+}
+
+/* Buttons with Clean Borders and Micro-Interactions */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  background-color: var(--primary-orange);
+  color: #FFFFFF;
+  border: 1px solid var(--primary-orange);
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--dark-orange);
+  border-color: var(--dark-orange);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--surface-secondary);
+  border-color: var(--primary-orange);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+/* Form inputs */
+.workstation-input {
+  width: 100%;
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.workstation-input:focus {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 2px rgba(234, 115, 37, 0.2);
+}
