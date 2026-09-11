@@ -5,6 +5,7 @@ import {
   Trash2,
   Lock,
   RefreshCw,
+  RotateCcw,
   PlusCircle,
   CheckCircle2,
   FileText,
@@ -14,7 +15,8 @@ import {
   Clock,
   Layers,
   File,
-  Folder
+  Folder,
+  Info
 } from 'lucide-react';
 import { api } from '../services/api';
 import { DiskImage, ImageFileEntry, ImageInspectResponse, ImageFileDeleteResponse } from '../types';
@@ -22,11 +24,15 @@ import { Modal } from '../components/Modal';
 
 export const FileEraserPage: React.FC = () => {
   const [availableImages, setAvailableImages] = useState<DiskImage[]>([]);
-  const [selectedImagePath, setSelectedImagePath] = useState<string>('D:\\SIH\\test_data\\test-disk.img');
+  const [selectedImagePath, setSelectedImagePath] = useState<string>('');
   const [inspectData, setInspectData] = useState<ImageInspectResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // File list filtering tab
+  const [fileFilter, setFileFilter] = useState<'active' | 'deleted' | 'all'>('active');
+  const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
 
   // Deletion state
   const [selectedFile, setSelectedFile] = useState<ImageFileEntry | null>(null);
@@ -50,6 +56,15 @@ export const FileEraserPage: React.FC = () => {
       const res = await api.getDrives();
       const images = res.disk_images || [];
       setAvailableImages(images);
+      if (images.length > 0) {
+        setSelectedImagePath((prev) => {
+          if (!prev) {
+            handleInspectImage(images[0].path);
+            return images[0].path;
+          }
+          return prev;
+        });
+      }
     } catch {
       // ignore
     }
@@ -57,7 +72,6 @@ export const FileEraserPage: React.FC = () => {
 
   const handleInspectImage = async (path: string = selectedImagePath) => {
     if (!path.trim()) {
-      setError('Please select or specify a virtual disk image path.');
       return;
     }
     setIsLoading(true);
@@ -81,7 +95,7 @@ export const FileEraserPage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await api.createTestDiskImage('D:\\SIH\\test_data\\test-disk.img');
+      const res = await api.createTestDiskImage();
       setSelectedImagePath(res.path);
       setSuccessMessage(`Standard test disk created at: ${res.path} (${formatBytes(res.size_bytes)})`);
       setTimeout(() => setSuccessMessage(null), 4000);
@@ -96,8 +110,6 @@ export const FileEraserPage: React.FC = () => {
 
   useEffect(() => {
     loadAvailableImages();
-    // Auto inspect initial default disk image
-    handleInspectImage('D:\\SIH\\test_data\\test-disk.img');
   }, []);
 
   const handlePromptDelete = (file: ImageFileEntry) => {
@@ -128,7 +140,7 @@ export const FileEraserPage: React.FC = () => {
 
       setDeleteResult(res);
       setOperationStatus('success');
-      setSuccessMessage(res.message);
+      setSuccessMessage(`${res.message} Disk image updated in-place (no manual saving needed).`);
       setIsConfirmModalOpen(false);
 
       // Rescan image to reflect modifications
@@ -160,28 +172,45 @@ export const FileEraserPage: React.FC = () => {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleCreateTestDisk}
-            disabled={isLoading || isDeleting}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--primary-orange)] transition-all cursor-pointer shadow-xs"
-          >
-            <PlusCircle size={16} />
-            <span>Generate Standard Test Disk (test-disk.img)</span>
-          </button>
+          <div className="flex flex-col items-end gap-1">
+            <button
+              type="button"
+              onClick={() => setIsResetModalOpen(true)}
+              disabled={isLoading || isDeleting}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--primary-orange)] transition-all cursor-pointer shadow-xs"
+              title="Reset test-disk.img with fresh default sample files"
+            >
+              <RotateCcw size={16} />
+              <span>Reset Demo Disk (test-disk.img)</span>
+            </button>
+            <span className="text-[11px] text-[var(--text-muted)] font-mono">
+              Restores clean sample FAT32 disk
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Safety Notice */}
-      <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2">
-        <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[13px] uppercase">
-          <ShieldCheck size={18} aria-hidden="true" focusable="false" />
-          <span>Strict Virtual Disk Isolation Active</span>
+      {/* Safety & Real-Time Notice */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2">
+          <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[13px] uppercase">
+            <ShieldCheck size={18} aria-hidden="true" focusable="false" />
+            <span>Strict Virtual Disk Isolation Active</span>
+          </div>
+          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+            Modifications run exclusively on isolated virtual <code className="font-mono text-[var(--text-primary)]">.img</code> disk images. Host partitions, physical drives (<code className="font-mono">/dev/sdX</code>, <code className="font-mono">\\.\PhysicalDriveX</code>), and system paths are strictly protected.
+          </p>
         </div>
-        <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-          ForensiVault executes filesystem modifications exclusively on isolated <code className="font-mono text-[var(--text-primary)]">.img</code> disk images.
-          Host operating system partitions, physical disks (<code className="font-mono">\\.\PhysicalDriveX</code>), and mounted system files (<code className="font-mono">C:\Windows</code>) are strictly protected and prohibited from modification.
-        </p>
+
+        <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--primary-orange)]/30 space-y-2">
+          <div className="flex items-center gap-2 text-[var(--primary-orange)] font-bold text-[13px] uppercase">
+            <Info size={18} aria-hidden="true" focusable="false" />
+            <span>Real-Time In-Place Modifications</span>
+          </div>
+          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+            Deletions execute <strong>immediately in-place</strong> on the target disk image with sector-level <code className="font-mono text-[var(--text-primary)]">fsync</code>. No manual saving, exporting, or regenerating is required.
+          </p>
+        </div>
       </div>
 
       {/* Success Notification */}
@@ -261,7 +290,7 @@ export const FileEraserPage: React.FC = () => {
             value={selectedImagePath}
             onChange={(e) => setSelectedImagePath(e.target.value)}
             disabled={isLoading || isDeleting}
-            placeholder="D:\SIH\test_data\test-disk.img"
+            placeholder="Select a virtual disk image from above or enter file path"
             className="flex-1 h-12 px-4 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] focus:border-[var(--primary-orange)] focus:ring-1 focus:ring-[var(--primary-orange)] text-[13.5px] font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none"
           />
           <button
@@ -315,92 +344,188 @@ export const FileEraserPage: React.FC = () => {
           )}
 
           {/* Files Inside Disk Image Table */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[15px] font-bold text-[var(--text-primary)] flex items-center gap-2">
-                <FileText size={16} className="text-[var(--primary-orange)]" />
-                <span>Files Found in Disk Image ({inspectData.files.length})</span>
-              </h3>
-            </div>
+          {(() => {
+            const activeFiles = inspectData.files.filter(f => f.status === 'ACTIVE');
+            const deletedFiles = inspectData.files.filter(f => f.status === 'DELETED');
+            const displayedFiles = 
+              fileFilter === 'active' 
+                ? activeFiles 
+                : fileFilter === 'deleted' 
+                  ? deletedFiles 
+                  : inspectData.files;
 
-            {inspectData.files.length === 0 ? (
-              <div className="p-8 text-center text-sm text-[var(--text-secondary)] bg-[var(--surface-secondary)] rounded-xl border border-[var(--border)]">
-                No files detected in root directory table.
-              </div>
-            ) : (
-              <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
-                <table className="w-full text-left text-[13px] border-collapse">
-                  <thead>
-                    <tr className="bg-[var(--surface-secondary)] border-b border-[var(--border)] text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
-                      <th className="py-3 px-4">File</th>
-                      <th className="py-3 px-4">Size</th>
-                      <th className="py-3 px-4">Type</th>
-                      <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--border)]">
-                    {inspectData.files.map((file, idx) => {
-                      const isDeleted = file.status === 'DELETED';
-                      return (
-                        <tr
-                          key={file.full_path + idx}
-                          className="hover:bg-[var(--surface-hover)] transition-colors"
-                        >
-                          <td className="py-3 px-4 font-mono font-medium text-[var(--text-primary)] flex items-center gap-2">
-                            {file.is_directory ? (
-                              <Folder size={15} className="text-[var(--primary-orange)] flex-shrink-0" />
-                            ) : (
-                              <File size={15} className="text-[var(--text-secondary)] flex-shrink-0" />
-                            )}
-                            <span className={isDeleted ? 'line-through opacity-60' : ''}>
-                              {file.full_path}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 font-mono text-[var(--text-secondary)]">
-                            {file.is_directory ? '—' : formatBytes(file.size_bytes)}
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)]">
-                              {file.file_type}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            {isDeleted ? (
-                              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#C53030]/10 text-[#C53030] border border-[#C53030]/30">
-                                DELETED (0xE5)
-                              </span>
-                            ) : (
-                              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#2E7D32]/10 text-[#2E7D32] border border-[#2E7D32]/30">
-                                ACTIVE
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            {file.is_directory ? (
-                              <span className="text-xs text-[var(--text-muted)] italic font-mono">Directory</span>
-                            ) : isDeleted ? (
-                              <span className="text-xs text-[var(--text-muted)] font-mono">Purged</span>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => handlePromptDelete(file)}
-                                disabled={!inspectData.can_modify || isDeleting}
-                                className="px-3 py-1.5 rounded-lg bg-[#C53030] hover:bg-[#A82828] disabled:opacity-40 text-white text-xs font-semibold cursor-pointer shadow-xs transition-colors inline-flex items-center gap-1.5"
-                              >
-                                <Trash2 size={13} />
-                                <span>Delete</span>
-                              </button>
-                            )}
-                          </td>
+            return (
+              <div className="space-y-4">
+                {/* Header & Filter Tabs */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-[var(--border-subtle)]">
+                  <h3 className="text-[15px] font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <FileText size={16} className="text-[var(--primary-orange)]" />
+                    <span>Filesystem Directory Records</span>
+                  </h3>
+
+                  {/* Filter Tabs */}
+                  <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)]">
+                    <button
+                      type="button"
+                      onClick={() => setFileFilter('active')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        fileFilter === 'active'
+                          ? 'bg-[var(--primary-orange)] text-white shadow-xs'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      <span>Active Files</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10.5px] font-mono font-bold ${
+                        fileFilter === 'active' ? 'bg-black/20 text-white' : 'bg-[var(--surface-hover)] text-[var(--text-muted)]'
+                      }`}>
+                        {activeFiles.length}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setFileFilter('deleted')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        fileFilter === 'deleted'
+                          ? 'bg-[#C53030] text-white shadow-xs'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      <span>Deleted / 0xE5 Records</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10.5px] font-mono font-bold ${
+                        fileFilter === 'deleted' ? 'bg-black/20 text-white' : 'bg-[var(--surface-hover)] text-[var(--text-muted)]'
+                      }`}>
+                        {deletedFiles.length}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setFileFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        fileFilter === 'all'
+                          ? 'bg-[var(--surface-hover)] text-[var(--text-primary)] font-bold shadow-xs'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      <span>All Records</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10.5px] font-mono font-bold ${
+                        fileFilter === 'all' ? 'bg-[var(--primary-orange)] text-white' : 'bg-[var(--surface-hover)] text-[var(--text-muted)]'
+                      }`}>
+                        {inspectData.files.length}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Explanatory context when in deleted tab */}
+                {fileFilter === 'deleted' && (
+                  <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-xs text-[var(--text-secondary)] flex items-start gap-2.5">
+                    <Info size={16} className="text-[var(--primary-orange)] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Forensic Recovery View:</strong> When a file is normally deleted in FAT32, the operating system marks its directory record with a <code className="font-mono text-[var(--text-primary)]">0xE5</code> tombstone and marks its cluster chain as unallocated. Residual cluster content remains carveable until overwritten or securely wiped.
+                    </span>
+                  </div>
+                )}
+
+                {displayedFiles.length === 0 ? (
+                  <div className="p-8 text-center text-sm text-[var(--text-secondary)] bg-[var(--surface-secondary)] rounded-xl border border-[var(--border)] space-y-1">
+                    <div className="font-semibold text-[var(--text-primary)]">
+                      {fileFilter === 'active' 
+                        ? 'No active files remaining in this disk image.' 
+                        : fileFilter === 'deleted' 
+                          ? 'No deleted / tombstone records found.' 
+                          : 'No files detected in directory table.'}
+                    </div>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      {fileFilter === 'active' && 'All files have been deleted or wiped. You can inspect tombstone records in the "Deleted / 0xE5 Records" tab or reset the demo disk.'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                    <table className="w-full text-left text-[13px] border-collapse">
+                      <thead>
+                        <tr className="bg-[var(--surface-secondary)] border-b border-[var(--border)] text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                          <th className="py-3 px-4">File Path</th>
+                          <th className="py-3 px-4">Size</th>
+                          <th className="py-3 px-4">Type</th>
+                          <th className="py-3 px-4">Filesystem Status</th>
+                          <th className="py-3 px-4 text-right">Action</th>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--border)]">
+                        {displayedFiles.map((file, idx) => {
+                          const isDeleted = file.status === 'DELETED';
+                          return (
+                            <tr
+                              key={file.full_path + idx}
+                              className="hover:bg-[var(--surface-hover)] transition-colors"
+                            >
+                              <td className="py-3 px-4 font-mono font-medium text-[var(--text-primary)] flex items-center gap-2">
+                                {file.is_directory ? (
+                                  <Folder size={15} className="text-[var(--primary-orange)] flex-shrink-0" />
+                                ) : (
+                                  <File size={15} className={isDeleted ? "text-[var(--text-muted)] flex-shrink-0" : "text-[var(--text-secondary)] flex-shrink-0"} />
+                                )}
+                                <span className={isDeleted ? 'line-through opacity-60' : ''}>
+                                  {file.full_path}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4 font-mono text-[var(--text-secondary)]">
+                                {file.is_directory ? '—' : formatBytes(file.size_bytes)}
+                              </td>
+                              <td className="py-3 px-4">
+                                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-secondary)]">
+                                  {file.file_type}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4">
+                                {isDeleted ? (
+                                  <div className="inline-flex items-center gap-1.5">
+                                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#C53030]/10 text-[#C53030] border border-[#C53030]/30">
+                                      DELETED (0xE5)
+                                    </span>
+                                    {file.size_bytes > 0 && (
+                                      <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                                        (Carveable)
+                                      </span>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#2E7D32]/10 text-[#2E7D32] border border-[#2E7D32]/30">
+                                    ACTIVE
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3 px-4 text-right">
+                                {file.is_directory ? (
+                                  <span className="text-xs text-[var(--text-muted)] italic font-mono">Directory</span>
+                                ) : isDeleted ? (
+                                  <span className="px-2.5 py-1 rounded text-xs font-mono text-[var(--text-muted)] bg-[var(--surface-secondary)] border border-[var(--border)]">
+                                    {file.size_bytes === 0 ? 'Purged / Zeroed' : 'Clusters Freed'}
+                                  </span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => handlePromptDelete(file)}
+                                    disabled={!inspectData.can_modify || isDeleting}
+                                    className="px-3 py-1.5 rounded-lg bg-[#C53030] hover:bg-[#A82828] disabled:opacity-40 text-white text-xs font-semibold cursor-pointer shadow-xs transition-colors inline-flex items-center gap-1.5"
+                                  >
+                                    <Trash2 size={13} />
+                                    <span>Delete</span>
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            );
+          })()}
         </div>
       )}
 
@@ -540,6 +665,43 @@ export const FileEraserPage: React.FC = () => {
                 Create automatic backup copy (.bak) before modifying disk image
               </span>
             </label>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Reset Demo Disk Modal */}
+      <Modal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        title="Reset Standard Demo Disk?"
+        variant="warning"
+        confirmText="Reset Test Disk"
+        cancelText="Cancel"
+        onConfirm={() => {
+          setIsResetModalOpen(false);
+          handleCreateTestDisk();
+        }}
+        isLoading={isLoading}
+      >
+        <div className="space-y-4 text-xs">
+          <p className="text-[13.5px] text-[var(--text-primary)] font-medium">
+            You are about to recreate the demo disk <code className="font-mono text-[var(--primary-orange)]">test-disk.img</code> with fresh sample files.
+          </p>
+
+          <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2 text-[var(--text-secondary)]">
+            <div className="text-[12px] font-semibold text-[var(--text-primary)]">What this does:</div>
+            <ul className="list-disc pl-4 space-y-1">
+              <li>Re-initializes a clean 2 MB FAT32 disk image at <code className="font-mono">test_data/test-disk.img</code>.</li>
+              <li>Restores default test files (<code className="font-mono">TEST.TXT</code>, <code className="font-mono">DOCUMENT.PDF</code>, <code className="font-mono">PHOTOS/IMAGE.JPG</code>, <code className="font-mono">SAMPLE/DATA.BIN</code>).</li>
+              <li>Clears previous file deletions and tombstone records.</li>
+            </ul>
+          </div>
+
+          <div className="p-3 rounded-xl bg-[var(--primary-orange)]/10 border border-[var(--primary-orange)]/30 text-[var(--text-secondary)] flex items-start gap-2.5">
+            <Info size={16} className="text-[var(--primary-orange)] flex-shrink-0 mt-0.5" />
+            <span>
+              <strong>Note:</strong> File deletions you execute are already saved automatically in-place. You only need to reset if you want a fresh set of sample files for testing.
+            </span>
           </div>
         </div>
       </Modal>

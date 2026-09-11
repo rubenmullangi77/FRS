@@ -13,7 +13,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
-DB_DIR = Path(r"D:\SIH\database")
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_DIR = BASE_DIR / "database"
 DB_PATH = DB_DIR / "forensivault.db"
 
 def get_connection() -> sqlite3.Connection:
@@ -21,6 +22,15 @@ def get_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
+
+def ensure_database_ready() -> None:
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='settings'")
+    if not cursor.fetchone():
+        init_database()
+    else:
+        conn.close()
 
 def init_database() -> None:
     conn = get_connection()
@@ -186,8 +196,8 @@ def init_database() -> None:
         "confidenceThreshold": "60",
         "autoHashEvidence": "true",
         "safeModeProtection": "true",
-        "evidenceExportDirectory": r"D:\SIH\recovered",
-        "caseDirectory": r"D:\SIH\test_data\disposable\cases",
+        "evidenceExportDirectory": str(BASE_DIR / "recovered"),
+        "caseDirectory": str(BASE_DIR / "test_data" / "disposable" / "cases"),
         "reportAuthor": "Ruben",
         "appVersion": "1.0.0 (SIH 2026 Edition)",
         "theme": "cream-orange"
@@ -252,6 +262,7 @@ def log_audit_event(event_type: str, action: str, user: str, details: Dict[str, 
     return record_hash
 
 def get_settings() -> Dict[str, str]:
+    ensure_database_ready()
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT key, value FROM settings")
@@ -260,6 +271,7 @@ def get_settings() -> Dict[str, str]:
     return {r["key"]: r["value"] for r in rows}
 
 def update_settings(settings_dict: Dict[str, str]) -> None:
+    ensure_database_ready()
     conn = get_connection()
     cursor = conn.cursor()
     now = datetime.now().isoformat()

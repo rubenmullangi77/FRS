@@ -25,18 +25,24 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 # Add project root to sys.path
-BASE_DIR = Path(r"D:\SIH")
+BASE_DIR = Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
 from backend_fastapi.database import (
     init_database,
+    ensure_database_ready,
     get_connection,
     log_audit_event,
     get_settings,
     update_settings,
     DB_PATH
 )
+
+try:
+    ensure_database_ready()
+except Exception:
+    pass
 from backend_fastapi.forensic_engine import (
     hash_file_streaming,
     check_system_protection,
@@ -51,7 +57,8 @@ from backend_fastapi.image_fs_modifier import (
     validate_image_target,
     detect_image_filesystem,
     FAT32ImageHandler,
-    create_standard_test_disk
+    create_standard_test_disk,
+    normalize_image_path
 )
 
 app = FastAPI(
@@ -185,7 +192,7 @@ def get_system_status():
         "cli_available": True,
         "tests_available": True,
         "core_compiled": True,
-        "platform": "Windows (FastAPI + C++ Native Core)",
+        "platform": f"{'Windows' if sys.platform == 'win32' else 'Linux'} (FastAPI + C++ Native Core)",
         "timestamp": now_iso,
         "system_protection_active": True,
         "database": {
@@ -280,52 +287,112 @@ def verify_password(req: PasswordVerifyRequest):
 # ============================================================================
 @app.get("/api/drives")
 def list_drives():
-    # Detect physical drives safely (read-only inspection)
-    physical_devices = [
-        {
-            "id": "PHYSICALDRIVE0",
-            "target_path": "\\\\.\\PhysicalDrive0",
-            "name": "Local OS Storage Drive",
-            "type": "NVMe / SSD",
-            "media_type": "NVMe / SSD",
-            "size_bytes": 512110190592,
-            "size_str": "476.9 GB",
-            "read_only": True,
-            "is_system_protected": True,
-            "is_safe": False,
-            "can_sanitize": False,
-            "reason": "Host operating system drive. Erasure prohibited."
-        },
-        {
-            "id": "PHYSICALDRIVE1",
-            "target_path": "\\\\.\\PhysicalDrive1",
-            "name": "Secondary Workstation Volume (D:)",
-            "type": "SATA / SSD",
-            "media_type": "SATA / SSD",
-            "size_bytes": 1000204886016,
-            "size_str": "931.5 GB",
-            "read_only": True,
-            "is_system_protected": True,
-            "is_safe": False,
-            "can_sanitize": False,
-            "reason": "Active partition root. Erasure prohibited."
-        }
-    ]
+    # Detect physical drives safely (read-only inspection, platform-aware)
+    if sys.platform != "win32":
+        physical_devices = []
+        try:
+            sys_block = Path("/sys/block")
+            if sys_block.exists():
+                for dev in sorted(sys_block.iterdir()):
+                    name = dev.name
+                    if name.startswith(("loop", "ram", "zram")):
+                        continue
+                    dev_path = f"/dev/{name}"
+                    size_file = dev / "size"
+                    sz_bytes = 0
+                    if size_file.exists():
+                        try:
+                            sz_bytes = int(size_file.read_text().strip()) * 512
+                        except Exception:
+                            pass
+                    sz_gb = round(sz_bytes / (1024**3), 1)
+                    physical_devices.append({
+                        "id": name,
+                        "target_path": dev_path,
+                        "name": f"Linux Storage Device ({name})",
+                        "type": "NVMe / SSD" if "nvme" in name else "SATA / Block Device",
+                        "media_type": "NVMe / SSD" if "nvme" in name else "SATA / Block Device",
+                        "size_bytes": sz_bytes,
+                        "size_str": f"{sz_gb} GB" if sz_gb > 0 else "System Drive",
+                        "read_only": True,
+                        "is_system_protected": True,
+                        "is_safe": False,
+                        "can_sanitize": False,
+                        "reason": "Host Linux operating system drive. Erasure prohibited."
+                    })
+        except Exception:
+            pass
+        if not physical_devices:
+            physical_devices = [
+                {
+                    "id": "nvme0n1",
+                    "target_path": "/dev/nvme0n1",
+                    "name": "Host Linux Storage Drive (/dev/nvme0n1)",
+                    "type": "NVMe / SSD",
+                    "media_type": "NVMe / SSD",
+                    "size_bytes": 512110190592,
+                    "size_str": "476.9 GB",
+                    "read_only": True,
+                    "is_system_protected": True,
+                    "is_safe": False,
+                    "can_sanitize": False,
+                    "reason": "Host Linux root device. Protected by SystemProtectionGuard."
+                }
+            ]
+    else:
+        physical_devices = [
+            {
+                "id": "PHYSICALDRIVE0",
+                "target_path": "\\\\.\\PhysicalDrive0",
+                "name": "Local OS Storage Drive",
+                "type": "NVMe / SSD",
+                "media_type": "NVMe / SSD",
+                "size_bytes": 512110190592,
+                "size_str": "476.9 GB",
+                "read_only": True,
+                "is_system_protected": True,
+                "is_safe": False,
+                "can_sanitize": False,
+                "reason": "Host operating system drive. Erasure prohibited."
+            },
+            {
+                "id": "PHYSICALDRIVE1",
+                "target_path": "\\\\.\\PhysicalDrive1",
+                "name": "Secondary Workstation Volume (D:)",
+                "type": "SATA / SSD",
+                "media_type": "SATA / SSD",
+                "size_bytes": 1000204886016,
+                "size_str": "931.5 GB",
+                "read_only": True,
+                "is_system_protected": True,
+                "is_safe": False,
+                "can_sanitize": False,
+                "reason": "Active partition root. Erasure prohibited."
+            }
+        ]
 
-    # Detect disk images in test_data and cases
+    # Detect disk images in test_data, configured folders, and cases
     disk_images = []
     search_paths = [
         BASE_DIR / "test_data",
-        BASE_DIR / "test data",
         BASE_DIR / "test_data" / "disposable",
         BASE_DIR / "test_data" / "disposable" / "cases"
     ]
+    try:
+        cfg_folder = get_settings().get("defaultEvidenceFolder")
+        if cfg_folder:
+            norm_cfg = normalize_image_path(cfg_folder)
+            if norm_cfg and Path(norm_cfg).exists():
+                search_paths.append(Path(norm_cfg))
+    except Exception:
+        pass
 
     seen = set()
+    valid_exts = {".img", ".dd", ".raw", ".bin", ".iso", ".vhd"}
     for sp in search_paths:
         if sp.exists():
-            for ext in ["*.img", "*.dd", "*.raw", "*.bin"]:
-                for file_path in sp.glob(ext):
+            for file_path in sp.iterdir():
+                if file_path.is_file() and file_path.suffix.lower() in valid_exts:
                     abs_p = str(file_path.resolve())
                     if abs_p in seen:
                         continue
@@ -787,17 +854,46 @@ def get_files_overview():
         }
     ]
 
+    # Only include default candidates if the source file actually exists on disk
+    active_deleted = [item for item in deleted_catalog if Path(item["source_path"]).is_file()]
+
+    # Dynamically scan test_data for user-placed files (images, documents, evidence)
+    test_data_dir = BASE_DIR / "test_data"
+    if test_data_dir.exists():
+        idx = 200
+        for p in test_data_dir.iterdir():
+            if p.is_file() and p.name not in ["forensivault.db", ".gitkeep"] and not p.name.endswith(".pyc"):
+                abs_str = str(p.resolve())
+                if not any(it["source_path"] == abs_str for it in active_deleted):
+                    ext = p.suffix.lstrip(".").lower() or "dat"
+                    active_deleted.append({
+                        "id": idx,
+                        "filename": p.name,
+                        "file_type": ext.upper(),
+                        "extension": ext,
+                        "source_image": p.name,
+                        "source_path": abs_str,
+                        "offset_hex": "0x00000000",
+                        "offset_dec": 0,
+                        "size_bytes": p.stat().st_size,
+                        "status": "Evidence Artifact",
+                        "deletion_flag": "User Evidence File Detected",
+                        "confidence_score": 90.0,
+                        "can_recover": True
+                    })
+                    idx += 1
+
     total_rec_bytes = sum(f.get("size_bytes", 0) for f in recovered)
 
     return {
-        "deleted_files": deleted_catalog,
+        "deleted_files": active_deleted,
         "recovered_files": recovered,
         "metrics": {
-            "total_deleted": len(deleted_catalog),
+            "total_deleted": len(active_deleted),
             "total_recovered": len(recovered),
             "recovery_success_rate": 100.0 if recovered else 0.0,
             "total_recovered_bytes": total_rec_bytes,
-            "images_scanned": 5
+            "images_scanned": len(active_deleted)
         }
     }
 
@@ -1018,7 +1114,8 @@ def execute_erase(req: EraseExecuteRequest):
     # 4. Perform sanitized overwrite before removal
     if p.is_file():
         try:
-            os.chmod(p, stat.S_IWRITE)
+            st = p.stat()
+            os.chmod(p, st.st_mode | stat.S_IRUSR | stat.S_IWUSR)
         except Exception:
             pass
         file_sz = p.stat().st_size
@@ -1044,7 +1141,8 @@ def execute_erase(req: EraseExecuteRequest):
     elif p.is_dir():
         def on_rm_error(func, path, exc_info):
             try:
-                os.chmod(path, stat.S_IWRITE)
+                st = Path(path).stat()
+                os.chmod(path, st.st_mode | stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
                 func(path)
             except Exception:
                 pass
@@ -1106,13 +1204,15 @@ def sanitize_drive(req: DriveSanitizeRequest):
         if not valid:
             raise HTTPException(status_code=401, detail="Authentication failed: Invalid credentials for drive sanitization.")
 
-    p = Path(req.image_path)
+    target_path = normalize_image_path(req.image_path)
+    p = Path(target_path)
     if not p.is_file():
-        raise HTTPException(status_code=404, detail=f"Drive image file not found: {req.image_path}")
+        raise HTTPException(status_code=404, detail=f"Drive image file not found: {target_path}")
 
-    # Remove read-only attribute if present
+    # Remove read-only attribute if present, ensuring user has read and write permissions
     try:
-        os.chmod(p, stat.S_IWRITE)
+        st = p.stat()
+        os.chmod(p, st.st_mode | stat.S_IRUSR | stat.S_IWUSR)
     except Exception:
         pass
 
@@ -1121,7 +1221,19 @@ def sanitize_drive(req: DriveSanitizeRequest):
     norm_method = (req.method or "nist").lower()
     passes = 3 if "dod" in norm_method else 1
     
-    with open(p, "r+b") as f:
+    try:
+        f = open(p, "r+b")
+    except PermissionError:
+        try:
+            os.chmod(p, 0o666)
+            f = open(p, "r+b")
+        except Exception as perm_err:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Permission denied accessing drive image '{p.name}'. Please verify write permissions: {perm_err}"
+            )
+
+    with f:
         # Zero out head and tail sectors
         f.seek(0)
         f.write(b"\x00" * min(sz, 65536))
@@ -1174,8 +1286,9 @@ def sanitize_drive(req: DriveSanitizeRequest):
 # 9B. Real Virtual Disk Image Filesystem Inspection & File Deletion
 # ============================================================================
 @app.post("/api/image/inspect")
-def inspect_disk_image(req: ImageInspectRequest):
-    ok, reason = validate_image_target(req.image_path)
+def inspect_disk_image_api(req: ImageInspectRequest):
+    img_path = normalize_image_path(req.image_path)
+    ok, reason = validate_image_target(img_path)
     if not ok:
         return JSONResponse(
             status_code=400,
@@ -1183,13 +1296,13 @@ def inspect_disk_image(req: ImageInspectRequest):
                 "success": False,
                 "error": "INVALID_IMAGE",
                 "message": reason,
-                "image_path": req.image_path,
+                "image_path": img_path,
                 "files": []
             }
         )
     
-    det = detect_image_filesystem(req.image_path)
-    p = Path(req.image_path)
+    det = detect_image_filesystem(img_path)
+    p = Path(img_path)
     
     if not det.get("success"):
         return JSONResponse(
@@ -1213,7 +1326,7 @@ def inspect_disk_image(req: ImageInspectRequest):
     files = []
     if fs_type == "FAT32":
         try:
-            handler = FAT32ImageHandler(req.image_path)
+            handler = FAT32ImageHandler(img_path)
             files = handler.list_files()
         except Exception as e:
             return JSONResponse(
@@ -1244,8 +1357,9 @@ def inspect_disk_image(req: ImageInspectRequest):
 
 @app.post("/api/image/delete-file")
 def delete_file_from_disk_image(req: ImageFileDeleteRequest):
+    img_path = normalize_image_path(req.image_path)
     # Safety checks
-    ok, reason = validate_image_target(req.image_path)
+    ok, reason = validate_image_target(img_path)
     if not ok:
         return JSONResponse(
             status_code=400,
@@ -1256,7 +1370,7 @@ def delete_file_from_disk_image(req: ImageFileDeleteRequest):
             }
         )
         
-    det = detect_image_filesystem(req.image_path)
+    det = detect_image_filesystem(img_path)
     if not det.get("can_modify"):
         return JSONResponse(
             status_code=400,
@@ -1269,7 +1383,7 @@ def delete_file_from_disk_image(req: ImageFileDeleteRequest):
         
     # Execute deletion
     try:
-        handler = FAT32ImageHandler(req.image_path)
+        handler = FAT32ImageHandler(img_path)
         res = handler.delete_file(
             target_identifier=req.file_path,
             mode=req.mode or "normal",
@@ -1314,7 +1428,8 @@ def delete_file_from_disk_image(req: ImageFileDeleteRequest):
 
 @app.post("/api/image/create-test-disk")
 def create_test_disk_api(req: Optional[CreateTestDiskRequest] = None):
-    out_path = (req.output_path if req and req.output_path else None) or str(BASE_DIR / "test_data" / "test-disk.img")
+    raw_path = req.output_path if req and req.output_path else None
+    out_path = normalize_image_path(raw_path) or str(BASE_DIR / "test_data" / "test-disk.img")
     try:
         res = create_standard_test_disk(out_path)
         log_audit_event(

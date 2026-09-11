@@ -1,0 +1,32 @@
+# Build outputs
+build_linux/
+.runtime/
+dist/
+frontend/dist/
+node_modules/
+frontend/node_modules/
+
+# Python cache & bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+backend_fastapi/__pycache__/
+
+# Logs and temporary backups
+*.log
+*.bak
+*.tmp
+
+# Recovered carved artifacts
+recovered/
+test_data/recovered/
+
+# Personal test documents/images created during testing
+test_data/*.pdf
+test_data/*.docx
+test_data/*.jpg
+test_data/*.png
+!test_data/demo_workspace/**
+!test_data/recovered/**
+

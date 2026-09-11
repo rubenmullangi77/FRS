@@ -1,7 +1,12 @@
+#if defined(_WIN32)
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
+#define FV_EXPORT extern "C" __declspec(dllexport)
+#else
+#define FV_EXPORT extern "C" __attribute__((visibility("default")))
+#endif
 
 #include "forensivault/common/crypto_hash.hpp"
 #include "core/disk_image_reader.hpp"
@@ -20,12 +25,6 @@
 #include <vector>
 #include <memory>
 #include <iomanip>
-
-#ifdef _WIN32
-#define FV_EXPORT extern "C" __declspec(dllexport)
-#else
-#define FV_EXPORT extern "C"
-#endif
 
 using namespace forensivault;
 

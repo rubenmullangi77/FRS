@@ -19,7 +19,7 @@ import hashlib
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
-BASE_DIR = Path(r"D:\SIH")
+BASE_DIR = Path(__file__).resolve().parent.parent
 RECOVERED_DIR = BASE_DIR / "recovered"
 RECOVERED_DIR.mkdir(parents=True, exist_ok=True)
 MSYS_BIN = Path(r"C:\msys64\ucrt64\bin")
@@ -38,36 +38,44 @@ def get_native_dll():
         except Exception:
             pass
 
-    dll_path = BASE_DIR / "build" / "bin" / "forensivault_native.dll"
-    if dll_path.exists():
-        try:
-            dll = ctypes.CDLL(str(dll_path))
-            
-            # Setup function signatures
-            dll.fv_shannon_entropy.restype = ctypes.c_double
-            dll.fv_shannon_entropy.argtypes = [ctypes.c_char_p, ctypes.c_size_t]
-            
-            dll.fv_crc32.restype = ctypes.c_uint32
-            dll.fv_crc32.argtypes = [ctypes.c_char_p, ctypes.c_size_t]
-            
-            dll.fv_is_system_protected.restype = ctypes.c_int
-            dll.fv_is_system_protected.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t]
-            
-            dll.fv_carve_image.restype = ctypes.c_int
-            dll.fv_carve_image.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t]
-            
-            dll.fv_score_candidate.restype = ctypes.c_int
-            dll.fv_score_candidate.argtypes = [
-                ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint64,
-                ctypes.c_char_p, ctypes.c_size_t,
-                ctypes.c_char_p, ctypes.c_size_t
-            ]
-            
-            _native_dll = dll
-            return _native_dll
-        except Exception as e:
-            print(f"[ForensiVault Engine] Warning: could not load native DLL: {e}", file=sys.stderr)
-            return None
+    candidate_paths = [
+        BASE_DIR / "build_linux" / "lib" / "libforensivault_native.so",
+        BASE_DIR / "build_linux" / "bin" / "libforensivault_native.so",
+        BASE_DIR / "build_linux" / "bin" / "forensivault_native.dll",
+        BASE_DIR / "build" / "bin" / "forensivault_native.dll",
+        BASE_DIR / "build" / "lib" / "libforensivault_native.so",
+        BASE_DIR / "build" / "bin" / "libforensivault_native.so",
+    ]
+    for dll_path in candidate_paths:
+        if dll_path.exists():
+            try:
+                dll = ctypes.CDLL(str(dll_path))
+                
+                # Setup function signatures
+                dll.fv_shannon_entropy.restype = ctypes.c_double
+                dll.fv_shannon_entropy.argtypes = [ctypes.c_char_p, ctypes.c_size_t]
+                
+                dll.fv_crc32.restype = ctypes.c_uint32
+                dll.fv_crc32.argtypes = [ctypes.c_char_p, ctypes.c_size_t]
+                
+                dll.fv_is_system_protected.restype = ctypes.c_int
+                dll.fv_is_system_protected.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t]
+                
+                dll.fv_carve_image.restype = ctypes.c_int
+                dll.fv_carve_image.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t]
+                
+                dll.fv_score_candidate.restype = ctypes.c_int
+                dll.fv_score_candidate.argtypes = [
+                    ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint64,
+                    ctypes.c_char_p, ctypes.c_size_t,
+                    ctypes.c_char_p, ctypes.c_size_t
+                ]
+                
+                _native_dll = dll
+                return _native_dll
+            except Exception as e:
+                print(f"[ForensiVault Engine] Warning: could not load native DLL: {e}", file=sys.stderr)
+                continue
     return None
 
 # 2. Cryptographic Hashing (Read-Only Stream)
@@ -104,6 +112,18 @@ def check_system_protection(target_path: str) -> Tuple[bool, str]:
         return bool(is_prot), reason
     
     # Python fallback mirroring C++ SystemProtectionGuard
+    if sys.platform != "win32":
+        norm_p = target_path.replace("\\", "/")
+        if norm_p in ["/", "/root"]:
+            return True, f"Operating system root '{norm_p}' is protected. Erasure is strictly blocked."
+        if norm_p.startswith("/dev/"):
+            return True, f"Direct host block device '{norm_p}' is protected. Erasure prohibited."
+        linux_roots = ["/bin", "/sbin", "/etc", "/lib", "/lib64", "/usr", "/boot", "/proc", "/sys", "/dev"]
+        for lr in linux_roots:
+            if norm_p == lr or norm_p.startswith(lr + "/"):
+                return True, f"Target is an essential Linux operating system directory ({lr}). Erasure is strictly blocked."
+        return False, "Target is safe to sanitize."
+
     normalized = target_path.replace("/", "\\").upper()
     sys_drive = os.environ.get("SystemDrive", "C:").upper()
     

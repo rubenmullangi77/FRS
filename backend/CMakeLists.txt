@@ -38,10 +38,22 @@ target_include_directories(forensivault_core PUBLIC
 
 target_compile_features(forensivault_core PUBLIC cxx_std_17)
 
+# Link threading support
+target_link_libraries(forensivault_core PUBLIC Threads::Threads)
+
 # Windows socket / filesystem libraries if needed
 if(WIN32)
     target_link_libraries(forensivault_core PUBLIC ws2_32)
 endif()
+
+# ForensiVault C API Native Shared Library (DLL on Windows, .so on Linux)
+add_library(forensivault_native SHARED
+    src/native/forensivault_capi.cpp
+)
+
+target_link_libraries(forensivault_native PRIVATE
+    forensivault_core
+)
 
 # ForensiVault CLI executable
 add_executable(forensivault_cli
@@ -81,5 +93,6 @@ add_executable(forensivault_server
 
 target_link_libraries(forensivault_server PRIVATE
     forensivault_core
+    Threads::Threads
 )
 

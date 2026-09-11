@@ -67,7 +67,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       examinerName: 'Ruben Mullangi',
       agencyName: 'National Cyber Crime Forensics Lab',
       defaultCaseName: 'SIH Demo Case',
-      defaultEvidenceFolder: 'D:\\SIH\\test_data',
+      defaultEvidenceFolder: 'test_data',
       theme: 'dark',
       notificationsEnabled: true
     };
@@ -397,7 +397,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="text"
                 value={settings.defaultEvidenceFolder}
                 onChange={(e) => setSettings({ ...settings, defaultEvidenceFolder: e.target.value })}
-                placeholder="D:\SIH\test_data"
+                placeholder="test_data"
                 className="w-full h-13 px-4.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] focus:border-[var(--primary-orange)] focus:ring-2 focus:ring-[var(--primary-orange)]/25 font-mono text-[13.5px] text-[var(--text-primary)] outline-none transition-all"
               />
               <p className="text-[12px] text-[var(--text-muted)]">
@@ -416,7 +416,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 Forensic Immutability & Write-Blocking Policy
               </div>
               <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-                All recovered and carved files are strictly isolated into <code className="font-mono text-[var(--primary-orange)] font-semibold">D:\SIH\recovered</code>. Source evidence images and disk sectors remain strictly read-only and will never be modified.
+                All recovered and carved files are strictly isolated into <code className="font-mono text-[var(--primary-orange)] font-semibold">recovered</code> directory. Source evidence images and disk sectors remain strictly read-only and will never be modified.
               </p>
             </div>
           </div>

@@ -38,6 +38,11 @@ app.commandLine.appendSwitch('disk-cache-dir', diskCacheDir);
 app.commandLine.appendSwitch('user-data-dir', userDataDir);
 app.commandLine.appendSwitch('gpu-disk-cache-dir', gpuCacheDir);
 
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('disable-features', 'Vulkan');
+  app.commandLine.appendSwitch('disable-gpu-sandbox');
+}
+
 // Register file scheme privileges before app is ready
 try {
   protocol.registerSchemesAsPrivileged([
@@ -78,7 +83,13 @@ function startBackendIfNeeded() {
     }
 
     console.log('[Electron] Starting ForensiVault FastAPI backend on port 8765...');
-    backendProcess = spawn('py', ['-3', '-m', 'uvicorn', 'backend_fastapi.main:app', '--host', '127.0.0.1', '--port', '8765'], {
+    const isWin = process.platform === 'win32';
+    const pyCmd = isWin ? 'py' : 'python3';
+    const pyArgs = isWin 
+      ? ['-3', '-m', 'uvicorn', 'backend_fastapi.main:app', '--host', '127.0.0.1', '--port', '8765']
+      : ['-m', 'uvicorn', 'backend_fastapi.main:app', '--host', '127.0.0.1', '--port', '8765'];
+
+    backendProcess = spawn(pyCmd, pyArgs, {
       cwd: projectRoot,
       stdio: 'pipe',
       shell: true
@@ -126,7 +137,7 @@ async function createWindow() {
     minHeight: 700,
     title: 'ForensiVault - Professional Digital Forensics Workstation',
     backgroundColor: '#121110',
-    show: false,
+    show: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -166,9 +177,18 @@ async function createWindow() {
   }
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-    mainWindow.focus();
+    if (mainWindow) {
+      mainWindow.show();
+      mainWindow.focus();
+    }
   });
+
+  setTimeout(() => {
+    if (mainWindow && !mainWindow.isVisible()) {
+      mainWindow.show();
+      mainWindow.focus();
+    }
+  }, 500);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
