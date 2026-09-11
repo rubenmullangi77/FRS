@@ -72,9 +72,14 @@ DriveProperties DriveDetector::detectImage(
 std::vector<DriveProperties> DriveDetector::detectPhysicalDevices() {
     std::vector<DriveProperties> devices;
 
-    // Physical Device 0 (Simulated / Reported system drive detection)
     DriveProperties sysDrive;
+#if defined(_WIN32)
     sysDrive.device_identifier = "\\\\.\\PhysicalDrive0";
+#elif defined(__linux__)
+    sysDrive.device_identifier = "/dev/nvme0n1";
+#else
+    sysDrive.device_identifier = "/dev/disk0";
+#endif
     sysDrive.model_name = "Physical System NVMe / SATA Storage Device";
     sysDrive.serial_number = "PROTECTED-SYS-001";
     sysDrive.media_type = DriveMediaType::SSD_NAND;

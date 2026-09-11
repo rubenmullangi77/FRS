@@ -38,10 +38,23 @@ from urllib.parse import urlparse, parse_qs
 
 PORT = 8765
 BASE_DIR = Path(__file__).resolve().parent
-CLI_PATH = BASE_DIR / "build" / "bin" / "forensivault_cli.exe"
-INSPECT_PATH = BASE_DIR / "build" / "bin" / "forensic-inspect.exe"
-DEMO_PATH = BASE_DIR / "build" / "bin" / "forensic-demo.exe"
-TESTS_PATH = BASE_DIR / "build" / "bin" / "forensivault_tests.exe"
+
+def find_binary(name):
+    candidates = [
+        BASE_DIR / "build_linux" / "bin" / name,
+        BASE_DIR / "build_linux" / "bin" / f"{name}.exe",
+        BASE_DIR / "build" / "bin" / name,
+        BASE_DIR / "build" / "bin" / f"{name}.exe",
+    ]
+    for c in candidates:
+        if c.is_file():
+            return c
+    return candidates[0]
+
+CLI_PATH = find_binary("forensivault_cli")
+INSPECT_PATH = find_binary("forensic-inspect")
+DEMO_PATH = find_binary("forensic-demo")
+TESTS_PATH = find_binary("forensivault_tests")
 
 # Active background jobs store
 JOBS = {}
@@ -266,7 +279,7 @@ class ForensiVaultApiHandler(http.server.SimpleHTTPRequestHandler):
             "tests_failed": 0,
             "cli_available": cli_exists,
             "tests_available": tests_exists,
-            "platform": "Windows x86_64",
+            "platform": "Linux x86_64" if sys.platform != "win32" else "Windows x86_64",
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         })
 

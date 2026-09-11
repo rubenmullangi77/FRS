@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS: Omit<UserSettings, 'theme'> = {
   examinerName: '',
   agencyName: 'National Cyber Crime Forensics Lab',
   defaultCaseName: 'SIH Demo Case',
-  defaultEvidenceFolder: 'D:\\SIH\\test_data',
+  defaultEvidenceFolder: 'test_data',
   notificationsEnabled: true
 };
 

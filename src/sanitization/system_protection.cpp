@@ -19,14 +19,19 @@ std::string toUpper(std::string str) {
 
 std::string canonicalizeSafe(const std::string& raw) {
     try {
-#ifdef _WIN32
-        // Treat "C:" as a drive root for safety checks.
-        if (raw.length() == 2 &&
+        if (raw.length() >= 2 &&
             std::isalpha(static_cast<unsigned char>(raw[0])) &&
             raw[1] == ':') {
-            return std::string(1, raw[0]) + ":\\";
-        }
+            if (raw.length() == 2) {
+                return std::string(1, raw[0]) + ":\\";
+            }
+#ifndef _WIN32
+            // On non-Windows platforms, preserve Windows drive paths as absolute Windows paths
+            std::string winPath = raw;
+            std::replace(winPath.begin(), winPath.end(), '/', '\\');
+            return winPath;
 #endif
+        }
 
         fs::path p(raw);
 
@@ -82,7 +87,7 @@ bool SystemProtectionGuard::isProtected(const std::string& targetPath, std::stri
 
     std::string norm = normalizePath(targetPath);
 
-    // List of prohibited system path prefixes
+    // List of prohibited system path prefixes (Windows and Linux)
     const std::vector<std::string> systemPrefixes = {
         "\\WINDOWS",
         "\\PROGRAM FILES",
@@ -91,20 +96,33 @@ bool SystemProtectionGuard::isProtected(const std::string& targetPath, std::stri
         "\\SYSTEM VOLUME INFORMATION",
         "\\$RECYCLE.BIN",
         "\\RECOVERY",
-        "\\BOOT"
+        "\\BOOT",
+        // Linux system directories
+        "\\BIN",
+        "\\SBIN",
+        "\\ETC",
+        "\\LIB",
+        "\\LIB64",
+        "\\PROC",
+        "\\SYS",
+        "\\DEV",
+        "\\ROOT",
+        "\\RUN",
+        "\\USR",
+        "\\VAR"
     };
 
-    // Check against drive-qualified prefixes (e.g. "C:\WINDOWS")
+    // Check against drive-qualified prefixes (e.g. "C:\WINDOWS") or root prefixes (e.g. "\etc")
     for (const auto& prefix : systemPrefixes) {
         // Drive relative: "C:\WINDOWS" or root-relative: "\WINDOWS"
         if (norm.length() >= 2 && norm[1] == ':') {
             std::string sub = norm.substr(2); // Skip "C:"
             if (sub == prefix || sub.rfind(prefix + "\\", 0) == 0) {
-                outReason = "Target is an essential Windows Operating System directory (" + prefix.substr(1) + "). Erasure is strictly blocked.";
+                outReason = "Target is an essential Operating System directory (" + prefix.substr(1) + "). Erasure is strictly blocked.";
                 return true;
             }
         } else if (norm == prefix || norm.rfind(prefix + "\\", 0) == 0) {
-            outReason = "Target is an essential Windows Operating System directory (" + prefix.substr(1) + "). Erasure is strictly blocked.";
+            outReason = "Target is an essential Operating System directory (" + prefix.substr(1) + "). Erasure is strictly blocked.";
             return true;
         }
     }
@@ -117,30 +135,34 @@ bool SystemProtectionGuard::isProtected(const std::string& targetPath, std::stri
         "BOOTMGR",
         "BOOTNXT",
         "NTLDR",
-        "NTDETECT.COM"
+        "NTDETECT.COM",
+        "VMLINUZ",
+        "INITRD.IMG"
     };
 
-    std::string filename;
-    try {
-        filename = toUpper(fs::path(targetPath).filename().string());
-    } catch (...) {
-        filename = norm;
+    std::string filename = norm;
+    size_t lastSlash = norm.find_last_of("\\/");
+    if (lastSlash != std::string::npos) {
+        filename = norm.substr(lastSlash + 1);
     }
 
     for (const auto& file : prohibitedFiles) {
         if (filename == file) {
-            outReason = "Target is a critical Windows system paging or boot file (" + file + "). Erasure is strictly blocked.";
+            outReason = "Target is a critical system paging or boot file (" + file + "). Erasure is strictly blocked.";
             return true;
         }
     }
 
-    // Protect "C:\Users" root directory itself (though subfolders of users can be processed)
+    // Protect "C:\Users" or Linux "/home" root directory itself (though subfolders of users can be processed)
     if (norm.length() >= 2 && norm[1] == ':') {
         std::string sub = norm.substr(2);
         if (sub == "\\USERS" || sub == "\\USERS\\DEFAULT" || sub == "\\USERS\\PUBLIC" || sub == "\\USERS\\ALL USERS") {
             outReason = "Target is a root user profile directory (" + sub.substr(1) + "). Erasure is blocked to prevent profile corruption.";
             return true;
         }
+    } else if (norm == "\\HOME" || norm == "\\ROOT") {
+        outReason = "Target is a root user profile directory (" + norm.substr(1) + "). Erasure is blocked to prevent profile corruption.";
+        return true;
     }
 
     return false;

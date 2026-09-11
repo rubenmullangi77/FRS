@@ -18,31 +18,66 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+def normalize_image_path(image_path: Optional[str]) -> str:
+    """Normalizes paths, translating legacy Windows prefixes (D:\\SIH\\...) to current project root on Linux."""
+    if not image_path:
+        return ""
+    clean = image_path.strip()
+    if sys.platform != "win32":
+        if ":\\" in clean or ":/" in clean or clean.startswith(("C:", "D:")):
+            parts = clean.replace("\\", "/").split("test_data/")
+            if len(parts) > 1:
+                rel = parts[-1].lstrip("/")
+                cand = BASE_DIR / "test_data" / rel
+                if cand.exists():
+                    return str(cand.resolve())
+                fname = Path(rel).name
+                if (BASE_DIR / "test_data" / fname).exists():
+                    return str((BASE_DIR / "test_data" / fname).resolve())
+                return str(cand)
+            else:
+                fname = Path(clean.replace("\\", "/")).name
+                cand = BASE_DIR / "test_data" / fname
+                if cand.exists():
+                    return str(cand.resolve())
+    return clean
+
 def validate_image_target(image_path: str) -> Tuple[bool, str]:
     """Ensures target is an existing virtual disk image file and never a physical host drive."""
     if not image_path or not isinstance(image_path, str):
         return False, "Invalid image path specified."
     
-    clean = image_path.strip()
+    clean = normalize_image_path(image_path)
     # Reject physical drive paths
     if clean.lower().startswith(r"\\.") or "physicaldrive" in clean.lower():
         return False, "Operating on physical storage devices is strictly prohibited. Use isolated .img virtual disks only."
+    if sys.platform != "win32" and clean.startswith("/dev/"):
+        return False, f"Operating directly on host Linux block device ({clean}) is prohibited. Use isolated virtual disk images only."
     
     p = Path(clean)
     if not p.is_file():
         return False, f"Disk image file does not exist: {clean}"
     
     # Must have a disk image extension
-    valid_exts = [".img", ".dd", ".raw", ".bin", ".vhd"]
+    valid_exts = [".img", ".dd", ".raw", ".bin", ".vhd", ".iso"]
     if p.suffix.lower() not in valid_exts:
         return False, f"Target must be a raw disk image file ({', '.join(valid_exts)}). Got: {p.suffix}"
     
-    # Check Windows system protection
-    lower_str = str(p.resolve()).lower()
-    system_roots = ["c:\\windows", "c:\\program files", "c:\\program files (x86)", "c:\\system32"]
-    for sr in system_roots:
-        if lower_str.startswith(sr):
-            return False, f"Target is within protected Windows system directories ({sr}). Modification blocked."
+    # Check platform-specific system protection
+    if sys.platform == "win32":
+        lower_str = str(p.resolve()).lower()
+        system_roots = ["c:\\windows", "c:\\program files", "c:\\program files (x86)", "c:\\system32"]
+        for sr in system_roots:
+            if lower_str.startswith(sr):
+                return False, f"Target is within protected Windows system directories ({sr}). Modification blocked."
+    else:
+        abs_p = str(p.resolve())
+        linux_sys_dirs = ["/bin", "/sbin", "/etc", "/lib", "/lib64", "/usr", "/boot", "/dev", "/proc", "/sys", "/root"]
+        for sd in linux_sys_dirs:
+            if abs_p == sd or abs_p.startswith(sd + "/"):
+                return False, f"Target is within protected Linux system directories ({sd}). Modification blocked."
             
     return True, "Target is a valid virtual disk image."
 
@@ -56,7 +91,8 @@ def compute_file_sha256(filepath: str) -> str:
 
 def detect_image_filesystem(image_path: str) -> Dict[str, Any]:
     """Probes the boot sector and filesystem structure of the .img file."""
-    ok, reason = validate_image_target(image_path)
+    clean = normalize_image_path(image_path)
+    ok, reason = validate_image_target(clean)
     if not ok:
         return {
             "success": False,
@@ -66,7 +102,7 @@ def detect_image_filesystem(image_path: str) -> Dict[str, Any]:
             "message": reason
         }
         
-    p = Path(image_path)
+    p = Path(clean)
     sz = p.stat().st_size
     if sz < 512:
         return {
@@ -149,7 +185,7 @@ def detect_image_filesystem(image_path: str) -> Dict[str, Any]:
 class FAT32ImageHandler:
     """Low-level binary reader, writer, and modifier for FAT32 disk images."""
     def __init__(self, image_path: str):
-        self.image_path = str(Path(image_path).resolve())
+        self.image_path = str(Path(normalize_image_path(image_path)).resolve())
         det = detect_image_filesystem(self.image_path)
         if not det.get("success") or det.get("fs_type") != "FAT32":
             raise ValueError(det.get("message") or "Target is not a valid FAT32 disk image.")
@@ -233,6 +269,11 @@ class FAT32ImageHandler:
                 
                 # Check for Long File Name (LFN) entry
                 if attr == 0x0F:
+                    if b0 == 0xE5:
+                        # Deleted LFN entry
+                        pending_lfn_parts = []
+                        pending_lfn_offsets = []
+                        continue
                     part_chars = []
                     for c in range(1, 11, 2):
                         w = int.from_bytes(entry[c:c+2], "little")
@@ -265,19 +306,24 @@ class FAT32ImageHandler:
                     lfn_offsets = list(pending_lfn_offsets)
                     pending_lfn_parts = []
                     pending_lfn_offsets = []
+                    if is_deleted:
+                        filename = f"_{filename[1:]}" if len(filename) > 1 else "_DELETED"
                 else:
                     lfn_offsets = []
                     raw_base = entry[:8]
                     raw_ext = entry[8:11]
                     try:
-                        base = raw_base.decode("latin1").rstrip()
-                        ext = raw_ext.decode("latin1").rstrip()
+                        base = raw_base.decode("latin1", errors="ignore").replace("\x00", "").rstrip()
+                        ext = raw_ext.decode("latin1", errors="ignore").replace("\x00", "").rstrip()
                     except Exception:
                         base = "FILE"
                         ext = ""
-                    if is_deleted and base:
-                        base = "_" + base[1:]
-                    filename = f"{base}.{ext}" if ext else base
+                    if is_deleted:
+                        if not base and not ext:
+                            base = "PURGED_FILE"
+                        else:
+                            base = "_" + base[1:] if len(base) > 1 else "_DELETED"
+                    filename = f"{base}.{ext}" if ext else (base or "UNNAMED")
                     
                 # Skip any stray dot names
                 if filename in (".", "..", "_.", "_..") or not filename:
@@ -483,7 +529,7 @@ class FAT32ImageHandler:
             "end_time": end_time
         }
 
-def create_standard_test_disk(output_path: str = r"D:\SIH\test_data\test-disk.img") -> Dict[str, Any]:
+def create_standard_test_disk(output_path: Optional[str] = None) -> Dict[str, Any]:
     """
     Builds a complete, 100% valid FAT32 disk image containing the exact structure:
     test-disk.img
@@ -494,6 +540,7 @@ def create_standard_test_disk(output_path: str = r"D:\SIH\test_data\test-disk.im
     └── sample/
         └── data.bin
     """
+    output_path = normalize_image_path(output_path) or str(BASE_DIR / "test_data" / "test-disk.img")
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
     
@@ -579,10 +626,15 @@ def create_standard_test_disk(output_path: str = r"D:\SIH\test_data\test-disk.im
         
     def make_dir_entry(name83: str, attr: int, start_clus: int, file_sz: int) -> bytearray:
         e = bytearray(32)
-        parts = name83.split(".", 1)
-        base = parts[0].upper().ljust(8)[:8].encode("latin1")
-        ext = parts[1].upper().ljust(3)[:3].encode("latin1") if len(parts) > 1 else b"   "
-        e[0:11] = base + ext
+        if name83 == ".":
+            e[0:11] = b".          "
+        elif name83 == "..":
+            e[0:11] = b"..         "
+        else:
+            parts = name83.split(".", 1)
+            base = parts[0].upper().ljust(8)[:8].encode("latin1")
+            ext = parts[1].upper().ljust(3)[:3].encode("latin1") if len(parts) > 1 else b"   "
+            e[0:11] = base + ext
         e[11] = attr
         e[20:22] = ((start_clus >> 16) & 0xFFFF).to_bytes(2, "little")
         e[26:28] = (start_clus & 0xFFFF).to_bytes(2, "little")

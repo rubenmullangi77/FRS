@@ -19,7 +19,7 @@ import { getFriendlyEvidenceName } from '../utils/evidenceNames';
 
 export const DriveSanitizationPage: React.FC = () => {
   const [diskImages, setDiskImages] = useState<DiskImage[]>([]);
-  const [selectedTarget, setSelectedTarget] = useState<string>('D:\\SIH\\test_data\\disposable\\disposable_drive.img');
+  const [selectedTarget, setSelectedTarget] = useState<string>('');
   const [selectedMethod, setSelectedMethod] = useState<string>('nist');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [sanitizationOutput, setSanitizationOutput] = useState<string | null>(null);
@@ -189,7 +189,7 @@ export const DriveSanitizationPage: React.FC = () => {
               <span>Disposable Test Drive Images</span>
             </h2>
             <p className="text-[12.5px] text-[var(--text-secondary)]">
-              Quickly pick or regenerate a safe test disk image in <code className="font-mono text-[var(--primary-orange)]">D:\SIH\test_data\disposable</code> without touching real evidence.
+              Quickly pick or regenerate a safe test disk image in <code className="font-mono text-[var(--primary-orange)]">test_data/disposable</code> without touching real evidence.
             </p>
           </div>
           <button
@@ -259,7 +259,7 @@ export const DriveSanitizationPage: React.FC = () => {
               value={selectedTarget}
               onChange={(e) => setSelectedTarget(e.target.value)}
               disabled={isProcessing}
-              placeholder="e.g. D:\SIH\test_data\disposable\disposable_drive.img"
+              placeholder="e.g. /path/to/disk_image.img or pick an image above"
               className="w-full h-12 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-xl px-4 text-[13.5px] font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[#C53030] focus:ring-1 focus:ring-[#C53030]"
             />
           </div>

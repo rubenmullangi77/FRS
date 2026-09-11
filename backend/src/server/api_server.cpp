@@ -1,8 +1,30 @@
+#if defined(_WIN32)
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+using socket_t = SOCKET;
+#define CLOSESOCKET(s) closesocket(s)
+#define GETSOCKETERRNO() (WSAGetLastError())
+#else
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <errno.h>
+using SOCKET = int;
+using socket_t = int;
+#define INVALID_SOCKET (-1)
+#define SOCKET_ERROR (-1)
+#define closesocket(s) close(s)
+#define CLOSESOCKET(s) close(s)
+#define WSAGetLastError() (errno)
+#define GETSOCKETERRNO() (errno)
+#define WSACleanup() ((void)0)
+#endif
 
 #include "carving/file_carver.hpp"
 #include "carving/fragment_reconstructor.hpp"
@@ -343,7 +365,13 @@ void handleStatus(SOCKET s) {
        << "\"tests_failed\":0,"
        << "\"cli_available\":true,"
        << "\"tests_available\":true,"
+#if defined(_WIN32)
        << "\"platform\":\"Windows x86_64\","
+#elif defined(__linux__)
+       << "\"platform\":\"Linux x86_64\","
+#else
+       << "\"platform\":\"Unix/POSIX\","
+#endif
        << "\"timestamp\":\"" << forensivault::logging::AuditLogger::currentTimestampIso() << "\""
        << "}";
     sendJson(s, 200, ss.str());
@@ -1173,12 +1201,14 @@ int main(int argc, char* argv[]) {
   =============================================================
 )" << std::endl;
 
+#if defined(_WIN32)
     WSADATA wsaData;
     int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != 0) {
         std::cerr << "[-] WSAStartup failed: " << iResult << std::endl;
         return 1;
     }
+#endif
 
     SOCKET listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (listenSocket == INVALID_SOCKET) {

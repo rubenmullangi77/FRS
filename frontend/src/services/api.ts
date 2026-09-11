@@ -262,7 +262,7 @@ export const api = {
     const res = await fetch(`${API_BASE}/image/create-test-disk`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ output_path }),
+      body: JSON.stringify(output_path ? { output_path } : {}),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
