@@ -12,7 +12,8 @@ import {
   Check,
   RotateCcw,
   Sparkles,
-  Lock
+  Lock,
+  RefreshCw
 } from 'lucide-react';
 import { BackendStatus } from '../types';
 import { settingsService, UserSettings } from '../services/settings';
@@ -26,12 +27,28 @@ interface SettingsPageProps {
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({
   backendStatus: _backendStatus,
-  onRefresh: _onRefresh,
+  onRefresh,
   isLoading: _isLoading
 }) => {
   const [settings, setSettings] = useState<UserSettings>(settingsService.getSettings());
   const [currentThemeMode, setCurrentThemeMode] = useState<ThemeMode>(themeService.getTheme());
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
+
+  const handleRefreshSettings = async () => {
+    setIsRefreshing(true);
+    setRefreshError(null);
+    try {
+      setSettings(settingsService.getSettings());
+      setCurrentThemeMode(themeService.getTheme());
+      if (onRefresh) await onRefresh();
+    } catch {
+      setRefreshError('Unable to refresh data.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     const unsubTheme = themeService.subscribe((t) => {
@@ -99,6 +116,16 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleRefreshSettings}
+              disabled={isRefreshing}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[12.5px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer shadow-xs"
+              title="Refresh settings and status"
+            >
+              <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
+              <span>Refresh</span>
+            </button>
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[12.5px] font-medium text-[var(--text-secondary)]">
               <span className="w-2.5 h-2.5 rounded-full bg-[#2E7D32]"></span>
               IPC Sync Active
@@ -106,6 +133,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           </div>
         </div>
       </div>
+
+      {refreshError && (
+        <div className="p-4 rounded-xl bg-[#C53030]/10 border border-[#C53030]/30 text-[#C53030] text-[13px]">
+          {refreshError}
+        </div>
+      )}
 
       {/* SUCCESS BANNER */}
       {savedSuccess && (

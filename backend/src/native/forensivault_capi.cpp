@@ -25,6 +25,8 @@
 #include <vector>
 #include <memory>
 #include <iomanip>
+#include <filesystem>
+#include <fstream>
 
 using namespace forensivault;
 
@@ -195,4 +197,191 @@ FV_EXPORT int fv_score_candidate(uint64_t file_id, const char* file_type, uint64
     std::string json = res.toJson();
     safeCopy(out_json, max_json_len, json);
     return 0;
+}
+
+// 6. Real File Erasure
+FV_EXPORT int fv_erase_real_file(const char* filepath, int method_enum, char* out_json, size_t max_json_len) {
+    if (!filepath || !out_json || max_json_len == 0) return -1;
+    sanitization::SanitizationMethod method = sanitization::SanitizationMethod::NIST_800_88_CLEAR;
+    if (method_enum == 1) {
+        method = sanitization::SanitizationMethod::DOD_5220_22_M;
+    } else if (method_enum == 2) {
+        method = sanitization::SanitizationMethod::PSEUDORANDOM_1_PASS;
+    } else if (method_enum == 3) {
+        method = sanitization::SanitizationMethod::ZERO_FILL;
+    }
+
+    sanitization::SecureFileEraser eraser;
+    auto res = eraser.eraseFile(filepath, method, nullptr);
+
+    std::ostringstream ss;
+    ss << "{"
+       << "\"is_verified\":" << (res.is_verified ? "true" : "false") << ","
+       << "\"accessible_after_deletion\":" << (res.accessible_after_deletion ? "true" : "false") << ","
+       << "\"details\":\"" << escapeJson(res.details) << "\","
+       << "\"limitations\":[";
+    for (size_t i = 0; i < res.limitations.size(); ++i) {
+        if (i > 0) ss << ",";
+        ss << "\"" << escapeJson(res.limitations[i]) << "\"";
+    }
+    ss << "]}";
+
+    safeCopy(out_json, max_json_len, ss.str());
+    return res.is_verified ? 0 : 1;
+}
+
+// 7. Fragment Reconstruction
+FV_EXPORT int fv_reconstruct_fragments(const char* image_path, const char* file_type,
+                                       const char* output_dir, char* out_json, size_t max_json_len) {
+    if (!image_path || !out_json || max_json_len == 0) return -1;
+
+    core::DiskImageReader reader;
+    if (!reader.open(image_path)) return -2;
+
+    std::string targetType = file_type ? file_type : "JPEG";
+    std::string outDir = (output_dir && strlen(output_dir) > 0) ? output_dir : "recovered";
+
+    size_t totalBytes = static_cast<size_t>(reader.size());
+    std::vector<uint8_t> buffer = reader.readBytes(0, totalBytes);
+    reader.close();
+
+    // 1. Scan image for candidate header fragments that lack local footers
+    std::vector<carving::FragmentCandidate> headerCandidates;
+    std::vector<carving::FragmentCandidate> allDiscovered;
+    uint64_t fragIdCounter = 1;
+
+    const size_t clusterSize = 512;
+    for (size_t off = 0; off + clusterSize <= buffer.size(); off += clusterSize) {
+        const uint8_t* clusterData = buffer.data() + off;
+        bool isHeader = false;
+        size_t headerLen = clusterSize;
+
+        if (targetType == "JPEG") {
+            if (clusterData[0] == 0xFF && clusterData[1] == 0xD8 && clusterData[2] == 0xFF) {
+                bool hasEoi = false;
+                for (size_t i = 2; i + 1 < clusterSize; ++i) {
+                    if (clusterData[i] == 0xFF && clusterData[i + 1] == 0xD9) {
+                        hasEoi = true;
+                        break;
+                    }
+                }
+                if (!hasEoi) {
+                    isHeader = true;
+                    // Find length up to trailing zeroes
+                    for (size_t i = clusterSize; i > 0; --i) {
+                        if (clusterData[i - 1] != 0x00) {
+                            headerLen = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        } else if (targetType == "PNG") {
+            const uint8_t pngMagic[] = {0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A};
+            if (std::memcmp(clusterData, pngMagic, 8) == 0) {
+                isHeader = true;
+                headerLen = clusterSize;
+            }
+        }
+
+        if (isHeader) {
+            carving::FragmentCandidate hFrag;
+            hFrag.fragmentId = fragIdCounter++;
+            hFrag.offset = off;
+            hFrag.length = headerLen;
+            hFrag.startSector = off / 512;
+            hFrag.fileType = targetType;
+            hFrag.role = carving::FragmentRole::Header;
+            hFrag.data.assign(clusterData, clusterData + headerLen);
+            hFrag.entropy = CryptoHash::calculateEntropy(hFrag.data);
+            hFrag.confidence = 50.0;
+            hFrag.diagnosticNotes = "Candidate " + targetType + " header fragment with missing termination";
+            headerCandidates.push_back(hFrag);
+            allDiscovered.push_back(hFrag);
+        }
+    }
+
+    // 2. Discover orphan footers and bodies
+    auto orphans = carving::FragmentReconstructor::findOrphanFragments(
+        targetType, buffer.data(), 0, buffer.size(), 512);
+
+    for (auto& o : orphans) {
+        o.fragmentId = fragIdCounter++;
+        allDiscovered.push_back(o);
+    }
+
+    // 3. Attempt conservative reconstruction for each header fragment found
+    std::vector<carving::ReconstructionResult> results;
+    int reconstructedCount = 0;
+    int segregatedCount = 0;
+
+    for (const auto& header : headerCandidates) {
+        auto res = carving::FragmentReconstructor::attemptReconstruction(header, orphans, 2 * 1024 * 1024);
+        if (res.isReconstructed && !res.reconstructedData.empty()) {
+            reconstructedCount++;
+            try {
+                std::filesystem::create_directories(outDir);
+                std::string filename = "reconstructed_" + std::to_string(header.fragmentId) + "." +
+                    (targetType == "JPEG" ? "jpg" : (targetType == "PNG" ? "png" : "bin"));
+                std::filesystem::path outPath = std::filesystem::path(outDir) / filename;
+                std::ofstream ofs(outPath, std::ios::binary);
+                if (ofs) {
+                    ofs.write(reinterpret_cast<const char*>(res.reconstructedData.data()), res.reconstructedData.size());
+                }
+            } catch (...) {}
+        } else {
+            segregatedCount++;
+        }
+        results.push_back(res);
+    }
+
+    // Output JSON
+    std::ostringstream ss;
+    ss << "{"
+       << "\"image_path\":\"" << escapeJson(image_path) << "\","
+       << "\"file_type\":\"" << escapeJson(targetType) << "\","
+       << "\"total_fragments_discovered\":" << allDiscovered.size() << ","
+       << "\"headers_found\":" << headerCandidates.size() << ","
+       << "\"reconstructed_count\":" << reconstructedCount << ","
+       << "\"segregated_count\":" << segregatedCount << ","
+       << "\"fragments\":[";
+
+    for (size_t i = 0; i < allDiscovered.size(); ++i) {
+        if (i > 0) ss << ",";
+        const auto& f = allDiscovered[i];
+        ss << "{"
+           << "\"id\":" << f.fragmentId << ","
+           << "\"offset\":" << f.offset << ","
+           << "\"length\":" << f.length << ","
+           << "\"start_sector\":" << f.startSector << ","
+           << "\"role\":\"" << escapeJson(carving::fragmentRoleToString(f.role)) << "\","
+           << "\"entropy\":" << f.entropy << ","
+           << "\"confidence\":" << f.confidence << ","
+           << "\"diagnostic_notes\":\"" << escapeJson(f.diagnosticNotes) << "\""
+           << "}";
+    }
+    ss << "],\"reconstructions\":[";
+
+    for (size_t i = 0; i < results.size(); ++i) {
+        if (i > 0) ss << ",";
+        const auto& r = results[i];
+        ss << "{"
+           << "\"is_reconstructed\":" << (r.isReconstructed ? "true" : "false") << ","
+           << "\"is_partial\":" << (r.isPartial ? "true" : "false") << ","
+           << "\"file_type\":\"" << escapeJson(r.fileType) << "\","
+           << "\"total_size\":" << r.totalReconstructedSize << ","
+           << "\"confidence_score\":" << r.confidenceScore << ","
+           << "\"sha256\":\"" << escapeJson(r.sha256) << "\","
+           << "\"uncertainty_reason\":\"" << escapeJson(r.uncertaintyReason) << "\","
+           << "\"fragment_offsets\":[";
+        for (size_t j = 0; j < r.fragmentOffsets.size(); ++j) {
+            if (j > 0) ss << ",";
+            ss << r.fragmentOffsets[j];
+        }
+        ss << "]}";
+    }
+    ss << "]}";
+
+    safeCopy(out_json, max_json_len, ss.str());
+    return reconstructedCount;
 }

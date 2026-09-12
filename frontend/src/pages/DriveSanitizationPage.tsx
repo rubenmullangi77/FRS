@@ -9,7 +9,8 @@ import {
   ShieldCheck,
   Lock,
   PlusCircle,
-  FileText
+  FileText,
+  RefreshCw
 } from 'lucide-react';
 import { api } from '../services/api';
 import { DiskImage } from '../types';
@@ -38,7 +39,11 @@ export const DriveSanitizationPage: React.FC = () => {
   const [confirmationCode, setConfirmationCode] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
   const loadDrives = async () => {
+    setIsRefreshing(true);
+    setError(null);
     try {
       const res = await api.getDrives();
       const images = res.disk_images || [];
@@ -47,7 +52,9 @@ export const DriveSanitizationPage: React.FC = () => {
         setSelectedTarget(images[0].path);
       }
     } catch {
-      // ignore
+      setError('Unable to refresh data.');
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -134,18 +141,30 @@ export const DriveSanitizationPage: React.FC = () => {
   return (
     <div className="p-8 lg:p-14 space-y-10 max-w-5xl mx-auto min-h-full pb-28">
       {/* Title */}
-      <div className="pb-6 border-b border-[var(--border-subtle)]">
-        <div className="flex items-center gap-3">
-          <h1 className="text-[28px] lg:text-[32px] font-bold text-[var(--text-primary)] tracking-tight">
-            Secure Drive Eraser
-          </h1>
-          <span className="px-3 py-1 rounded-full text-[11.5px] font-mono font-semibold bg-[var(--surface-secondary)] text-[#C53030] border border-[var(--border)]">
-            NIST SP 800-88 / DoD 5220.22-M
-          </span>
+      <div className="pb-6 border-b border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-[28px] lg:text-[32px] font-bold text-[var(--text-primary)] tracking-tight">
+              Secure Drive Eraser
+            </h1>
+            <span className="px-3 py-1 rounded-full text-[11.5px] font-mono font-semibold bg-[var(--surface-secondary)] text-[#C53030] border border-[var(--border)]">
+              NIST SP 800-88 / DoD 5220.22-M
+            </span>
+          </div>
+          <p className="text-[14.5px] text-[var(--text-secondary)] mt-2 leading-relaxed max-w-2xl">
+            Sanitize storage device images with verified overwrite patterns and cryptographic entropy verification.
+          </p>
         </div>
-        <p className="text-[14.5px] text-[var(--text-secondary)] mt-2 leading-relaxed max-w-2xl">
-          Sanitize storage device images with verified overwrite patterns and cryptographic entropy verification.
-        </p>
+
+        <button
+          onClick={loadDrives}
+          disabled={isRefreshing || isProcessing}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--text-primary)] transition-all cursor-pointer shadow-xs"
+          title="Refresh drive list"
+        >
+          <RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
+          <span>Refresh</span>
+        </button>
       </div>
 
       {/* Advisory Card */}

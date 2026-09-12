@@ -126,7 +126,7 @@ def main():
     print("\n[STEP 8] Checking SQLite audit ledger...")
     conn = sqlite3.connect(r"D:\SIH\database\forensivault.db")
     c = conn.cursor()
-    c.execute("SELECT id, event_type, action, timestamp, details FROM audit_ledger WHERE event_type = 'VIRTUAL_DISK_DELETION' ORDER BY id DESC LIMIT 5")
+    c.execute("SELECT id, event_type, action, timestamp, details_json FROM audit_logs WHERE event_type = 'VIRTUAL_DISK_DELETION' ORDER BY id DESC LIMIT 5")
     rows = c.fetchall()
     conn.close()
     print(f" -> Found {len(rows)} audit records for VIRTUAL_DISK_DELETION:")

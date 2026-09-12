@@ -153,6 +153,18 @@ bool SystemProtectionGuard::isProtected(const std::string& targetPath, std::stri
         }
     }
 
+    // Allow safe test delete folders
+    if (norm.find("\\FORENSIVAULT_TEST_DELETE") != std::string::npos ||
+        norm.find("\\TEST_DATA\\DISPOSABLE") != std::string::npos) {
+        return false;
+    }
+
+    // Protect user AppData
+    if (norm.find("\\APPDATA") != std::string::npos) {
+        outReason = "Target is within the user AppData directory. Configuration erasure is strictly blocked.";
+        return true;
+    }
+
     // Protect "C:\Users" or Linux "/home" root directory itself (though subfolders of users can be processed)
     if (norm.length() >= 2 && norm[1] == ':') {
         std::string sub = norm.substr(2);
@@ -162,6 +174,19 @@ bool SystemProtectionGuard::isProtected(const std::string& targetPath, std::stri
         }
     } else if (norm == "\\HOME" || norm == "\\ROOT") {
         outReason = "Target is a root user profile directory (" + norm.substr(1) + "). Erasure is blocked to prevent profile corruption.";
+        return true;
+    }
+
+    // Protect application codebase directory unless inside allowed test folder
+    try {
+        std::string cwdNorm = normalizePath(fs::current_path().string());
+        if (!cwdNorm.empty() && (norm == cwdNorm || norm.rfind(cwdNorm + "\\", 0) == 0)) {
+            outReason = "Target is within the ForensiVault application directory. Codebase erasure is strictly blocked.";
+            return true;
+        }
+    } catch (...) {}
+    if (norm == "D:\\SIH" || norm.rfind("D:\\SIH\\", 0) == 0) {
+        outReason = "Target is within the ForensiVault application directory. Codebase erasure is strictly blocked.";
         return true;
     }
 

@@ -9,7 +9,8 @@ import {
   Layers,
   ArrowRight,
   ShieldCheck,
-  FileText
+  FileText,
+  RefreshCw
 } from 'lucide-react';
 import { api } from '../services/api';
 import { DiskImage, CarvedFile, CarveJob, CaseMetadata } from '../types';
@@ -38,15 +39,27 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
 
   // Fragment Recovery State
   const [isReconstructing, setIsReconstructing] = useState<boolean>(false);
-  const [fragmentResult, setFragmentResult] = useState<string | null>(null);
+  const [fragmentResult, setFragmentResult] = useState<any | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-  useEffect(() => {
-    api.getDrives().then((res) => {
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    setError(null);
+    try {
+      const res = await api.getDrives();
       setDiskImages(res.disk_images || []);
-      if (res.disk_images && res.disk_images.length > 0) {
+      if (!selectedImage && res.disk_images && res.disk_images.length > 0) {
         setSelectedImage(res.disk_images[0].path);
       }
-    }).catch(() => {});
+    } catch (err: any) {
+      setError('Unable to refresh data.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    handleRefresh();
   }, []);
 
   const handleStartCarving = async () => {
@@ -99,8 +112,12 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
     setError(null);
     setFragmentResult(null);
     try {
-      const res = await api.reconstructFragments(selectedImage);
-      setFragmentResult(res.output);
+      const res = await api.reconstructFragments({
+        image_path: selectedImage,
+        file_type: 'JPEG',
+        case_id: activeCase?.case_id
+      });
+      setFragmentResult(res);
     } catch (err: any) {
       setError(err.message || 'Fragment recovery failed');
     } finally {
@@ -147,20 +164,33 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
   };
 
   return (
-    <div className="p-8 lg:p-10 space-y-8 max-w-[1400px] mx-auto bg-[#F7F2E8] min-h-full">
+    <div className="p-8 lg:p-10 space-y-8 max-w-[1400px] mx-auto bg-[var(--bg-main)] min-h-full">
       {/* Page Title & Subtitle */}
-      <div>
-        <div className="flex items-center gap-2">
-          <h1 className="page-title text-[30px] font-bold text-[#2B241F] tracking-tight">
-            File Recovery from Raw Data
-          </h1>
-          <span className="text-[12px] font-mono px-2 py-0.5 rounded bg-[#F4D5BF] text-[#B9541D] font-semibold border border-[#D96B27]/25">
-            Signature Carving
-          </span>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="page-title text-[30px] font-bold text-[var(--text-primary)] tracking-tight">
+              File Recovery from Raw Data
+            </h1>
+            <span className="text-[12px] font-mono px-2 py-0.5 rounded bg-[#F4D5BF] text-[#B9541D] font-semibold border border-[#D96B27]/25">
+              Signature Carving
+            </span>
+          </div>
+          <p className="text-[14px] text-[var(--text-secondary)] mt-1.5 leading-relaxed">
+            Search an evidence image for deleted or identifiable files without modifying the original evidence.
+          </p>
         </div>
-        <p className="text-[14px] text-[#756B63] mt-1.5 leading-relaxed">
-          Search an evidence image for deleted or identifiable files without modifying the original evidence.
-        </p>
+
+        <button
+          type="button"
+          onClick={handleRefresh}
+          disabled={isRefreshing || isCarving}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[12.5px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer shadow-xs"
+          title="Refresh evidence drives"
+        >
+          <RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
+          <span>Refresh</span>
+        </button>
       </div>
 
       {error && (
@@ -171,12 +201,12 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
       )}
 
       {/* SECTION 1: Choose Evidence File */}
-      <div className="workstation-card p-6 lg:p-7 bg-[#FFFDF8] border border-[#E5D8C8] space-y-5">
+      <div className="workstation-card p-6 lg:p-7 bg-[var(--surface)] border border-[var(--border)] space-y-5">
         <div>
-          <h2 className="section-title text-[18px] font-semibold text-[#2B241F]">
+          <h2 className="section-title text-[18px] font-semibold text-[var(--text-primary)]">
             Choose Evidence File
           </h2>
-          <p className="text-[13px] text-[#756B63] mt-0.5">
+          <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
             Select an evidence container to inspect. All analysis operates strictly in read-only mode.
           </p>
         </div>
@@ -193,15 +223,15 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
                 className={`p-3.5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between space-y-2 ${
                   isSelected
                     ? 'bg-[#F4D5BF]/40 border-[#D96B27] ring-1 ring-[#D96B27]'
-                    : 'bg-[#FBF8F1] border-[#E5D8C8] hover:border-[#D96B27]/40'
+                    : 'bg-[var(--surface-secondary)] border-[var(--border)] hover:border-[#D96B27]/40'
                 } ${isCarving ? 'opacity-60 cursor-not-allowed' : ''}`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <div className="text-[13.5px] font-bold text-[#2B241F] tracking-tight">
+                    <div className="text-[13.5px] font-bold text-[var(--text-primary)] tracking-tight">
                       {friendlyName}
                     </div>
-                    <div className="text-[11px] font-mono text-[#756B63] truncate mt-0.5">
+                    <div className="text-[11px] font-mono text-[var(--text-secondary)] truncate mt-0.5">
                       {img.name}
                     </div>
                   </div>
@@ -210,9 +240,9 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11.5px] font-mono text-[#756B63] pt-1 border-t border-[#E5D8C8]/60">
+                <div className="flex items-center justify-between text-[11.5px] font-mono text-[var(--text-secondary)] pt-1 border-t border-[var(--border)]/60">
                   <span>{img.format || 'RAW IMAGE'}</span>
-                  <span className="font-semibold text-[#2B241F]">
+                  <span className="font-semibold text-[var(--text-primary)]">
                     {img.size_mb != null
                       ? `${img.size_mb.toFixed(2)} MB`
                       : img.size_bytes
@@ -242,7 +272,7 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
             disabled={isReconstructing || isCarving || !selectedImage}
             className="btn-secondary h-[42px] px-4 text-[13px]"
           >
-            <Layers size={14} className={isReconstructing ? 'animate-spin text-[#D96B27]' : 'text-[#756B63]'} aria-hidden="true" focusable="false" />
+            <Layers size={14} className={isReconstructing ? 'animate-spin text-[#D96B27]' : 'text-[var(--text-secondary)]'} aria-hidden="true" focusable="false" />
             <span>{isReconstructing ? 'Analyzing Fragments...' : 'Fragment Recovery'}</span>
           </button>
         </div>
@@ -256,33 +286,175 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
 
       {/* Fragment Diagnostic Result */}
       {fragmentResult && (
-        <div className="workstation-card p-6 bg-[#FFFDF8] border border-[#E5D8C8] space-y-3 font-mono text-xs">
-          <div className="flex items-center justify-between text-[#D96B27] font-bold pb-2 border-b border-[#E5D8C8]">
-            <span className="flex items-center gap-2">
-              <Layers size={16} />
-              FRAGMENT RECOVERY REPORT
-            </span>
+        <div className="workstation-card p-6 bg-[var(--surface)] border border-[#D96B27]/40 space-y-5 animate-fade-in">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+            <div className="flex items-center gap-2.5">
+              <Layers size={18} className="text-[#D96B27]" />
+              <div>
+                <h3 className="text-[16px] font-bold text-[var(--text-primary)]">
+                  Fragment Recovery & Reconstruction Analysis
+                </h3>
+                <p className="text-[12px] text-[var(--text-secondary)]">
+                  Bi-directional fragment chain analysis, header/continuation matching, and conservative segregation of uncertain candidates.
+                </p>
+              </div>
+            </div>
             <button
               onClick={() => setFragmentResult(null)}
-              className="text-[#756B63] hover:text-[#2B241F] text-xs cursor-pointer"
+              className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer px-3 py-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)]"
             >
               Dismiss
             </button>
           </div>
-          <pre className="p-4 rounded-lg bg-[#FBF8F1] border border-[#E5D8C8] text-[#2B241F] whitespace-pre-wrap leading-relaxed max-h-52 overflow-x-auto">
-            {fragmentResult}
-          </pre>
+
+          {/* Metrics summary cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)]">
+              <div className="text-[11px] font-mono text-[var(--text-secondary)] uppercase">Fragments Discovered</div>
+              <div className="text-[20px] font-bold text-[var(--text-primary)] font-mono mt-0.5">
+                {fragmentResult.total_fragments_discovered ?? 0}
+              </div>
+            </div>
+            <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)]">
+              <div className="text-[11px] font-mono text-[var(--text-secondary)] uppercase">Headers Identified</div>
+              <div className="text-[20px] font-bold text-[var(--text-primary)] font-mono mt-0.5">
+                {fragmentResult.headers_found ?? 0}
+              </div>
+            </div>
+            <div className="p-3.5 rounded-xl bg-[#2E7D32]/10 border border-[#2E7D32]/30">
+              <div className="text-[11px] font-mono text-[#2E7D32] uppercase font-semibold">Reconstructed Files</div>
+              <div className="text-[20px] font-bold text-[#2E7D32] font-mono mt-0.5">
+                {fragmentResult.reconstructed_count ?? 0}
+              </div>
+            </div>
+            <div className="p-3.5 rounded-xl bg-[#B45309]/10 border border-[#B45309]/30">
+              <div className="text-[11px] font-mono text-[#B45309] uppercase font-semibold">Segregated Unpaired</div>
+              <div className="text-[20px] font-bold text-[#B45309] font-mono mt-0.5">
+                {fragmentResult.segregated_count ?? 0}
+              </div>
+            </div>
+          </div>
+
+          {/* Reconstructions & Candidates Table */}
+          {fragmentResult.reconstructions && fragmentResult.reconstructions.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-[12.5px] font-bold text-[var(--text-primary)] uppercase tracking-wider">
+                Reconstruction & Assembly Candidates
+              </div>
+              <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-[var(--surface-secondary)] border-b border-[var(--border)] text-[var(--text-secondary)] font-semibold uppercase tracking-wider text-[11px]">
+                      <th className="py-2.5 px-4">Status</th>
+                      <th className="py-2.5 px-4">Type</th>
+                      <th className="py-2.5 px-4">Total Size</th>
+                      <th className="py-2.5 px-4">Confidence</th>
+                      <th className="py-2.5 px-4">SHA-256 Checksum</th>
+                      <th className="py-2.5 px-4">Assembly / Uncertainty Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-subtle)] font-mono">
+                    {fragmentResult.reconstructions.map((rec: any, idx: number) => (
+                      <tr key={idx} className="hover:bg-[var(--surface-hover)]">
+                        <td className="py-2.5 px-4">
+                          {rec.is_reconstructed ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-[#2E7D32]/15 text-[#2E7D32] border border-[#2E7D32]/30">
+                              <CheckCircle2 size={12} />
+                              RECONSTRUCTED
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-[#B45309]/15 text-[#B45309] border border-[#B45309]/30">
+                              <AlertTriangle size={12} />
+                              SEGREGATED
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-4 text-[var(--text-primary)] font-bold">{rec.file_type}</td>
+                        <td className="py-2.5 px-4 text-[var(--text-secondary)]">{(rec.total_size / 1024).toFixed(1)} KB</td>
+                        <td className="py-2.5 px-4">
+                          <span className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
+                            rec.confidence_score >= 80
+                              ? 'bg-[#2E7D32]/10 text-[#2E7D32] border-[#2E7D32]/30'
+                              : 'bg-[#B45309]/10 text-[#B45309] border-[#B45309]/30'
+                          }`}>
+                            {rec.confidence_score}%
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-4 text-[var(--text-primary)] font-mono text-[11px] max-w-xs truncate">
+                          {rec.sha256 ? rec.sha256 : <span className="text-[var(--text-muted)]">N/A (Segregated)</span>}
+                        </td>
+                        <td className="py-2.5 px-4 font-sans text-[var(--text-secondary)]">
+                          {rec.uncertainty_reason ? (
+                            <span className="text-[#B45309]">{rec.uncertainty_reason}</span>
+                          ) : (
+                            <span className="text-[#2E7D32]">Bit-perfect assembly verified across fragmented sectors.</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Discovered Raw Fragments Table */}
+          {fragmentResult.fragments && fragmentResult.fragments.length > 0 && (
+            <div className="space-y-2 pt-2">
+              <div className="text-[12.5px] font-bold text-[var(--text-primary)] uppercase tracking-wider">
+                Discovered Sector Fragments
+              </div>
+              <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-[var(--surface-secondary)] border-b border-[var(--border)] text-[var(--text-secondary)] font-semibold uppercase tracking-wider text-[11px]">
+                      <th className="py-2 px-3">Fragment ID</th>
+                      <th className="py-2 px-3">Byte Offset</th>
+                      <th className="py-2 px-3">Start Sector</th>
+                      <th className="py-2 px-3">Length</th>
+                      <th className="py-2 px-3">Role</th>
+                      <th className="py-2 px-3">Entropy</th>
+                      <th className="py-2 px-3">Diagnostics</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-subtle)] font-mono text-[11px]">
+                    {fragmentResult.fragments.map((frag: any) => (
+                      <tr key={frag.id} className="hover:bg-[var(--surface-hover)]">
+                        <td className="py-2 px-3 text-[var(--text-primary)]">#{frag.id}</td>
+                        <td className="py-2 px-3 text-[var(--text-secondary)]">0x{frag.offset.toString(16).toUpperCase()}</td>
+                        <td className="py-2 px-3 text-[var(--text-secondary)]">{frag.start_sector}</td>
+                        <td className="py-2 px-3 text-[var(--text-secondary)]">{frag.length} B</td>
+                        <td className="py-2 px-3">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                            frag.role === 'HEADER'
+                              ? 'bg-[var(--primary-orange)]/15 text-[var(--primary-orange)] border-[var(--primary-orange)]/30'
+                              : frag.role === 'FOOTER'
+                              ? 'bg-[#2E7D32]/15 text-[#2E7D32] border-[#2E7D32]/30'
+                              : 'bg-[var(--surface-secondary)] text-[var(--text-secondary)] border-[var(--border)]'
+                          }`}>
+                            {frag.role}
+                          </span>
+                        </td>
+                        <td className="py-2 px-3 text-[var(--text-muted)]">{frag.entropy?.toFixed(3)}</td>
+                        <td className="py-2 px-3 font-sans text-[var(--text-secondary)]">{frag.diagnostic_notes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* SECTION 2 & 3: Recovery Options & Recovered Files */}
-      <div className="workstation-card bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] overflow-hidden space-y-0">
-        <div className="p-6 border-b border-[#E5D8C8] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="workstation-card bg-[var(--surface)] border border-[var(--border)] rounded-[10px] overflow-hidden space-y-0">
+        <div className="p-6 border-b border-[var(--border)] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="section-title text-[18px] font-semibold text-[#2B241F]">
+            <h2 className="section-title text-[18px] font-semibold text-[var(--text-primary)]">
               Recovered Files
             </h2>
-            <p className="text-[13px] text-[#756B63] mt-0.5">
+            <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
               {filteredFiles.length} {filteredFiles.length === 1 ? 'file' : 'files'} found
               {carvedFiles.length > 0 && filteredFiles.length !== carvedFiles.length && ` (filtered from ${carvedFiles.length})`}
             </p>
@@ -291,14 +463,14 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
           {/* Recovery Options Filters */}
           <div className="flex flex-wrap items-center gap-2.5 text-[12.5px]">
             {/* Search Input */}
-            <div className="flex items-center gap-2 bg-[#FBF8F1] border border-[#E5D8C8] rounded-md px-3 py-1.5">
-              <Search size={13} className="text-[#756B63]" aria-hidden="true" focusable="false" />
+            <div className="flex items-center gap-2 bg-[var(--surface-secondary)] border border-[var(--border)] rounded-md px-3 py-1.5">
+              <Search size={13} className="text-[var(--text-secondary)]" aria-hidden="true" focusable="false" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search file, offset..."
-                className="bg-transparent text-[#2B241F] text-[12.5px] focus:outline-none w-36"
+                className="bg-transparent text-[var(--text-primary)] text-[12.5px] focus:outline-none w-36"
               />
             </div>
 
@@ -306,7 +478,7 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-[#FBF8F1] border border-[#E5D8C8] rounded-md px-3 py-1.5 text-[12.5px] text-[#2B241F] focus:outline-none"
+              className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-md px-3 py-1.5 text-[12.5px] text-[var(--text-primary)] focus:outline-none"
             >
               <option value="ALL">All File Types</option>
               <option value="IMAGES">Images (JPEG, PNG)</option>
@@ -319,7 +491,7 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
             <select
               value={minConfidence}
               onChange={(e) => setMinConfidence(Number(e.target.value))}
-              className="bg-[#FBF8F1] border border-[#E5D8C8] rounded-md px-3 py-1.5 text-[12.5px] text-[#2B241F] focus:outline-none"
+              className="bg-[var(--surface-secondary)] border border-[var(--border)] rounded-md px-3 py-1.5 text-[12.5px] text-[var(--text-primary)] focus:outline-none"
             >
               <option value={0}>Any Confidence</option>
               <option value={60}>60%+ Confidence</option>
@@ -346,7 +518,7 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
             <tbody>
               {filteredFiles.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[13.5px] text-[#756B63]">
+                  <td colSpan={7} className="py-12 text-center text-[13.5px] text-[var(--text-secondary)]">
                     {carvedFiles.length === 0
                       ? 'No files found yet. Choose an evidence file and click "Start File Recovery" above.'
                       : 'No recovered files match current filter criteria.'}
@@ -356,20 +528,20 @@ export const CarvingPage: React.FC<CarvingPageProps> = ({ activeCase }) => {
                 filteredFiles.map((file) => {
                   const defaultName = `recovered_${file.id}.${file.extension}`;
                   return (
-                    <tr key={file.id} className="hover:bg-[#FDF9F2]">
-                      <td className="font-medium text-[13px] text-[#2B241F]">
+                    <tr key={file.id} className="hover:bg-[var(--surface-hover)]">
+                      <td className="font-medium text-[13px] text-[var(--text-primary)]">
                         <div className="flex items-center gap-2">
                           <FileText size={15} className="text-[#D96B27]" />
                           <span>{defaultName}</span>
                         </div>
                       </td>
-                      <td className="text-[12px] font-mono text-[#756B63]">
+                      <td className="text-[12px] font-mono text-[var(--text-secondary)]">
                         {(file.file_type || 'FILE').toUpperCase()}
                       </td>
-                      <td className="font-mono text-[12px] text-[#756B63]">
+                      <td className="font-mono text-[12px] text-[var(--text-secondary)]">
                         {file.offset_hex || `0x${(file.offset_dec || 0).toString(16).toUpperCase()}`}
                       </td>
-                      <td className="font-mono text-[12px] text-[#2B241F]">
+                      <td className="font-mono text-[12px] text-[var(--text-primary)]">
                         {file.size_bytes != null ? `${(file.size_bytes / 1024).toFixed(1)} KB` : 'N/A'}
                       </td>
                       <td>

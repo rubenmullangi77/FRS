@@ -7,7 +7,8 @@ import {
   Layers,
   Terminal,
   Play,
-  FileSearch
+  FileSearch,
+  RefreshCw
 } from 'lucide-react';
 import { api } from '../services/api';
 import { DiskImage, CaseMetadata } from '../types';
@@ -34,13 +35,26 @@ export const RecoveryPage: React.FC<RecoveryPageProps> = ({ activeCase }) => {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    api.getDrives().then((res) => {
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    setError(null);
+    try {
+      const res = await api.getDrives();
       setDiskImages(res.disk_images || []);
-      if (res.disk_images && res.disk_images.length > 0) {
+      if (!selectedImage && res.disk_images && res.disk_images.length > 0) {
         setSelectedImage(res.disk_images[0].path);
       }
-    }).catch(() => {});
+    } catch (err: any) {
+      setError('Unable to refresh data.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    handleRefresh();
   }, []);
 
   const handleStartFsScan = async () => {
@@ -100,35 +114,47 @@ export const RecoveryPage: React.FC<RecoveryPageProps> = ({ activeCase }) => {
   };
 
   return (
-    <div className="p-8 lg:p-10 space-y-8 max-w-[1400px] mx-auto bg-[#F7F2E8] min-h-full">
+    <div className="p-8 lg:p-10 space-y-8 max-w-[1400px] mx-auto bg-[var(--bg-main)] min-h-full">
       {/* Title */}
-      <div>
-        <h1 className="page-title text-[30px] font-bold text-[#2B241F] tracking-tight">
-          Recover Deleted Files
-        </h1>
-        <p className="text-[14px] text-[#756B63] mt-1 leading-relaxed">
-          Parse FAT32, exFAT, and NTFS filesystem structures to recover deleted directory records and file allocations.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="page-title text-[30px] font-bold text-[var(--text-primary)] tracking-tight">
+            Recover Deleted Files
+          </h1>
+          <p className="text-[14px] text-[var(--text-secondary)] mt-1 leading-relaxed">
+            Parse FAT32, exFAT, and NTFS filesystem structures to recover deleted directory records and file allocations.
+          </p>
+        </div>
+
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing || isScanning}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[12.5px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer shadow-xs"
+          title="Refresh evidence list"
+        >
+          <RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
+          <span>Refresh</span>
+        </button>
       </div>
 
       {/* Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="workstation-card p-5 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-1.5 text-xs">
+        <div className="workstation-card p-5 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-1.5 text-xs">
           <div className="font-semibold text-[#D96B27] flex items-center gap-2 text-[13px]">
             <Layers size={16} />
             Filesystem Recovery (Metadata-Assisted)
           </div>
-          <p className="text-[#756B63] leading-relaxed text-[12.5px]">
+          <p className="text-[var(--text-secondary)] leading-relaxed text-[12.5px]">
             Uses surviving directory tables, original filenames, timestamps, and cluster run-lists when filesystem metadata is intact.
           </p>
         </div>
 
-        <div className="workstation-card p-5 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-1.5 text-xs">
+        <div className="workstation-card p-5 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-1.5 text-xs">
           <div className="font-semibold text-[#B45309] flex items-center gap-2 text-[13px]">
             <FileSearch size={16} />
             Raw Data Recovery (Fallback)
           </div>
-          <p className="text-[#756B63] leading-relaxed text-[12.5px]">
+          <p className="text-[var(--text-secondary)] leading-relaxed text-[12.5px]">
             If directory structures are wiped or damaged, ForensiVault falls back to signature carving directly across sectors.
           </p>
         </div>
@@ -142,22 +168,22 @@ export const RecoveryPage: React.FC<RecoveryPageProps> = ({ activeCase }) => {
       )}
 
       {/* Scan Config Card */}
-      <div className="workstation-card p-6 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-5">
-        <h2 className="section-title text-[17px] font-semibold text-[#2B241F] flex items-center gap-2">
+      <div className="workstation-card p-6 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-5">
+        <h2 className="section-title text-[17px] font-semibold text-[var(--text-primary)] flex items-center gap-2">
           <HardDrive size={16} className="text-[#D96B27]" aria-hidden="true" focusable="false" />
           Choose Evidence File & Filesystem
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-1.5">
-            <label className="block text-[12px] font-semibold uppercase tracking-wider text-[#756B63]">
+            <label className="block text-[12px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Target Evidence Image:
             </label>
             <select
               value={selectedImage}
               onChange={(e) => setSelectedImage(e.target.value)}
               disabled={isScanning}
-              className="w-full bg-[#FBF8F1] border border-[#E5D8C8] rounded-lg px-3.5 py-2 text-[13px] text-[#2B241F] focus:outline-none focus:border-[#D96B27]"
+              className="w-full bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3.5 py-2 text-[13px] text-[var(--text-primary)] focus:outline-none focus:border-[#D96B27]"
             >
               {diskImages.map((img, idx) => {
                 const sizeMb = img.size_mb != null ? img.size_mb : (img.size_bytes ? img.size_bytes / (1024 * 1024) : 0);
@@ -171,14 +197,14 @@ export const RecoveryPage: React.FC<RecoveryPageProps> = ({ activeCase }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-[12px] font-semibold uppercase tracking-wider text-[#756B63]">
+            <label className="block text-[12px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Filesystem Type:
             </label>
             <select
               value={targetFs}
               onChange={(e: any) => setTargetFs(e.target.value)}
               disabled={isScanning}
-              className="w-full bg-[#FBF8F1] border border-[#E5D8C8] rounded-lg px-3.5 py-2 text-[13px] text-[#2B241F] focus:outline-none focus:border-[#D96B27]"
+              className="w-full bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg px-3.5 py-2 text-[13px] text-[var(--text-primary)] focus:outline-none focus:border-[#D96B27]"
             >
               <option value="AUTO">AUTO (Detect Boot Sector / MBR)</option>
               <option value="FAT32">FAT32 (File Allocation Table 32)</option>
@@ -209,32 +235,32 @@ export const RecoveryPage: React.FC<RecoveryPageProps> = ({ activeCase }) => {
       {/* Results & Diagnostics */}
       {detectedVolume && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="workstation-card p-4 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-1">
-            <div className="text-[#756B63] text-[11px] font-semibold uppercase">Filesystem</div>
-            <div className="text-[16px] font-bold text-[#2B241F] font-mono">{detectedVolume.fs_type}</div>
+          <div className="workstation-card p-4 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-1">
+            <div className="text-[var(--text-secondary)] text-[11px] font-semibold uppercase">Filesystem</div>
+            <div className="text-[16px] font-bold text-[var(--text-primary)] font-mono">{detectedVolume.fs_type}</div>
           </div>
-          <div className="workstation-card p-4 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-1">
-            <div className="text-[#756B63] text-[11px] font-semibold uppercase">Cluster Size</div>
-            <div className="text-[16px] font-bold text-[#2B241F] font-mono">{detectedVolume.cluster_size} Bytes</div>
+          <div className="workstation-card p-4 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-1">
+            <div className="text-[var(--text-secondary)] text-[11px] font-semibold uppercase">Cluster Size</div>
+            <div className="text-[16px] font-bold text-[var(--text-primary)] font-mono">{detectedVolume.cluster_size} Bytes</div>
           </div>
-          <div className="workstation-card p-4 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-1">
-            <div className="text-[#756B63] text-[11px] font-semibold uppercase">Total Clusters</div>
-            <div className="text-[16px] font-bold text-[#2B241F] font-mono">{detectedVolume.total_clusters}</div>
+          <div className="workstation-card p-4 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-1">
+            <div className="text-[var(--text-secondary)] text-[11px] font-semibold uppercase">Total Clusters</div>
+            <div className="text-[16px] font-bold text-[var(--text-primary)] font-mono">{detectedVolume.total_clusters}</div>
           </div>
-          <div className="workstation-card p-4 bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] space-y-1">
-            <div className="text-[#756B63] text-[11px] font-semibold uppercase">Candidate Files</div>
+          <div className="workstation-card p-4 bg-[var(--surface)] border border-[var(--border)] rounded-[10px] space-y-1">
+            <div className="text-[var(--text-secondary)] text-[11px] font-semibold uppercase">Candidate Files</div>
             <div className="text-[16px] font-bold text-[#2E7D32] font-mono">{detectedVolume.deleted_candidates}</div>
           </div>
         </div>
       )}
 
       {/* Console Log */}
-      <div className="workstation-card bg-[#FFFDF8] border border-[#E5D8C8] rounded-[10px] overflow-hidden space-y-0">
-        <div className="px-5 py-3 border-b border-[#E5D8C8] flex items-center justify-between text-xs font-mono text-[#756B63]">
+      <div className="workstation-card bg-[var(--surface)] border border-[var(--border)] rounded-[10px] overflow-hidden space-y-0">
+        <div className="px-5 py-3 border-b border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-secondary)]">
           <span>Filesystem Analysis Log</span>
           <span>Engine Session</span>
         </div>
-        <pre className="p-5 font-mono text-[12px] text-[#2B241F] bg-[#FBF8F1] whitespace-pre-wrap leading-relaxed min-h-[120px] max-h-64 overflow-y-auto">
+        <pre className="p-5 font-mono text-[12px] text-[var(--text-primary)] bg-[var(--surface-secondary)] whitespace-pre-wrap leading-relaxed min-h-[120px] max-h-64 overflow-y-auto">
           {scanOutput || 'Engine awaiting scan instructions...'}
         </pre>
       </div>

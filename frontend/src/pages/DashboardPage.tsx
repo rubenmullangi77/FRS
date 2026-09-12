@@ -68,7 +68,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         setMetrics(res.metrics);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to load forensic files overview');
+      setError('Unable to refresh data.');
     } finally {
       setLoading(false);
     }

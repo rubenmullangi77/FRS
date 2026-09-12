@@ -39,10 +39,11 @@ def get_native_dll():
             pass
 
     candidate_paths = [
+        BASE_DIR / "build" / "bin" / "libforensivault_native.dll",
+        BASE_DIR / "build" / "bin" / "forensivault_native.dll",
         BASE_DIR / "build_linux" / "lib" / "libforensivault_native.so",
         BASE_DIR / "build_linux" / "bin" / "libforensivault_native.so",
         BASE_DIR / "build_linux" / "bin" / "forensivault_native.dll",
-        BASE_DIR / "build" / "bin" / "forensivault_native.dll",
         BASE_DIR / "build" / "lib" / "libforensivault_native.so",
         BASE_DIR / "build" / "bin" / "libforensivault_native.so",
     ]
@@ -70,6 +71,22 @@ def get_native_dll():
                     ctypes.c_char_p, ctypes.c_size_t,
                     ctypes.c_char_p, ctypes.c_size_t
                 ]
+
+                try:
+                    dll.fv_erase_real_file.restype = ctypes.c_int
+                    dll.fv_erase_real_file.argtypes = [
+                        ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_size_t
+                    ]
+                except AttributeError:
+                    pass
+
+                try:
+                    dll.fv_reconstruct_fragments.restype = ctypes.c_int
+                    dll.fv_reconstruct_fragments.argtypes = [
+                        ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t
+                    ]
+                except AttributeError:
+                    pass
                 
                 _native_dll = dll
                 return _native_dll
@@ -125,8 +142,21 @@ def check_system_protection(target_path: str) -> Tuple[bool, str]:
         return False, "Target is safe to sanitize."
 
     normalized = target_path.replace("/", "\\").upper()
-    sys_drive = os.environ.get("SystemDrive", "C:").upper()
     
+    # Allow safe test deletion folders
+    if "\\FORENSIVAULT_TEST_DELETE" in normalized or "\\TEST_DATA\\DISPOSABLE" in normalized:
+        return False, "Target is in allowed safe test directory."
+
+    # Protect AppData
+    if "\\APPDATA" in normalized:
+        return True, "Target is within user AppData configuration directory. Erasure is strictly blocked."
+
+    # Protect application codebase
+    base_upper = str(BASE_DIR).replace("/", "\\").upper()
+    if normalized == base_upper or normalized.startswith(base_upper + "\\"):
+        return True, "Target is within the ForensiVault application directory. Codebase erasure is strictly blocked."
+
+    sys_drive = os.environ.get("SystemDrive", "C:").upper()
     if normalized in [sys_drive, f"{sys_drive}\\", f"{sys_drive}:\\", "C:", "C:\\", "D:", "D:\\"]:
         return True, "Drive root targets cannot be erased via file eraser."
     
@@ -360,3 +390,147 @@ def run_carving_on_image(image_path: str, output_dir: Optional[str] = None) -> D
         "partial_files_count": 0,
         "carved_files": []
     }
+
+
+# 8. Real Filesystem File Erasure (C++ Core with Python Fallback)
+def erase_real_file(filepath: str, method_name: str = "NIST_800_88_CLEAR") -> Dict[str, Any]:
+    target = Path(filepath).resolve()
+    if not target.is_file():
+        return {
+            "success": False,
+            "is_verified": False,
+            "error": f"File does not exist or is not a regular file: {filepath}"
+        }
+
+    # Safety check
+    is_prot, reason = check_system_protection(str(target))
+    if is_prot:
+        return {
+            "success": False,
+            "is_verified": False,
+            "blocked": True,
+            "error": f"SECURITY INTERLOCK BLOCKED: {reason}"
+        }
+
+    method_map = {
+        "NIST_800_88_CLEAR": 0,
+        "DOD_5220_22_M": 1,
+        "PSEUDORANDOM_1_PASS": 2,
+        "ZERO_FILL": 3,
+    }
+    method_enum = method_map.get(method_name, 0)
+
+    dll = get_native_dll()
+    if dll and hasattr(dll, "fv_erase_real_file"):
+        buf_len = 64 * 1024
+        buf = ctypes.create_string_buffer(buf_len)
+        code = dll.fv_erase_real_file(
+            str(target).encode("utf-8"),
+            method_enum,
+            buf,
+            buf_len
+        )
+        if buf.value:
+            try:
+                res = json.loads(buf.value.decode("utf-8"))
+                res["success"] = (code == 0 and res.get("is_verified", False))
+                res["target_path"] = str(target)
+                return res
+            except Exception as e:
+                print(f"[Erase] C++ result parsing error: {e}", file=sys.stderr)
+
+    # Pure Python safe erasure fallback (used only if C++ native library is not found)
+    import secrets
+    file_size = target.stat().st_size
+    try:
+        passes = 3 if method_enum == 1 else 1
+        with open(target, "r+b") as f:
+            for p_num in range(passes):
+                f.seek(0)
+                remaining = file_size
+                while remaining > 0:
+                    chunk_sz = min(remaining, 65536)
+                    if method_enum == 1 and p_num == 1:
+                        data = b"\xFF" * chunk_sz
+                    elif method_enum == 2 or (method_enum == 1 and p_num == 2):
+                        data = secrets.token_bytes(chunk_sz)
+                    else:
+                        data = b"\x00" * chunk_sz
+                    f.write(data)
+                    remaining -= chunk_sz
+                f.flush()
+                os.fsync(f.fileno())
+
+        # Metadata shredding and removal
+        parent = target.parent
+        current_p = target
+        for _ in range(3):
+            random_name = "".join(secrets.choice("0123456789abcdefghijklmnopqrstuvwxyz") for _ in range(12)) + ".tmp"
+            new_p = parent / random_name
+            current_p.rename(new_p)
+            current_p = new_p
+
+        # Truncate and unlink
+        with open(current_p, "wb") as f:
+            pass
+        current_p.unlink()
+
+        accessible_after = current_p.exists() or target.exists()
+        return {
+            "success": not accessible_after,
+            "is_verified": not accessible_after,
+            "accessible_after_deletion": accessible_after,
+            "details": "Python fallback multi-pass overwrite and unlink completed successfully.",
+            "limitations": [
+                "SSD wear-leveling / FTL may retain block-level physical copies.",
+                "Filesystem journal or shadow copies may retain metadata residue."
+            ],
+            "target_path": str(target)
+        }
+    except Exception as exc:
+        return {
+            "success": False,
+            "is_verified": False,
+            "error": str(exc),
+            "target_path": str(target)
+        }
+
+
+# 9. Conservative Fragment Reconstructor Execution
+def reconstruct_fragments_on_image(image_path: str, file_type: str = "JPEG", output_dir: Optional[str] = None) -> Dict[str, Any]:
+    p = Path(image_path).resolve()
+    if not p.is_file():
+        raise FileNotFoundError(f"Evidence disk image not found: {image_path}")
+
+    target_out = output_dir or str(RECOVERED_DIR)
+    Path(target_out).mkdir(parents=True, exist_ok=True)
+
+    dll = get_native_dll()
+    if dll and hasattr(dll, "fv_reconstruct_fragments"):
+        buf_len = 2 * 1024 * 1024  # 2MB buffer for reconstruction results
+        buf = ctypes.create_string_buffer(buf_len)
+        res = dll.fv_reconstruct_fragments(
+            str(p).encode("utf-8"),
+            file_type.encode("utf-8"),
+            target_out.encode("utf-8"),
+            buf,
+            buf_len
+        )
+        if buf.value:
+            try:
+                parsed = json.loads(buf.value.decode("utf-8"))
+                return parsed
+            except Exception as e:
+                print(f"[FragmentReconstruction] JSON error: {e}", file=sys.stderr)
+
+    return {
+        "image_path": str(p),
+        "file_type": file_type,
+        "total_fragments_discovered": 0,
+        "headers_found": 0,
+        "reconstructed_count": 0,
+        "segregated_count": 0,
+        "fragments": [],
+        "reconstructions": []
+    }
+

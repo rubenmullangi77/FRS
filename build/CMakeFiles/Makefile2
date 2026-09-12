@@ -86,6 +86,7 @@ clean: tests/clean
 
 # Recursive "all" directory target.
 backend/all: backend/CMakeFiles/forensivault_core.dir/all
+backend/all: backend/CMakeFiles/forensivault_native.dir/all
 backend/all: backend/CMakeFiles/forensivault_cli.dir/all
 backend/all: backend/CMakeFiles/forensic_inspect.dir/all
 backend/all: backend/CMakeFiles/forensic_demo.dir/all
@@ -94,6 +95,7 @@ backend/all: backend/CMakeFiles/forensivault_server.dir/all
 
 # Recursive "codegen" directory target.
 backend/codegen: backend/CMakeFiles/forensivault_core.dir/codegen
+backend/codegen: backend/CMakeFiles/forensivault_native.dir/codegen
 backend/codegen: backend/CMakeFiles/forensivault_cli.dir/codegen
 backend/codegen: backend/CMakeFiles/forensic_inspect.dir/codegen
 backend/codegen: backend/CMakeFiles/forensic_demo.dir/codegen
@@ -106,6 +108,7 @@ backend/preinstall:
 
 # Recursive "clean" directory target.
 backend/clean: backend/CMakeFiles/forensivault_core.dir/clean
+backend/clean: backend/CMakeFiles/forensivault_native.dir/clean
 backend/clean: backend/CMakeFiles/forensivault_cli.dir/clean
 backend/clean: backend/CMakeFiles/forensic_inspect.dir/clean
 backend/clean: backend/CMakeFiles/forensic_demo.dir/clean
@@ -162,6 +165,38 @@ backend/CMakeFiles/forensivault_core.dir/codegen:
 backend/CMakeFiles/forensivault_core.dir/clean:
 	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/clean
 .PHONY : backend/CMakeFiles/forensivault_core.dir/clean
+
+#=============================================================================
+# Target rules for target backend/CMakeFiles/forensivault_native.dir
+
+# All Build rule for target.
+backend/CMakeFiles/forensivault_native.dir/all: backend/CMakeFiles/forensivault_core.dir/all
+	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/depend
+	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=36,37 "Built target forensivault_native"
+.PHONY : backend/CMakeFiles/forensivault_native.dir/all
+
+# Build rule for subdir invocation for target.
+backend/CMakeFiles/forensivault_native.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\SIH\build\CMakeFiles 31
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 backend/CMakeFiles/forensivault_native.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start D:\SIH\build\CMakeFiles 0
+.PHONY : backend/CMakeFiles/forensivault_native.dir/rule
+
+# Convenience name for target.
+forensivault_native: backend/CMakeFiles/forensivault_native.dir/rule
+.PHONY : forensivault_native
+
+# codegen rule for target.
+backend/CMakeFiles/forensivault_native.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=36,37 "Finished codegen for target forensivault_native"
+.PHONY : backend/CMakeFiles/forensivault_native.dir/codegen
+
+# clean rule for target.
+backend/CMakeFiles/forensivault_native.dir/clean:
+	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/clean
+.PHONY : backend/CMakeFiles/forensivault_native.dir/clean
 
 #=============================================================================
 # Target rules for target backend/CMakeFiles/forensivault_cli.dir
@@ -266,7 +301,7 @@ backend/CMakeFiles/forensic_demo.dir/clean:
 backend/CMakeFiles/forensivault_server.dir/all: backend/CMakeFiles/forensivault_core.dir/all
 	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_server.dir\build.make backend/CMakeFiles/forensivault_server.dir/depend
 	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_server.dir\build.make backend/CMakeFiles/forensivault_server.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=36,37 "Built target forensivault_server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=38,39 "Built target forensivault_server"
 .PHONY : backend/CMakeFiles/forensivault_server.dir/all
 
 # Build rule for subdir invocation for target.
@@ -283,7 +318,7 @@ forensivault_server: backend/CMakeFiles/forensivault_server.dir/rule
 # codegen rule for target.
 backend/CMakeFiles/forensivault_server.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_server.dir\build.make backend/CMakeFiles/forensivault_server.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=36,37 "Finished codegen for target forensivault_server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=38,39 "Finished codegen for target forensivault_server"
 .PHONY : backend/CMakeFiles/forensivault_server.dir/codegen
 
 # clean rule for target.
@@ -298,7 +333,7 @@ backend/CMakeFiles/forensivault_server.dir/clean:
 tests/CMakeFiles/forensivault_tests.dir/all: backend/CMakeFiles/forensivault_core.dir/all
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\forensivault_tests.dir\build.make tests/CMakeFiles/forensivault_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\forensivault_tests.dir\build.make tests/CMakeFiles/forensivault_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=38,39,40,41,42,43,44,45,46,47,48,49,50 "Built target forensivault_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=40,41,42,43,44,45,46,47,48,49,50,51,52 "Built target forensivault_tests"
 .PHONY : tests/CMakeFiles/forensivault_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -315,7 +350,7 @@ forensivault_tests: tests/CMakeFiles/forensivault_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/forensivault_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests\CMakeFiles\forensivault_tests.dir\build.make tests/CMakeFiles/forensivault_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=38,39,40,41,42,43,44,45,46,47,48,49,50 "Finished codegen for target forensivault_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=D:\SIH\build\CMakeFiles --progress-num=40,41,42,43,44,45,46,47,48,49,50,51,52 "Finished codegen for target forensivault_tests"
 .PHONY : tests/CMakeFiles/forensivault_tests.dir/codegen
 
 # clean rule for target.

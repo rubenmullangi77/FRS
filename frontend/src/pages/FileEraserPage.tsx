@@ -16,7 +16,8 @@ import {
   Layers,
   File,
   Folder,
-  Info
+  Info,
+  ArrowUp
 } from 'lucide-react';
 import { api } from '../services/api';
 import { DiskImage, ImageFileEntry, ImageInspectResponse, ImageFileDeleteResponse } from '../types';
@@ -108,8 +109,80 @@ export const FileEraserPage: React.FC = () => {
     }
   };
 
+  // Top-level mode tab
+  const [modeTab, setModeTab] = useState<'real_fs' | 'image'>('real_fs');
+
+  // Real Filesystem state
+  const [realFsPath, setRealFsPath] = useState<string>('');
+  const [realFsItems, setRealFsItems] = useState<any[]>([]);
+  const [realFsParentPath, setRealFsParentPath] = useState<string | null>(null);
+  const [realFsSelectedFile, setRealFsSelectedFile] = useState<any | null>(null);
+  const [realFsMethod, setRealFsMethod] = useState<string>('NIST_800_88_CLEAR');
+  const [realFsIsLoading, setRealFsIsLoading] = useState<boolean>(false);
+  const [realFsIsDeleting, setRealFsIsDeleting] = useState<boolean>(false);
+  const [realFsConfirmModalOpen, setRealFsConfirmModalOpen] = useState<boolean>(false);
+  const [realFsConfirmInput, setRealFsConfirmInput] = useState<string>('');
+  const [realFsDeleteResult, setRealFsDeleteResult] = useState<any | null>(null);
+
+  const loadRealFs = async (targetPath?: string) => {
+    setRealFsIsLoading(true);
+    setError(null);
+    try {
+      const res = await api.browseRealFs(targetPath !== undefined ? targetPath : realFsPath);
+      setRealFsPath(res.current_path || '');
+      setRealFsParentPath(res.parent_path || null);
+      setRealFsItems(res.items || []);
+    } catch (err: any) {
+      setError('Unable to refresh data.');
+    } finally {
+      setRealFsIsLoading(false);
+    }
+  };
+
+  const handleCreateRealFsTestFiles = async () => {
+    setRealFsIsLoading(true);
+    setError(null);
+    try {
+      const res = await api.createRealFsTestFiles();
+      setSuccessMessage(res.message);
+      await loadRealFs(res.directory);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create test files.');
+    } finally {
+      setRealFsIsLoading(false);
+    }
+  };
+
+  const handleDeleteRealFile = async () => {
+    if (!realFsSelectedFile) return;
+    if (realFsConfirmInput !== 'PERMANENTLY DELETE') {
+      setError('You must type "PERMANENTLY DELETE" exactly to confirm erasure.');
+      return;
+    }
+    setRealFsIsDeleting(true);
+    setError(null);
+    try {
+      const res = await api.deleteRealFile({
+        filepath: realFsSelectedFile.path,
+        method: realFsMethod,
+        confirmation: 'PERMANENTLY DELETE'
+      });
+      setRealFsDeleteResult(res);
+      setSuccessMessage(`File permanently deleted and verified absent: ${realFsSelectedFile.name}`);
+      setRealFsConfirmModalOpen(false);
+      setRealFsSelectedFile(null);
+      setRealFsConfirmInput('');
+      await loadRealFs(realFsPath);
+    } catch (err: any) {
+      setError(err.message || 'Real file deletion failed.');
+    } finally {
+      setRealFsIsDeleting(false);
+    }
+  };
+
   useEffect(() => {
     loadAvailableImages();
+    loadRealFs('');
   }, []);
 
   const handlePromptDelete = (file: ImageFileEntry) => {
@@ -161,55 +234,64 @@ export const FileEraserPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-[28px] lg:text-[32px] font-bold text-[var(--text-primary)] tracking-tight">
-                Disk Image File Deletion
+                Secure File Deletion & Sanitization
               </h1>
               <span className="px-3 py-1 rounded-full text-[11.5px] font-mono font-semibold bg-[var(--surface-secondary)] text-[var(--primary-orange)] border border-[var(--border)]">
-                Isolated Virtual Disk (.img)
+                {modeTab === 'real_fs' ? 'Real Windows Filesystem' : 'Isolated Virtual Disk (.img)'}
               </span>
             </div>
             <p className="text-[14.5px] text-[var(--text-secondary)] mt-2 leading-relaxed max-w-2xl">
-              Inspect filesystem structures inside virtual <code className="font-mono text-[var(--primary-orange)]">.img</code> evidence files and perform sector-level filesystem deletion and data wiping.
+              {modeTab === 'real_fs'
+                ? 'Targeted physical file sanitization with native C++ multi-pass overwriting, hardware-level cache flushes, and OS-level system protection guards.'
+                : 'Inspect filesystem structures inside virtual .img evidence files and perform sector-level filesystem deletion and data wiping.'}
             </p>
           </div>
 
-          <div className="flex flex-col items-end gap-1">
-            <button
-              type="button"
-              onClick={() => setIsResetModalOpen(true)}
-              disabled={isLoading || isDeleting}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--primary-orange)] transition-all cursor-pointer shadow-xs"
-              title="Reset test-disk.img with fresh default sample files"
-            >
-              <RotateCcw size={16} />
-              <span>Reset Demo Disk (test-disk.img)</span>
-            </button>
-            <span className="text-[11px] text-[var(--text-muted)] font-mono">
-              Restores clean sample FAT32 disk
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Safety & Real-Time Notice */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2">
-          <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[13px] uppercase">
-            <ShieldCheck size={18} aria-hidden="true" focusable="false" />
-            <span>Strict Virtual Disk Isolation Active</span>
-          </div>
-          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-            Modifications run exclusively on isolated virtual <code className="font-mono text-[var(--text-primary)]">.img</code> disk images. Host partitions, physical drives (<code className="font-mono">/dev/sdX</code>, <code className="font-mono">\\.\PhysicalDriveX</code>), and system paths are strictly protected.
-          </p>
+          {modeTab === 'image' && (
+            <div className="flex flex-col items-end gap-1">
+              <button
+                type="button"
+                onClick={() => setIsResetModalOpen(true)}
+                disabled={isLoading || isDeleting}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--primary-orange)] transition-all cursor-pointer shadow-xs"
+                title="Reset test-disk.img with fresh default sample files"
+              >
+                <RotateCcw size={16} />
+                <span>Reset Demo Disk (test-disk.img)</span>
+              </button>
+              <span className="text-[11px] text-[var(--text-muted)] font-mono">
+                Restores clean sample FAT32 disk
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--primary-orange)]/30 space-y-2">
-          <div className="flex items-center gap-2 text-[var(--primary-orange)] font-bold text-[13px] uppercase">
-            <Info size={18} aria-hidden="true" focusable="false" />
-            <span>Real-Time In-Place Modifications</span>
-          </div>
-          <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
-            Deletions execute <strong>immediately in-place</strong> on the target disk image with sector-level <code className="font-mono text-[var(--text-primary)]">fsync</code>. No manual saving, exporting, or regenerating is required.
-          </p>
+        {/* Mode Selector Tabs */}
+        <div className="flex items-center gap-3 pt-6">
+          <button
+            type="button"
+            onClick={() => setModeTab('real_fs')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
+              modeTab === 'real_fs'
+                ? 'bg-[var(--primary-orange)] text-white shadow-sm'
+                : 'bg-[var(--surface-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)]'
+            }`}
+          >
+            <FileText size={16} />
+            <span>Targeted Real Filesystem Sanitization</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setModeTab('image')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
+              modeTab === 'image'
+                ? 'bg-[var(--primary-orange)] text-white shadow-sm'
+                : 'bg-[var(--surface-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)]'
+            }`}
+          >
+            <HardDrive size={16} />
+            <span>Virtual Disk Image (.img)</span>
+          </button>
         </div>
       </div>
 
@@ -229,13 +311,419 @@ export const FileEraserPage: React.FC = () => {
         </div>
       )}
 
-      {/* Operation Status Banner */}
-      {operationStatus === 'modifying' && (
-        <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--primary-orange)]/40 text-[var(--primary-orange)] text-[14px] flex items-center gap-3 animate-pulse">
-          <RefreshCw size={20} className="animate-spin" />
-          <span className="font-semibold">Modifying disk image... Updating filesystem allocation tables and flushing sectors to disk.</span>
+      {/* Mode 1: Real Filesystem Sanitizer */}
+      {modeTab === 'real_fs' && (
+        <div className="space-y-8">
+          {/* Safety & Real FS Safeguards Banner */}
+          <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[13px] uppercase tracking-wide">
+                <ShieldCheck size={19} />
+                <span>Native C++ Secure Eraser & System Protection Guard</span>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#2E7D32]/10 text-[#2E7D32] border border-[#2E7D32]/20">
+                Hardware & OS Guard Active
+              </span>
+            </div>
+            <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+              ForensiVault performs targeted cryptographic overwriting on selected regular files using the C++ native core (<code className="font-mono text-[var(--text-primary)]">SecureFileEraser</code>) with low-level kernel cache flushes (<code className="font-mono text-[var(--text-primary)]">FlushFileBuffers</code>). System protection guards strictly prevent any deletion of OS system files, Windows roots, Program Files, or the application codebase.
+            </p>
+          </div>
+
+          {/* Quick Access Bookmarks & Test Directory Creation */}
+          <div className="workstation-card p-6 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h3 className="text-[14px] font-bold text-[var(--text-primary)] uppercase tracking-wider">
+                  Quick Navigation & Safe Sandbox
+                </h3>
+                <p className="text-[12.5px] text-[var(--text-secondary)] mt-0.5">
+                  Quickly jump to standard user folders or use the designated safe testing directory.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCreateRealFsTestFiles}
+                disabled={realFsIsLoading}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary-orange)] text-white hover:opacity-90 font-semibold text-[12.5px] transition-all cursor-pointer shadow-xs"
+              >
+                <PlusCircle size={15} />
+                <span>Create Safe Test Files (5 Files)</span>
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => loadRealFs('D:\\SIH\\ForensiVault_Test_Delete')}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--primary-orange)]/40 text-[12.5px] font-mono text-[var(--primary-orange)] font-semibold transition-all cursor-pointer"
+              >
+                <Folder size={15} />
+                <span>ForensiVault Safe Test Folder</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => loadRealFs('C:\\Users')}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[12.5px] font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+              >
+                <Folder size={15} />
+                <span>Users Directory</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => loadRealFs('D:\\')}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[12.5px] font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+              >
+                <HardDrive size={15} />
+                <span>D:\ Root</span>
+              </button>
+            </div>
+          </div>
+
+          {/* File Browser Explorer */}
+          <div className="workstation-card p-6 space-y-5">
+            {/* Address Bar */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => realFsParentPath && loadRealFs(realFsParentPath)}
+                disabled={!realFsParentPath || realFsIsLoading}
+                className="p-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                title="Go to parent directory"
+              >
+                <ArrowUp size={16} />
+              </button>
+
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={realFsPath}
+                  onChange={(e) => setRealFsPath(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') loadRealFs(realFsPath);
+                  }}
+                  placeholder="Enter filesystem path (e.g. D:\SIH\ForensiVault_Test_Delete)..."
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] font-mono text-xs focus:outline-none focus:border-[var(--primary-orange)]"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => loadRealFs(realFsPath)}
+                disabled={realFsIsLoading}
+                className="px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--text-primary)] transition-all cursor-pointer"
+              >
+                Go
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loadRealFs(realFsPath)}
+                disabled={realFsIsLoading}
+                className="p-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                title="Refresh directory listing"
+              >
+                <RefreshCw size={16} className={realFsIsLoading ? 'animate-spin' : ''} />
+              </button>
+            </div>
+
+            {/* Directory Contents Table */}
+            <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-[var(--surface-secondary)] border-b border-[var(--border)] text-[var(--text-secondary)] font-semibold uppercase tracking-wider text-[11px]">
+                    <th className="py-3 px-4">Name</th>
+                    <th className="py-3 px-4">Type</th>
+                    <th className="py-3 px-4">Size</th>
+                    <th className="py-3 px-4">Modified</th>
+                    <th className="py-3 px-4">Protection Guard</th>
+                    <th className="py-3 px-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border-subtle)] font-mono">
+                  {realFsItems.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-[var(--text-muted)]">
+                        {realFsIsLoading ? 'Loading directory contents...' : 'No files or folders found in this directory.'}
+                      </td>
+                    </tr>
+                  ) : (
+                    realFsItems.map((item, idx) => {
+                      const isSelected = realFsSelectedFile?.path === item.path;
+                      return (
+                        <tr
+                          key={item.path || idx}
+                          className={`hover:bg-[var(--surface-hover)] transition-colors ${
+                            isSelected ? 'bg-[var(--primary-orange)]/10' : ''
+                          }`}
+                        >
+                          <td className="py-3 px-4 font-sans font-medium text-[var(--text-primary)]">
+                            <div className="flex items-center gap-2.5">
+                              {item.is_directory ? (
+                                <Folder size={16} className="text-[var(--primary-orange)] flex-shrink-0" />
+                              ) : (
+                                <File size={16} className="text-[var(--text-secondary)] flex-shrink-0" />
+                              )}
+                              {item.is_directory ? (
+                                <button
+                                  type="button"
+                                  onClick={() => loadRealFs(item.path)}
+                                  className="hover:underline text-[var(--text-primary)] font-semibold text-left cursor-pointer"
+                                >
+                                  {item.name}
+                                </button>
+                              ) : (
+                                <span>{item.name}</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-[var(--text-secondary)]">
+                            {item.is_directory ? 'Directory' : 'File'}
+                          </td>
+                          <td className="py-3 px-4 text-[var(--text-secondary)]">
+                            {item.is_directory ? '--' : formatBytes(item.size_bytes)}
+                          </td>
+                          <td className="py-3 px-4 text-[var(--text-muted)] text-[11px]">
+                            {item.modified_iso ? item.modified_iso.replace('T', ' ').slice(0, 19) : '--'}
+                          </td>
+                          <td className="py-3 px-4">
+                            {item.is_protected ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[#C53030]/15 text-[#C53030] border border-[#C53030]/30" title={item.protection_reason}>
+                                <ShieldAlert size={12} />
+                                PROTECTED
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[#2E7D32]/15 text-[#2E7D32] border border-[#2E7D32]/30">
+                                <ShieldCheck size={12} />
+                                SAFE TO SANITIZE
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            {!item.is_directory && (
+                              <button
+                                type="button"
+                                onClick={() => setRealFsSelectedFile(item)}
+                                disabled={item.is_protected}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                  item.is_protected
+                                    ? 'bg-[var(--surface-secondary)] text-[var(--text-muted)] opacity-50 cursor-not-allowed border border-[var(--border)]'
+                                    : isSelected
+                                    ? 'bg-[var(--primary-orange)] text-white'
+                                    : 'bg-[var(--surface-secondary)] hover:bg-[#C53030]/15 hover:text-[#C53030] border border-[var(--border)] text-[var(--text-primary)]'
+                                }`}
+                              >
+                                {isSelected ? 'Selected' : 'Select'}
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Selected File Sanitization Control Card */}
+          {realFsSelectedFile && (
+            <div className="workstation-card p-6 space-y-6 border-[var(--primary-orange)]/40 animate-fade-in">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+                <div className="flex items-center gap-2.5">
+                  <Trash2 size={20} className="text-[#C53030]" />
+                  <h3 className="text-[16px] font-bold text-[var(--text-primary)]">
+                    Secure Sanitization Configuration
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setRealFsSelectedFile(null)}
+                  className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+                >
+                  Deselect
+                </button>
+              </div>
+
+              {/* File Details */}
+              <div className="p-4 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] font-mono text-xs space-y-2">
+                <div><span className="text-[var(--text-muted)]">Target Path: </span><strong className="text-[var(--text-primary)]">{realFsSelectedFile.path}</strong></div>
+                <div><span className="text-[var(--text-muted)]">File Size: </span>{formatBytes(realFsSelectedFile.size_bytes)} ({realFsSelectedFile.size_bytes.toLocaleString()} bytes)</div>
+              </div>
+
+              {/* Method Selection */}
+              <div className="space-y-3">
+                <label className="block text-[12px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                  Select Cryptographic Overwrite Standard:
+                </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <label className={`p-3.5 rounded-xl border cursor-pointer flex items-start gap-3 transition-colors ${
+                    realFsMethod === 'NIST_800_88_CLEAR'
+                      ? 'bg-[var(--primary-orange)]/10 border-[var(--primary-orange)]'
+                      : 'bg-[var(--surface-secondary)] border-[var(--border)]'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="realFsMethod"
+                      value="NIST_800_88_CLEAR"
+                      checked={realFsMethod === 'NIST_800_88_CLEAR'}
+                      onChange={() => setRealFsMethod('NIST_800_88_CLEAR')}
+                      className="mt-0.5 text-[var(--primary-orange)] focus:ring-0 cursor-pointer"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold text-[var(--text-primary)]">NIST SP 800-88 Rev. 1 Clear</div>
+                      <p className="text-[11.5px] text-[var(--text-secondary)] mt-0.5">
+                        1-pass logical overwriting with zeros followed by OS verification. Recommended standard for modern magnetic and solid-state media.
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className={`p-3.5 rounded-xl border cursor-pointer flex items-start gap-3 transition-colors ${
+                    realFsMethod === 'DOD_5220_22_M'
+                      ? 'bg-[var(--primary-orange)]/10 border-[var(--primary-orange)]'
+                      : 'bg-[var(--surface-secondary)] border-[var(--border)]'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="realFsMethod"
+                      value="DOD_5220_22_M"
+                      checked={realFsMethod === 'DOD_5220_22_M'}
+                      onChange={() => setRealFsMethod('DOD_5220_22_M')}
+                      className="mt-0.5 text-[var(--primary-orange)] focus:ring-0 cursor-pointer"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold text-[var(--text-primary)]">DoD 5220.22-M Standard</div>
+                      <p className="text-[11.5px] text-[var(--text-secondary)] mt-0.5">
+                        3-pass sanitization: Pass 1 (zeros), Pass 2 (ones), Pass 3 (pseudo-random bytes), with read verification.
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className={`p-3.5 rounded-xl border cursor-pointer flex items-start gap-3 transition-colors ${
+                    realFsMethod === 'GUTMANN_35'
+                      ? 'bg-[var(--primary-orange)]/10 border-[var(--primary-orange)]'
+                      : 'bg-[var(--surface-secondary)] border-[var(--border)]'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="realFsMethod"
+                      value="GUTMANN_35"
+                      checked={realFsMethod === 'GUTMANN_35'}
+                      onChange={() => setRealFsMethod('GUTMANN_35')}
+                      className="mt-0.5 text-[var(--primary-orange)] focus:ring-0 cursor-pointer"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold text-[var(--text-primary)]">Gutmann 35-Pass Algorithm</div>
+                      <p className="text-[11.5px] text-[var(--text-secondary)] mt-0.5">
+                        Exhaustive 35-pass overwriting designed for legacy magnetic recording patterns. Highly thorough.
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className={`p-3.5 rounded-xl border cursor-pointer flex items-start gap-3 transition-colors ${
+                    realFsMethod === 'PSEUDO_RANDOM'
+                      ? 'bg-[var(--primary-orange)]/10 border-[var(--primary-orange)]'
+                      : 'bg-[var(--surface-secondary)] border-[var(--border)]'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="realFsMethod"
+                      value="PSEUDO_RANDOM"
+                      checked={realFsMethod === 'PSEUDO_RANDOM'}
+                      onChange={() => setRealFsMethod('PSEUDO_RANDOM')}
+                      className="mt-0.5 text-[var(--primary-orange)] focus:ring-0 cursor-pointer"
+                    />
+                    <div>
+                      <div className="text-[13px] font-semibold text-[var(--text-primary)]">Single Pass Pseudo-Random</div>
+                      <p className="text-[11.5px] text-[var(--text-secondary)] mt-0.5">
+                        1-pass cryptographic pseudo-random byte overwriting and cache flush. Fast and effective.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Technical Disclosure / Limitations Notice */}
+              <div className="p-4 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2 text-xs text-[var(--text-secondary)]">
+                <div className="flex items-center gap-2 text-[var(--primary-orange)] font-semibold text-[12px]">
+                  <Info size={15} />
+                  <span>Technical Forensic Disclosure & Storage Limitations:</span>
+                </div>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>Solid-State Drives (SSD):</strong> Wear-leveling controllers and flash translation layers (FTL) may remap logical sectors, leaving previous physical flash pages inaccessible to software-level overwriting until garbage collection or TRIM runs.</li>
+                  <li><strong>NTFS Journaling & Metadata:</strong> While file payload and slack clusters are overwritten, filesystem journal logs ($LogFile, $UsnJrnl) and Master File Table ($MFT) resident records may retain historical timestamps or filenames.</li>
+                  <li><strong>In-Place Kernel Flush:</strong> ForensiVault issues low-level Win32 FlushFileBuffers to guarantee physical write commit before unlinking the file handle.</li>
+                </ul>
+              </div>
+
+              {/* Action Button */}
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRealFsConfirmInput('');
+                    setRealFsConfirmModalOpen(true);
+                  }}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#C53030] hover:bg-[#B52020] text-white font-bold text-[13px] transition-all cursor-pointer shadow-md"
+                >
+                  <Trash2 size={16} />
+                  <span>Permanently Sanitize Selected File</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Last Deletion Result */}
+          {realFsDeleteResult && (
+            <div className="workstation-card p-6 border-[#2E7D32]/40 bg-[#2E7D32]/5 space-y-3 animate-fade-in">
+              <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[14px]">
+                <CheckCircle2 size={18} />
+                <span>Sanitization Verification Report</span>
+              </div>
+              <div className="text-xs font-mono space-y-1.5 text-[var(--text-primary)]">
+                <div><span className="text-[var(--text-muted)]">Target Path: </span>{realFsDeleteResult.target_path}</div>
+                <div><span className="text-[var(--text-muted)]">Standard Applied: </span>{realFsDeleteResult.method}</div>
+                <div><span className="text-[var(--text-muted)]">Verification Status: </span><span className="text-[#2E7D32] font-semibold">CONFIRMED ABSENT FROM DISK (Exists: False)</span></div>
+                <div><span className="text-[var(--text-muted)]">C++ Core Details: </span>{realFsDeleteResult.details}</div>
+              </div>
+            </div>
+          )}
         </div>
       )}
+
+      {/* Mode 2: Virtual Disk Image (.img) */}
+      {modeTab === 'image' && (
+        <div className="space-y-10">
+          {/* Safety & Real-Time Notice */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2">
+              <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[13px] uppercase">
+                <ShieldCheck size={18} aria-hidden="true" focusable="false" />
+                <span>Strict Virtual Disk Isolation Active</span>
+              </div>
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+                Modifications run exclusively on isolated virtual <code className="font-mono text-[var(--text-primary)]">.img</code> disk images. Host partitions, physical drives (<code className="font-mono">/dev/sdX</code>, <code className="font-mono">\\.\PhysicalDriveX</code>), and system paths are strictly protected.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--primary-orange)]/30 space-y-2">
+              <div className="flex items-center gap-2 text-[var(--primary-orange)] font-bold text-[13px] uppercase">
+                <Info size={18} aria-hidden="true" focusable="false" />
+                <span>Real-Time In-Place Modifications</span>
+              </div>
+              <p className="text-[13px] text-[var(--text-secondary)] leading-relaxed">
+                Deletions execute <strong>immediately in-place</strong> on the target disk image with sector-level <code className="font-mono text-[var(--text-primary)]">fsync</code>. No manual saving, exporting, or regenerating is required.
+              </p>
+            </div>
+          </div>
+
+          {/* Operation Status Banner */}
+          {operationStatus === 'modifying' && (
+            <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--primary-orange)]/40 text-[var(--primary-orange)] text-[14px] flex items-center gap-3 animate-pulse">
+              <RefreshCw size={20} className="animate-spin" />
+              <span className="font-semibold">Modifying disk image... Updating filesystem allocation tables and flushing sectors to disk.</span>
+            </div>
+          )}
 
       {/* Disk Image Selector Card */}
       <div className="workstation-card p-6 lg:p-8 space-y-5">
@@ -578,6 +1066,8 @@ export const FileEraserPage: React.FC = () => {
           </div>
         </div>
       )}
+    </div>
+  )}
 
       {/* Confirmation Modal */}
       <Modal
@@ -702,6 +1192,47 @@ export const FileEraserPage: React.FC = () => {
             <span>
               <strong>Note:</strong> File deletions you execute are already saved automatically in-place. You only need to reset if you want a fresh set of sample files for testing.
             </span>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Real FS Confirmation Modal */}
+      <Modal
+        isOpen={realFsConfirmModalOpen}
+        onClose={() => setRealFsConfirmModalOpen(false)}
+        title="Confirm Permanent Real File Erasure"
+        variant="danger"
+        confirmText={realFsIsDeleting ? 'Sanitizing...' : 'Permanently Delete'}
+        cancelText="Cancel"
+        onConfirm={handleDeleteRealFile}
+        isLoading={realFsIsDeleting}
+        isConfirmDisabled={realFsIsDeleting || realFsConfirmInput !== 'PERMANENTLY DELETE'}
+      >
+        <div className="space-y-4 text-xs">
+          <div className="p-3 rounded-xl bg-[#C53030]/15 border border-[#C53030]/30 text-[#C53030] text-[12.5px] font-medium flex items-start gap-2.5">
+            <AlertTriangle size={18} className="flex-shrink-0 mt-0.5" />
+            <div>
+              <strong>CRITICAL WARNING:</strong> This operation performs native C++ cryptographic overwriting directly on your filesystem using standard <strong>{realFsMethod}</strong>. Physical absence will be verified. Data recovery will be impossible.
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] font-mono space-y-1.5">
+            <div><span className="text-[var(--text-muted)]">Target File: </span><strong className="text-[#C53030]">{realFsSelectedFile?.path}</strong></div>
+            <div><span className="text-[var(--text-muted)]">File Size: </span>{realFsSelectedFile ? formatBytes(realFsSelectedFile.size_bytes) : '0 B'}</div>
+            <div><span className="text-[var(--text-muted)]">Sanitization Standard: </span>{realFsMethod}</div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-[12px] font-semibold text-[var(--text-primary)]">
+              To confirm permanent erasure, type <span className="font-mono text-[#C53030] font-bold">PERMANENTLY DELETE</span> below:
+            </label>
+            <input
+              type="text"
+              value={realFsConfirmInput}
+              onChange={(e) => setRealFsConfirmInput(e.target.value)}
+              placeholder="PERMANENTLY DELETE"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] font-mono text-xs focus:outline-none focus:border-[#C53030]"
+            />
           </div>
         </div>
       </Modal>

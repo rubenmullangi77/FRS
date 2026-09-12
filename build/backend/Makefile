@@ -130,6 +130,20 @@ forensivault_core/fast:
 .PHONY : forensivault_core/fast
 
 # Convenience name for target.
+backend/CMakeFiles/forensivault_native.dir/rule:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 backend/CMakeFiles/forensivault_native.dir/rule
+.PHONY : backend/CMakeFiles/forensivault_native.dir/rule
+
+# Convenience name for target.
+forensivault_native: backend/CMakeFiles/forensivault_native.dir/rule
+.PHONY : forensivault_native
+
+# fast build rule for target.
+forensivault_native/fast:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/build
+.PHONY : forensivault_native/fast
+
+# Convenience name for target.
 backend/CMakeFiles/forensivault_cli.dir/rule:
 	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 backend/CMakeFiles/forensivault_cli.dir/rule
 .PHONY : backend/CMakeFiles/forensivault_cli.dir/rule
@@ -929,6 +943,30 @@ src/main.cpp.s:
 	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_cli.dir\build.make backend/CMakeFiles/forensivault_cli.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/native/forensivault_capi.obj: src/native/forensivault_capi.cpp.obj
+.PHONY : src/native/forensivault_capi.obj
+
+# target to build an object file
+src/native/forensivault_capi.cpp.obj:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj
+.PHONY : src/native/forensivault_capi.cpp.obj
+
+src/native/forensivault_capi.i: src/native/forensivault_capi.cpp.i
+.PHONY : src/native/forensivault_capi.i
+
+# target to preprocess a source file
+src/native/forensivault_capi.cpp.i:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.i
+.PHONY : src/native/forensivault_capi.cpp.i
+
+src/native/forensivault_capi.s: src/native/forensivault_capi.cpp.s
+.PHONY : src/native/forensivault_capi.s
+
+# target to generate assembly for a file
+src/native/forensivault_capi.cpp.s:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.s
+.PHONY : src/native/forensivault_capi.cpp.s
+
 src/server/api_server.obj: src/server/api_server.cpp.obj
 .PHONY : src/server/api_server.obj
 
@@ -965,6 +1003,7 @@ help:
 	@echo ... forensic_inspect
 	@echo ... forensivault_cli
 	@echo ... forensivault_core
+	@echo ... forensivault_native
 	@echo ... forensivault_server
 	@echo ... __/src/carving/confidence_scorer.obj
 	@echo ... __/src/carving/confidence_scorer.i
@@ -1059,6 +1098,9 @@ help:
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/native/forensivault_capi.obj
+	@echo ... src/native/forensivault_capi.i
+	@echo ... src/native/forensivault_capi.s
 	@echo ... src/server/api_server.obj
 	@echo ... src/server/api_server.i
 	@echo ... src/server/api_server.s

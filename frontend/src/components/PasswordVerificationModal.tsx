@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Lock, ShieldAlert, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Modal } from './Modal';
 import { authService } from '../services/auth';
@@ -70,22 +70,22 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
       title={title}
       variant="danger"
     >
-      <div className="p-6 space-y-5 bg-[#FFFDF8]">
+      <div className="p-6 space-y-5 bg-[var(--surface)]">
         {/* Warning Banner */}
         <div className="p-4 rounded-lg bg-[#C53030]/10 border border-[#C53030]/30 text-[#C53030] text-[13px] flex items-start gap-3">
           <ShieldAlert size={18} className="flex-shrink-0 mt-0.5" aria-hidden="true" focusable="false" />
           <div className="space-y-1">
             <div className="font-semibold uppercase tracking-wider text-[11px]">Security Verification Required</div>
-            <p className="text-[13px] text-[#2B241F] leading-relaxed">
+            <p className="text-[13px] text-[var(--text-primary)] leading-relaxed">
               {actionDescription}
             </p>
           </div>
         </div>
 
         {targetIdentifier && (
-          <div className="px-3.5 py-2 rounded-md bg-[#FBF8F1] border border-[#E5D8C8] text-[12px] text-[#756B63] flex items-center justify-between">
+          <div className="px-3.5 py-2 rounded-md bg-[var(--surface-secondary)] border border-[var(--border)] text-[12px] text-[var(--text-secondary)] flex items-center justify-between">
             <span>Target Resource:</span>
-            <span className="font-mono text-[#2B241F] truncate max-w-[320px]">{targetIdentifier}</span>
+            <span className="font-mono text-[var(--text-primary)] truncate max-w-[320px]">{targetIdentifier}</span>
           </div>
         )}
 
@@ -108,11 +108,11 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
 
         <form onSubmit={handleVerify} className="space-y-4">
           <div>
-            <label className="block text-[12px] font-semibold uppercase tracking-wider text-[#756B63] mb-1.5">
+            <label className="block text-[12px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
               Enter Password:
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#756B63]">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--text-secondary)]">
                 <Lock size={15} aria-hidden="true" focusable="false" />
               </div>
               <input
@@ -122,7 +122,7 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Verify your password"
-                className="w-full bg-[#FBF8F1] border border-[#E5D8C8] rounded-lg pl-9 pr-3.5 py-2.5 text-[13.5px] text-[#2B241F] focus:outline-none focus:border-[#D96B27] focus:ring-1 focus:ring-[#D96B27]"
+                className="w-full bg-[var(--surface-secondary)] border border-[var(--border)] rounded-lg pl-9 pr-3.5 py-2.5 text-[13.5px] text-[var(--text-primary)] focus:outline-none focus:border-[#D96B27] focus:ring-1 focus:ring-[#D96B27]"
               />
             </div>
           </div>
@@ -132,7 +132,7 @@ export const PasswordVerificationModal: React.FC<PasswordVerificationModalProps>
               type="button"
               onClick={handleClose}
               disabled={isVerifying}
-              className="px-4 py-2 rounded-lg border border-[#E5D8C8] bg-[#FFFDF8] hover:bg-[#FBF8F1] text-[13px] text-[#756B63] hover:text-[#2B241F] cursor-pointer"
+              className="px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-hover)] text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
             >
               Cancel
             </button>

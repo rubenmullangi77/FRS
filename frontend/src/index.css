@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root, [data-theme="light"] {
+  --bg-primary: #F7F3EB;
+  --bg-secondary: #F1EBDD;
   --bg-main: #F7F3EB;
   --surface: #FFFDF8;
   --surface-secondary: #F1EBDD;
@@ -9,7 +11,9 @@
   --border-subtle: #EBE3D7;
   
   --primary-orange: #D96B27;
+  --accent: #D96B27;
   --dark-orange: #B95720;
+  --accent-hover: #B95720;
   --light-orange: #F3D5BF;
   
   --text-primary: #29231F;
@@ -20,32 +24,46 @@
   --status-warning: #B7791F;
   --status-danger: #C53030;
 
+  --input-bg: #F1EBDD;
+  --table-bg: #FFFDF8;
+  --sidebar-bg: #FFFDF8;
+
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Consolas", "Courier New", monospace;
 }
 
 html.dark, :root.dark, [data-theme="dark"] {
-  --bg-main: #121110;
-  --surface: #1C1917;
-  --surface-secondary: #26221E;
-  --surface-hover: #2E2924;
-  --border: #3A342E;
-  --border-subtle: #2D2823;
+  --bg-primary: #11110F;
+  --bg-secondary: #181714;
+  --bg-main: #11110F;
+  --surface: #211F1B;
+  --surface-secondary: #28251F;
+  --surface-hover: #312D26;
+  --border: #3A352F;
+  --border-subtle: #2C2822;
   
-  --primary-orange: #EA7325;
-  --dark-orange: #C45F1E;
-  --light-orange: #4A2814;
+  --primary-orange: #D96B27;
+  --accent: #D96B27;
+  --dark-orange: #B9541D;
+  --accent-hover: #B9541D;
+  --light-orange: #452614;
   
-  --text-primary: #F7F2E8;
-  --text-secondary: #A89D93;
-  --text-muted: #6E645C;
+  --text-primary: #F4EFE8;
+  --text-secondary: #B9B0A7;
+  --text-muted: #8F877F;
   
   --status-success: #34D399;
   --status-warning: #FBBF24;
   --status-danger: #F87171;
+
+  --input-bg: #28251F;
+  --table-bg: #211F1B;
+  --sidebar-bg: #211F1B;
 }
 
 @theme {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
   --color-bg-main: var(--bg-main);
   --color-surface: var(--surface);
   --color-surface-secondary: var(--surface-secondary);

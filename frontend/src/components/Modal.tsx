@@ -37,49 +37,49 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   const headerColors = {
-    default: 'text-[#2B241F] border-[#E5D8C8]',
-    danger: 'text-[#C53030] border-[#C53030]/30 bg-[#C53030]/5',
-    warning: 'text-[#B45309] border-[#B45309]/30 bg-[#B45309]/5',
-    info: 'text-[#D96B27] border-[#D96B27]/30 bg-[#F4D5BF]/20'
+    default: 'text-[var(--text-primary)] border-[var(--border)]',
+    danger: 'text-[#C53030] dark:text-[#F87171] border-[#C53030]/30 bg-[#C53030]/10',
+    warning: 'text-[#B45309] dark:text-[#FBBF24] border-[#B45309]/30 bg-[#B45309]/10',
+    info: 'text-[var(--primary-orange)] border-[var(--primary-orange)]/30 bg-[var(--primary-orange)]/10'
   };
 
   const confirmBtnStyles = {
-    default: 'bg-[#D96B27] hover:bg-[#B9541D] text-white',
+    default: 'bg-[var(--primary-orange)] hover:bg-[var(--dark-orange)] text-white',
     danger: 'bg-[#C53030] hover:bg-[#9B2C2C] text-white shadow-xs',
     warning: 'bg-[#B45309] hover:bg-[#92400E] text-white font-bold',
-    info: 'bg-[#D96B27] hover:bg-[#B9541D] text-white'
+    info: 'bg-[var(--primary-orange)] hover:bg-[var(--dark-orange)] text-white'
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
-      <div className="bg-[#FFFDF8] border border-[#E5D8C8] rounded-xl w-full max-w-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl w-full max-w-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className={`px-6 py-4 border-b flex items-center justify-between ${headerColors[variant]}`}>
           <div className="flex items-center gap-2 font-bold text-base">
-            {variant === 'danger' && <ShieldAlert size={20} className="text-[#C53030]" />}
-            {variant === 'warning' && <AlertTriangle size={20} className="text-[#B45309]" />}
+            {variant === 'danger' && <ShieldAlert size={20} className="text-[#C53030] dark:text-[#F87171]" />}
+            {variant === 'warning' && <AlertTriangle size={20} className="text-[#B45309] dark:text-[#FBBF24]" />}
             <span>{title}</span>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-[#756B63] hover:text-[#2B241F] hover:bg-[#FBF8F1] transition-colors cursor-pointer"
+            className="p-1 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)] transition-colors cursor-pointer"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="px-6 py-5 overflow-y-auto space-y-4 text-sm text-[#2B241F]">
+        <div className="px-6 py-5 overflow-y-auto space-y-4 text-sm text-[var(--text-primary)]">
           {children}
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-[#E5D8C8] bg-[#FBF8F1] flex items-center justify-end gap-3">
+        <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface-secondary)] flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 rounded-lg text-xs font-bold text-[#756B63] hover:text-[#2B241F] hover:bg-[#E5D8C8]/40 border border-[#E5D8C8] transition-colors disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 rounded-lg text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] transition-colors disabled:opacity-50 cursor-pointer"
           >
             {cancelText}
           </button>

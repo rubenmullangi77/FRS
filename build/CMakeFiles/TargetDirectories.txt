@@ -1,6 +1,7 @@
 D:/SIH/build/CMakeFiles/edit_cache.dir
 D:/SIH/build/CMakeFiles/rebuild_cache.dir
 D:/SIH/build/backend/CMakeFiles/forensivault_core.dir
+D:/SIH/build/backend/CMakeFiles/forensivault_native.dir
 D:/SIH/build/backend/CMakeFiles/forensivault_cli.dir
 D:/SIH/build/backend/CMakeFiles/forensic_inspect.dir
 D:/SIH/build/backend/CMakeFiles/forensic_demo.dir

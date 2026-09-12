@@ -129,6 +129,19 @@ forensivault_core/fast:
 .PHONY : forensivault_core/fast
 
 #=============================================================================
+# Target rules for targets named forensivault_native
+
+# Build rule for target.
+forensivault_native: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 forensivault_native
+.PHONY : forensivault_native
+
+# fast build rule for target.
+forensivault_native/fast:
+	$(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_native.dir\build.make backend/CMakeFiles/forensivault_native.dir/build
+.PHONY : forensivault_native/fast
+
+#=============================================================================
 # Target rules for targets named forensivault_cli
 
 # Build rule for target.
@@ -205,6 +218,7 @@ help:
 	@echo ... forensic_inspect
 	@echo ... forensivault_cli
 	@echo ... forensivault_core
+	@echo ... forensivault_native
 	@echo ... forensivault_server
 	@echo ... forensivault_tests
 .PHONY : help

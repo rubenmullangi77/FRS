@@ -125,15 +125,6 @@ export const api = {
     return res.json();
   },
 
-  async reconstructFragments(image_path: string): Promise<{ success: boolean; output: string }> {
-    const res = await fetch(`${API_BASE}/reconstruct`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image_path }),
-    });
-    if (!res.ok) throw new Error('Failed to analyze fragments');
-    return res.json();
-  },
 
   async previewErase(target_path: string): Promise<ErasePreview> {
     const res = await fetch(`${API_BASE}/erase/preview`, {
@@ -278,15 +269,166 @@ export const api = {
     return res.json();
   },
 
-  async generateReport(case_dir: string, pdf: boolean = true): Promise<{ success: boolean; output: string }> {
+  async generateReport(data: {
+    case_id?: string;
+    case_dir?: string;
+    title?: string;
+    examiner_name?: string;
+    agency_name?: string;
+    format?: string;
+  } | string, legacyPdf?: boolean): Promise<{ success: boolean; report_id?: string; file_path?: string; filename?: string; sha256?: string; output?: string }> {
+    let payload: any = {};
+    if (typeof data === 'string') {
+      payload = { case_id: data, format: 'PDF' };
+    } else {
+      payload = {
+        case_id: data.case_id || 'CASE-2026-001',
+        title: data.title || 'Forensic Investigation Dossier',
+        examiner_name: data.examiner_name || 'Ruben',
+        agency_name: data.agency_name || 'ForensiVault Digital Forensics Lab',
+        format: data.format || 'PDF'
+      };
+    }
     const res = await fetch(`${API_BASE}/reports/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ case_dir, pdf }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Failed to compile forensic report');
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to compile forensic report');
+    }
+    return res.json();
+  },
+
+  async openReport(params: { report_id?: string; filepath?: string }): Promise<{ success: boolean; message: string }> {
+    const res = await fetch(`${API_BASE}/reports/open`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to open report');
+    }
+    return res.json();
+  },
+
+  getReportDownloadUrl(report_id?: string, path?: string): string {
+    if (report_id) {
+      return `${API_BASE}/reports/download/${encodeURIComponent(report_id)}`;
+    }
+    return `${API_BASE}/reports/download?path=${encodeURIComponent(path || '')}`;
+  },
+
+  async browseRealFs(path?: string): Promise<{
+    current_path: string;
+    parent_path: string | null;
+    items: Array<{
+      name: string;
+      path: string;
+      is_directory: boolean;
+      size_bytes?: number;
+      modified_iso?: string;
+      is_protected?: boolean;
+      protection_reason?: string;
+      badge?: string;
+      is_quick_pick?: boolean;
+    }>;
+    total_items?: number;
+  }> {
+    const url = path ? `${API_BASE}/real-fs/browse?path=${encodeURIComponent(path)}` : `${API_BASE}/real-fs/browse`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to browse filesystem');
+    }
+    return res.json();
+  },
+
+  async createRealFsTestFiles(): Promise<{
+    success: boolean;
+    message: string;
+    directory: string;
+    files: Array<{ filename: string; path: string; size_bytes: number }>;
+  }> {
+    const res = await fetch(`${API_BASE}/real-fs/create-test-files`, {
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to create test files');
+    }
+    return res.json();
+  },
+
+  async deleteRealFile(data: {
+    filepath: string;
+    method?: string;
+    confirmation: string;
+  }): Promise<{
+    success: boolean;
+    is_verified: boolean;
+    accessible_after_deletion: boolean;
+    target_path: string;
+    method: string;
+    details: string;
+    limitations: string[];
+  }> {
+    const res = await fetch(`${API_BASE}/real-fs/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to securely delete file');
+    }
+    return res.json();
+  },
+
+  async reconstructFragments(data: {
+    image_path: string;
+    file_type?: string;
+    output_directory?: string;
+    case_id?: string;
+  }): Promise<{
+    success: boolean;
+    image_path: string;
+    file_type: string;
+    total_fragments_discovered: number;
+    headers_found: number;
+    reconstructed_count: number;
+    segregated_count: number;
+    fragments: Array<{
+      id: number;
+      offset: number;
+      length: number;
+      start_sector: number;
+      role: string;
+      entropy: number;
+      confidence: number;
+      diagnostic_notes: string;
+    }>;
+    reconstructions: Array<{
+      is_reconstructed: boolean;
+      is_partial: boolean;
+      file_type: string;
+      total_size: number;
+      confidence_score: number;
+      sha256: string;
+      uncertainty_reason: string;
+      fragment_offsets: number[];
+    }>;
+  }> {
+    const res = await fetch(`${API_BASE}/reconstruct`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Fragment reconstruction failed');
     }
     return res.json();
   },

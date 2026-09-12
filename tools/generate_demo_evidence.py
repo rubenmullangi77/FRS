@@ -76,6 +76,12 @@ def create_valid_docx():
         zf.writestr("word/document.xml", '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Confidential Forensic Evidence Exhibit</w:t></w:r></w:p></w:body></w:document>')
     return buf.getvalue()
 
+def create_valid_zip():
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("archive_notes.txt", "ForensiVault test generic archive data payload")
+    return buf.getvalue()
+
 def create_corrupted_png():
     # PNG signature followed by corrupted IHDR data and invalid CRC
     header = b"\x89PNG\r\n\x1a\n"
@@ -116,6 +122,10 @@ def generate_synthetic_evidence_image(output_path, num_sectors=256, sector_size=
     # 6. Inject Deleted DOCX at Sector 36 (Offset 18432)
     docx_data = create_valid_docx()
     img[36 * sector_size : 36 * sector_size + len(docx_data)] = docx_data
+
+    # 6B. Inject Deleted Generic ZIP at Sector 42 (Offset 21504)
+    zip_data = create_valid_zip()
+    img[42 * sector_size : 42 * sector_size + len(zip_data)] = zip_data
 
     # 7. Inject Fragmented JPEG:
     # Full JPEG is 134 bytes

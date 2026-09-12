@@ -377,7 +377,7 @@ void handleStatus(SOCKET s) {
     sendJson(s, 200, ss.str());
 }
 
-void handleDrives(SOCKET s) {
+void handleDrives(socket_t s) {
     auto physical = forensivault::sanitization::DriveDetector::detectPhysicalDevices();
 
     std::ostringstream ss;
@@ -471,7 +471,7 @@ void handleHash(SOCKET s, const std::string& body) {
     sendJson(s, 200, ss.str());
 }
 
-void handleCases(SOCKET s) {
+void handleCases(socket_t s) {
     std::vector<forensivault::core::CaseInfo> cases;
 
     std::vector<std::string> searchDirs = {"cases", "test_data/demo_workspace", "test_data"};

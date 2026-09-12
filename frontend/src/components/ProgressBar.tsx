@@ -35,14 +35,14 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div className="w-full space-y-1.5">
       {(stage || showPercentage) && (
-        <div className="flex items-center justify-between text-xs font-mono text-[#756B63]">
-          <span className="truncate max-w-[80%] text-[#2B241F] font-bold">{stage}</span>
+        <div className="flex items-center justify-between text-xs font-mono text-[var(--text-secondary)]">
+          <span className="truncate max-w-[80%] text-[var(--text-primary)] font-bold">{stage}</span>
           {showPercentage && (
             <span className="font-bold text-[#D96B27]">{clampedProgress}%</span>
           )}
         </div>
       )}
-      <div className={`w-full bg-[#E5D8C8]/60 rounded-full overflow-hidden ${heightClasses[height]} border border-[#E5D8C8]`}>
+      <div className={`w-full bg-[var(--border)]/40 rounded-full overflow-hidden ${heightClasses[height]} border border-[var(--border)]`}>
         <div
           className={`h-full transition-all duration-300 rounded-full ${barColors[color]}`}
           style={{ width: `${clampedProgress}%` }}
