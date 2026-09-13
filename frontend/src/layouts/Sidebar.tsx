@@ -108,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <aside className="w-[280px] bg-[var(--surface)] border-r border-[var(--border)] flex flex-col flex-shrink-0 h-screen select-none transition-colors duration-200">
+    <aside className="w-[260px] bg-[var(--surface)] border-r border-[var(--border)] flex flex-col flex-shrink-0 h-screen select-none transition-colors duration-200">
       {/* Brand Header */}
       <div className="p-6 border-b border-[var(--border)] flex items-center gap-3.5">
         <div className="w-10 h-10 rounded-xl bg-[var(--surface-secondary)] border border-[var(--primary-orange)]/30 flex items-center justify-center text-[var(--primary-orange)] flex-shrink-0">

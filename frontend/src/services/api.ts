@@ -10,7 +10,12 @@ import {
   AuditLogEntry,
   FilesOverviewResponse,
   ImageInspectResponse,
-  ImageFileDeleteResponse
+  ImageFileDeleteResponse,
+  PartitionTableResponse,
+  FilesystemDetectResponse,
+  FsRecoveryResponse,
+  FsRecoveryFile,
+  StorageSourcesResponse
 } from '../types';
 
 const isElectronFile = typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!(window as any).forensiVaultDesktop);
@@ -262,8 +267,8 @@ export const api = {
     return res.json();
   },
 
-  async listReports(case_dir?: string): Promise<{ reports: ForensicReportItem[] }> {
-    const url = case_dir ? `${API_BASE}/reports?case_dir=${encodeURIComponent(case_dir)}` : `${API_BASE}/reports`;
+  async listReports(case_id?: string): Promise<{ reports: ForensicReportItem[] }> {
+    const url = case_id ? `${API_BASE}/reports?case_id=${encodeURIComponent(case_id)}` : `${API_BASE}/reports`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch reports');
     return res.json();
@@ -282,7 +287,7 @@ export const api = {
       payload = { case_id: data, format: 'PDF' };
     } else {
       payload = {
-        case_id: data.case_id || 'CASE-2026-001',
+        case_id: data.case_id,
         title: data.title || 'Forensic Investigation Dossier',
         examiner_name: data.examiner_name || 'Ruben',
         agency_name: data.agency_name || 'ForensiVault Digital Forensics Lab',
@@ -296,7 +301,7 @@ export const api = {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || err.error || 'Failed to compile forensic report');
+      throw new Error(err.detail || err.error || err.message || 'Failed to compile forensic report');
     }
     return res.json();
   },
@@ -491,5 +496,101 @@ export const api = {
     }
     return res.json();
   },
+
+  async getRecoveryPartitions(image_path: string): Promise<PartitionTableResponse> {
+    const res = await fetch(`${API_BASE}/recovery/partitions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_path }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to detect partition table');
+    }
+    return res.json();
+  },
+
+  async detectRecoveryFilesystem(image_path: string, start_sector: number = 0): Promise<FilesystemDetectResponse> {
+    const res = await fetch(`${API_BASE}/recovery/detect-fs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_path, start_sector }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to probe filesystem');
+    }
+    return res.json();
+  },
+
+  async scanRecoveryDeleted(data: {
+    image_path: string;
+    start_sector?: number;
+    case_id?: string;
+  }): Promise<FsRecoveryResponse> {
+    const res = await fetch(`${API_BASE}/recovery/scan-deleted`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to scan deleted file metadata');
+    }
+    return res.json();
+  },
+
+  async extractRecoveryFiles(data: {
+    image_path: string;
+    start_sector?: number;
+    case_id?: string;
+    file_ids?: number[];
+    output_directory?: string;
+  }): Promise<FsRecoveryResponse> {
+    const res = await fetch(`${API_BASE}/recovery/extract`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to extract recovered files');
+    }
+    return res.json();
+  },
+
+  async scanRecoveryUnallocated(data: {
+    image_path: string;
+    case_id?: string;
+    output_directory?: string;
+  }): Promise<{
+    success: boolean;
+    method: string;
+    case_id: string;
+    image_path: string;
+    total_carved: number;
+    files: FsRecoveryFile[];
+  }> {
+    const res = await fetch(`${API_BASE}/recovery/scan-unallocated`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to carve unallocated space');
+    }
+    return res.json();
+  },
+
+  async getStorageSources(): Promise<StorageSourcesResponse> {
+    const res = await fetch(`${API_BASE}/recovery/storage-sources`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to fetch storage sources');
+    }
+    return res.json();
+  },
 };
+
 

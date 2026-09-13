@@ -34,6 +34,7 @@ export interface CaseMetadata {
   investigator_name: string;
   agency: string;
   description?: string;
+  status?: string;
   created_timestamp_iso?: string;
   workspace_path: string;
   evidence_count?: number;
@@ -128,11 +129,19 @@ export interface ErasePreview {
 }
 
 export interface ForensicReportItem {
+  report_id?: string;
+  case_id?: string;
+  case_name?: string;
+  title?: string;
   filename: string;
   filepath: string;
   format: string;
   size_bytes: number;
   created_iso: string;
+  generated_at?: string;
+  recovered_count?: number;
+  status?: string;
+  sha256?: string;
 }
 
 export interface AuditLogEntry {
@@ -214,3 +223,133 @@ export interface ImageFileDeleteResponse {
   end_time: string;
   error?: string;
 }
+
+export interface PartitionItem {
+  partition_number: number;
+  start_sector: number;
+  sector_count: number;
+  size_bytes: number;
+  size_formatted: string;
+  partition_type_id: number;
+  type_name: string;
+  type_guid: string;
+  partition_name: string;
+  is_bootable: boolean;
+}
+
+export interface PartitionTableResponse {
+  table_type: string;
+  total_disk_sectors: number;
+  sector_size: number;
+  total_bytes: number;
+  partitions: PartitionItem[];
+}
+
+export interface FilesystemDetectResponse {
+  success: boolean;
+  is_detected: boolean;
+  fs_type: string;
+  detection_status: string;
+  sector_size: number;
+  cluster_size: number;
+  sectors_per_cluster: number;
+  partition_start_sector: number;
+  partition_start_bytes: number;
+  partition_size_bytes: number;
+  partition_size_formatted: string;
+  volume_label: string;
+  serial_number?: number;
+  total_clusters?: number;
+  message: string;
+}
+
+export interface FsRecoveryFile {
+  id: number;
+  filename: string;
+  original_path: string;
+  file_type: string;
+  extension: string;
+  size_bytes: number;
+  offset_hex: string;
+  offset_dec: number;
+  starting_cluster: number;
+  mft_record: number;
+  fragment_count: number;
+  created_time?: string;
+  modified_time?: string;
+  method: string;
+  recovery_status: 'Recovered' | 'Not Recoverable' | 'Partial / Corrupt' | string;
+  is_recoverable: boolean;
+  unrecoverable_reason?: string;
+  confidence_score: number;
+  confidence_level: string;
+  sha256: string;
+  recovered_file_path: string;
+}
+
+export interface FsRecoveryResponse {
+  success: boolean;
+  fs_type: string;
+  case_id: string;
+  evidence_pre_hash: string;
+  evidence_post_hash: string;
+  evidence_unmodified: boolean;
+  deleted_entries_found: number;
+  active_entries_found: number;
+  recoverable_count: number;
+  partial_count: number;
+  not_recoverable_count: number;
+  output_directory: string;
+  files: FsRecoveryFile[];
+  error?: string;
+  message?: string;
+}
+
+export interface DevicePartitionInfo {
+  partition_number: number;
+  start_offset: number;
+  size_bytes: number;
+  size_formatted: string;
+  drive_letter: string;
+  filesystem: string;
+  is_boot: boolean;
+  is_system: boolean;
+}
+
+export interface PhysicalDiskInfo {
+  disk_index: number;
+  device_id: string;
+  friendly_name: string;
+  bus_type: string;
+  media_type: string;
+  size_bytes: number;
+  size_formatted: string;
+  partition_style: string;
+  is_read_only: boolean;
+  partitions: DevicePartitionInfo[];
+}
+
+export interface MountedVolumeInfo {
+  drive_letter: string;
+  volume_name: string;
+  filesystem: string;
+  drive_type: string;
+  total_bytes: number;
+  total_formatted: string;
+  free_bytes: number;
+  free_formatted: string;
+  is_removable: boolean;
+  is_read_only: boolean;
+  is_system: boolean;
+}
+
+export interface StorageSourcesResponse {
+  success: boolean;
+  physical_disks: PhysicalDiskInfo[];
+  mounted_volumes: MountedVolumeInfo[];
+  disk_images: DiskImage[];
+  total_sources: number;
+  detection_source: string;
+}
+
+

@@ -10,6 +10,13 @@
 
 #include "forensivault/common/crypto_hash.hpp"
 #include "core/disk_image_reader.hpp"
+#include "core/partition_table.hpp"
+#include "core/storage_device_detector.hpp"
+#include "filesystem/fs_analyzer.hpp"
+#include "filesystem/fat32_analyzer.hpp"
+#include "filesystem/exfat_analyzer.hpp"
+#include "filesystem/ntfs_analyzer.hpp"
+#include "recovery/recovery_engine.hpp"
 #include "carving/file_carver.hpp"
 #include "carving/confidence_scorer.hpp"
 #include "carving/fragment_reconstructor.hpp"
@@ -53,6 +60,21 @@ void safeCopy(char* dest, size_t max_len, const std::string& src) {
     size_t copy_len = (src.size() < max_len - 1) ? src.size() : (max_len - 1);
     std::memcpy(dest, src.data(), copy_len);
     dest[copy_len] = '\0';
+}
+
+std::string computeReaderSha256(forensivault::core::DiskImageReader& reader) {
+    CryptoHash::Sha256Context ctx;
+    uint64_t totalSize = reader.size();
+    uint64_t offset = 0;
+    const size_t chunkSize = 65536;
+    while (offset < totalSize) {
+        size_t toRead = static_cast<size_t>(std::min<uint64_t>(chunkSize, totalSize - offset));
+        auto buf = reader.readBytes(offset, toRead);
+        if (buf.empty()) break;
+        ctx.update(buf.data(), buf.size());
+        offset += buf.size();
+    }
+    return ctx.finalize();
 }
 }
 
@@ -385,3 +407,240 @@ FV_EXPORT int fv_reconstruct_fragments(const char* image_path, const char* file_
     safeCopy(out_json, max_json_len, ss.str());
     return reconstructedCount;
 }
+
+// 8. Partition Detection (MBR & GPT)
+FV_EXPORT int fv_detect_partitions(const char* image_path, char* out_json, size_t max_json_len) {
+    if (!image_path || !out_json || max_json_len == 0) return -1;
+    core::DiskImageReader reader;
+    if (!reader.open(image_path)) return -2;
+
+    auto partMap = core::PartitionDetector::detectPartitions(reader);
+    reader.close();
+
+    std::ostringstream ss;
+    ss << "{"
+       << "\"table_type\":\"" << escapeJson(partMap.table_type_str) << "\","
+       << "\"total_disk_sectors\":" << partMap.total_disk_sectors << ","
+       << "\"sector_size\":" << partMap.sector_size << ","
+       << "\"total_bytes\":" << (partMap.total_disk_sectors * partMap.sector_size) << ","
+       << "\"partitions\":[";
+
+    for (size_t i = 0; i < partMap.partitions.size(); ++i) {
+        if (i > 0) ss << ",";
+        const auto& p = partMap.partitions[i];
+        ss << "{"
+           << "\"partition_number\":" << p.partition_number << ","
+           << "\"start_sector\":" << p.start_sector << ","
+           << "\"sector_count\":" << p.sector_count << ","
+           << "\"size_bytes\":" << p.size_bytes << ","
+           << "\"size_formatted\":\"" << escapeJson(p.size_formatted) << "\","
+           << "\"partition_type_id\":" << static_cast<int>(p.partition_type_id) << ","
+           << "\"type_name\":\"" << escapeJson(p.type_name) << "\","
+           << "\"type_guid\":\"" << escapeJson(p.type_guid) << "\","
+           << "\"partition_name\":\"" << escapeJson(p.partition_name) << "\","
+           << "\"is_bootable\":" << (p.is_bootable ? "true" : "false")
+           << "}";
+    }
+    ss << "]}";
+
+    safeCopy(out_json, max_json_len, ss.str());
+    return static_cast<int>(partMap.partitions.size());
+}
+
+// 8b. Real Storage Device & Partition Hierarchy Detection
+FV_EXPORT int fv_detect_storage_devices(char* out_json, size_t max_json_len) {
+    if (!out_json || max_json_len == 0) return -1;
+    std::string jsonStr = core::StorageDeviceDetector::detectAllStorageJson();
+    safeCopy(out_json, max_json_len, jsonStr);
+    return 0;
+}
+
+// 9. Filesystem Inspection (NTFS, FAT32, exFAT)
+FV_EXPORT int fv_inspect_filesystem(const char* image_path, uint64_t start_sector, char* out_json, size_t max_json_len) {
+    if (!image_path || !out_json || max_json_len == 0) return -1;
+    core::DiskImageReader reader;
+    if (!reader.open(image_path)) return -2;
+
+    recovery::RecoveryEngine engine;
+    auto analyzer = engine.detectFilesystem(reader, start_sector);
+
+    std::ostringstream ss;
+    if (analyzer) {
+        auto vol = analyzer->getVolumeInfo();
+        std::string fsName = "UNKNOWN";
+        if (vol.fs_type == filesystem::FsType::NTFS) fsName = "NTFS";
+        else if (vol.fs_type == filesystem::FsType::FAT32) fsName = "FAT32";
+        else if (vol.fs_type == filesystem::FsType::EXFAT) fsName = "exFAT";
+
+        uint64_t partSizeBytes = vol.total_sectors * vol.bytes_per_sector;
+        if (partSizeBytes == 0 && reader.size() > (start_sector * 512)) {
+            partSizeBytes = reader.size() - (start_sector * 512);
+        }
+
+        ss << "{"
+           << "\"success\":true,"
+           << "\"is_detected\":true,"
+           << "\"fs_type\":\"" << escapeJson(fsName) << "\","
+           << "\"detection_status\":\"Confirmed\","
+           << "\"sector_size\":" << vol.bytes_per_sector << ","
+           << "\"cluster_size\":" << vol.cluster_size << ","
+           << "\"sectors_per_cluster\":" << vol.sectors_per_cluster << ","
+           << "\"partition_start_sector\":" << start_sector << ","
+           << "\"partition_start_bytes\":" << (start_sector * vol.bytes_per_sector) << ","
+           << "\"partition_size_bytes\":" << partSizeBytes << ","
+           << "\"partition_size_formatted\":\"" << escapeJson(core::PartitionDetector::formatPartitionSize(partSizeBytes)) << "\","
+           << "\"volume_label\":\"" << escapeJson(vol.volume_label) << "\","
+           << "\"serial_number\":" << vol.serial_number << ","
+           << "\"total_clusters\":" << vol.total_clusters << ","
+           << "\"message\":\"" << escapeJson(fsName + " filesystem structure validated successfully.") << "\""
+           << "}";
+    } else {
+        ss << "{"
+           << "\"success\":false,"
+           << "\"is_detected\":false,"
+           << "\"fs_type\":\"Unknown\","
+           << "\"detection_status\":\"Unsupported or corrupted filesystem\","
+           << "\"sector_size\":512,"
+           << "\"cluster_size\":0,"
+           << "\"partition_start_sector\":" << start_sector << ","
+           << "\"partition_size_bytes\":0,"
+           << "\"volume_label\":\"\","
+           << "\"message\":\"No recognized NTFS, FAT32, or exFAT volume boot record found at sector " << start_sector << ".\""
+           << "}";
+    }
+    reader.close();
+
+    safeCopy(out_json, max_json_len, ss.str());
+    return analyzer ? 0 : 1;
+}
+
+// 10. Real Filesystem Recovery & Extraction
+FV_EXPORT int fv_recover_filesystem(const char* image_path, uint64_t start_sector,
+                                    const char* output_dir, const char* case_id,
+                                    char* out_json, size_t max_json_len) {
+    if (!image_path || !out_json || max_json_len == 0) return -1;
+    core::DiskImageReader reader;
+    if (!reader.open(image_path)) return -2;
+
+    recovery::RecoveryEngine engine;
+    auto analyzer = engine.detectFilesystem(reader, start_sector);
+    if (!analyzer) {
+        reader.close();
+        std::string errJson = "{\"success\":false,\"error\":\"NO_FILESYSTEM\",\"message\":\"No supported filesystem detected at specified partition offset.\"}";
+        safeCopy(out_json, max_json_len, errJson);
+        return -3;
+    }
+
+    auto vol = analyzer->getVolumeInfo();
+    std::string fsName = "UNKNOWN";
+    if (vol.fs_type == filesystem::FsType::NTFS) fsName = "NTFS";
+    else if (vol.fs_type == filesystem::FsType::FAT32) fsName = "FAT32";
+    else if (vol.fs_type == filesystem::FsType::EXFAT) fsName = "exFAT";
+
+    // Compute pre-recovery evidence hash
+    std::string preHash = computeReaderSha256(reader);
+
+    std::string targetDir = output_dir ? output_dir : "ForensiVault_Recovered";
+    std::string cleanCase = (case_id && strlen(case_id) > 0) ? case_id : "CASE-001";
+    std::filesystem::path caseOutDir = std::filesystem::path(targetDir) / cleanCase;
+
+    // Scan deleted and active
+    auto deletedFiles = analyzer->findDeletedFiles();
+    auto activeFiles = analyzer->listDirectory("/");
+
+    int recoveredCount = 0;
+    int partialCount = 0;
+    int unrecoverableCount = 0;
+
+    std::ostringstream ss;
+    ss << "{"
+       << "\"success\":true,"
+       << "\"fs_type\":\"" << escapeJson(fsName) << "\","
+       << "\"case_id\":\"" << escapeJson(cleanCase) << "\","
+       << "\"evidence_pre_hash\":\"" << escapeJson(preHash) << "\","
+       << "\"deleted_entries_found\":" << deletedFiles.size() << ","
+       << "\"active_entries_found\":" << activeFiles.size() << ",";
+
+    std::vector<std::string> fileJsonEntries;
+
+    // Process deleted candidate files
+    for (size_t i = 0; i < deletedFiles.size(); ++i) {
+        auto& f = deletedFiles[i];
+        std::string status = "Recovered";
+        std::string sha256Hex = "";
+        std::string savedPath = "";
+
+        if (!f.is_recoverable) {
+            status = "Not Recoverable";
+            unrecoverableCount++;
+        } else {
+            auto data = analyzer->extractFile(f, reader);
+            if (!data.empty()) {
+                sha256Hex = CryptoHash::sha256(data.data(), data.size());
+                f.sha256_hash = sha256Hex;
+                try {
+                    std::filesystem::create_directories(caseOutDir);
+                    std::filesystem::path filePath = caseOutDir / f.filename;
+                    std::ofstream ofs(filePath, std::ios::binary);
+                    if (ofs) {
+                        ofs.write(reinterpret_cast<const char*>(data.data()), data.size());
+                        savedPath = filePath.string();
+                        recoveredCount++;
+                    }
+                } catch (...) {}
+            } else {
+                status = "Not Recoverable";
+                f.unrecoverable_reason = "Required file data or allocation information is unavailable.";
+                unrecoverableCount++;
+            }
+        }
+
+        std::ostringstream fsEntry;
+        fsEntry << "{"
+                << "\"id\":" << (i + 1) << ","
+                << "\"filename\":\"" << escapeJson(f.filename) << "\","
+                << "\"original_path\":\"" << escapeJson(f.full_path) << "\","
+                << "\"file_type\":\"" << escapeJson(f.extension.empty() ? "UNKNOWN" : f.extension) << "\","
+                << "\"extension\":\"" << escapeJson(f.extension) << "\","
+                << "\"size_bytes\":" << f.file_size << ","
+                << "\"offset_hex\":\"0x" << std::hex << std::uppercase << f.byte_offset << "\","
+                << "\"offset_dec\":" << std::dec << f.byte_offset << ","
+                << "\"starting_cluster\":" << f.starting_cluster << ","
+                << "\"mft_record\":" << f.mft_record_number << ","
+                << "\"fragment_count\":" << f.fragment_count << ","
+                << "\"created_time\":\"" << escapeJson(f.created_time) << "\","
+                << "\"modified_time\":\"" << escapeJson(f.modified_time) << "\","
+                << "\"method\":\"" << escapeJson(fsName + " Filesystem") << "\","
+                << "\"recovery_status\":\"" << escapeJson(status) << "\","
+                << "\"is_recoverable\":" << (status == "Recovered" ? "true" : "false") << ","
+                << "\"unrecoverable_reason\":\"" << escapeJson(f.unrecoverable_reason) << "\","
+                << "\"confidence_score\":" << (status == "Recovered" ? 95 : 20) << ","
+                << "\"confidence_level\":\"" << (status == "Recovered" ? "High" : "Low") << "\","
+                << "\"sha256\":\"" << escapeJson(sha256Hex) << "\","
+                << "\"recovered_file_path\":\"" << escapeJson(savedPath) << "\""
+                << "}";
+        fileJsonEntries.push_back(fsEntry.str());
+    }
+
+    // Compute post-recovery evidence hash (Verification of 100% read-only immutability)
+    std::string postHash = computeReaderSha256(reader);
+    reader.close();
+
+    ss << "\"recoverable_count\":" << recoveredCount << ","
+       << "\"partial_count\":" << partialCount << ","
+       << "\"not_recoverable_count\":" << unrecoverableCount << ","
+       << "\"evidence_post_hash\":\"" << escapeJson(postHash) << "\","
+       << "\"evidence_unmodified\":" << (preHash == postHash ? "true" : "false") << ","
+       << "\"output_directory\":\"" << escapeJson(caseOutDir.string()) << "\","
+       << "\"files\":[";
+
+    for (size_t i = 0; i < fileJsonEntries.size(); ++i) {
+        if (i > 0) ss << ",";
+        ss << fileJsonEntries[i];
+    }
+    ss << "]}";
+
+    safeCopy(out_json, max_json_len, ss.str());
+    return recoveredCount;
+}
+

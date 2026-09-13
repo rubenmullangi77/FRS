@@ -76,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="h-16 bg-[var(--surface)] border-b border-[var(--border)] px-8 flex items-center justify-between z-10 select-none flex-shrink-0">
+    <header className="h-16 bg-[var(--surface)] border-b border-[var(--border)] px-4 sm:px-6 lg:px-8 flex items-center justify-between z-10 select-none flex-shrink-0">
       {/* Left: Current Page Title & Workspace */}
       <div className="flex items-center gap-5">
         <h1 className="text-[17px] font-semibold text-[var(--text-primary)] tracking-tight">

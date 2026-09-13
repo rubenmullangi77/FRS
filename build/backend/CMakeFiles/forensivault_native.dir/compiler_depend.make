@@ -440,6 +440,12 @@ backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj:
   D:/SIH/src/carving/fragment_reconstructor.hpp \
   D:/SIH/src/carving/signature_scanner.hpp \
   D:/SIH/src/core/disk_image_reader.hpp \
+  D:/SIH/src/core/partition_table.hpp \
+  D:/SIH/src/filesystem/exfat_analyzer.hpp \
+  D:/SIH/src/filesystem/fat32_analyzer.hpp \
+  D:/SIH/src/filesystem/fs_analyzer.hpp \
+  D:/SIH/src/filesystem/ntfs_analyzer.hpp \
+  D:/SIH/src/recovery/recovery_engine.hpp \
   D:/SIH/src/sanitization/drive_detector.hpp \
   D:/SIH/src/sanitization/drive_types.hpp \
   D:/SIH/src/sanitization/image_sanitizer.hpp \
@@ -799,6 +805,8 @@ C:/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/fxsrintrin.h:
 
 C:/msys64/ucrt64/include/c++/16.1.0/bits/stl_algobase.h:
 
+D:/SIH/src/filesystem/exfat_analyzer.hpp:
+
 C:/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdint.h:
 
 C:/msys64/ucrt64/include/c++/16.1.0/bits/stl_bvector.h:
@@ -848,6 +856,8 @@ C:/msys64/ucrt64/include/processtopologyapi.h:
 C:/msys64/ucrt64/include/c++/16.1.0/bits/stringfwd.h:
 
 C:/msys64/ucrt64/include/c++/16.1.0/bits/unique_ptr.h:
+
+D:/SIH/src/filesystem/fs_analyzer.hpp:
 
 C:/msys64/ucrt64/include/c++/16.1.0/bits/uses_allocator.h:
 
@@ -1161,6 +1171,8 @@ C:/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/avxvnniintrin.h:
 
 C:/msys64/ucrt64/include/sys/timeb.h:
 
+D:/SIH/src/filesystem/fat32_analyzer.hpp:
+
 C:/msys64/ucrt64/include/sys/types.h:
 
 C:/msys64/ucrt64/include/sysinfoapi.h:
@@ -1344,5 +1356,11 @@ D:/SIH/src/carving/confidence_scorer.hpp:
 D:/SIH/src/carving/file_carver.hpp:
 
 D:/SIH/src/carving/format_validator.hpp:
+
+D:/SIH/src/core/partition_table.hpp:
+
+D:/SIH/src/filesystem/ntfs_analyzer.hpp:
+
+D:/SIH/src/recovery/recovery_engine.hpp:
 
 D:/SIH/src/verification/erase_verification.hpp:

@@ -2,6 +2,8 @@
 add_library(forensivault_core STATIC
     src/common/crypto_hash.cpp
     ${CMAKE_SOURCE_DIR}/src/core/disk_image_reader.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/partition_table.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/storage_device_detector.cpp
     ${CMAKE_SOURCE_DIR}/src/core/binary_utils.cpp
     ${CMAKE_SOURCE_DIR}/src/core/case_manager.cpp
     ${CMAKE_SOURCE_DIR}/src/carving/file_signature.cpp

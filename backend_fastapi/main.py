@@ -15,6 +15,7 @@ import time
 import shutil
 import hashlib
 import stat
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -59,6 +60,10 @@ from backend_fastapi.forensic_engine import (
     run_carving_on_image,
     erase_real_file,
     reconstruct_fragments_on_image,
+    detect_partitions,
+    inspect_filesystem,
+    recover_filesystem,
+    detect_storage_devices,
     RECOVERED_DIR
 )
 from backend_fastapi.image_fs_modifier import (
@@ -162,7 +167,7 @@ class SettingsUpdateRequest(BaseModel):
     settings: Dict[str, Any]
 
 class ReportGenerateRequest(BaseModel):
-    case_id: str
+    case_id: Optional[str] = None
     title: Optional[str] = "Forensic Investigation Dossier"
     examiner_name: Optional[str] = "Ruben"
     agency_name: Optional[str] = "ForensiVault Digital Forensics Lab"
@@ -197,6 +202,31 @@ class ReconstructRequest(BaseModel):
     file_type: Optional[str] = "JPEG"
     output_directory: Optional[str] = None
     case_id: Optional[str] = None
+
+class RecoveryPartitionsRequest(BaseModel):
+    image_path: str
+
+class RecoveryDetectFsRequest(BaseModel):
+    image_path: str
+    start_sector: Optional[int] = 0
+
+class RecoveryScanDeletedRequest(BaseModel):
+    image_path: str
+    start_sector: Optional[int] = 0
+    case_id: Optional[str] = None
+
+class RecoveryExtractRequest(BaseModel):
+    image_path: str
+    start_sector: Optional[int] = 0
+    case_id: Optional[str] = None
+    file_ids: Optional[List[int]] = None
+    output_directory: Optional[str] = None
+
+class RecoveryScanUnallocatedRequest(BaseModel):
+    image_path: str
+    case_id: Optional[str] = None
+    output_directory: Optional[str] = None
+
 
 # ============================================================================
 # 1. System Health & Diagnostics
@@ -312,133 +342,62 @@ def verify_password(req: PasswordVerifyRequest):
 # ============================================================================
 @app.get("/api/drives")
 def list_drives():
-    # Detect physical drives safely (read-only inspection, platform-aware)
-    if sys.platform != "win32":
-        physical_devices = []
-        try:
-            sys_block = Path("/sys/block")
-            if sys_block.exists():
-                for dev in sorted(sys_block.iterdir()):
-                    name = dev.name
-                    if name.startswith(("loop", "ram", "zram")):
-                        continue
-                    dev_path = f"/dev/{name}"
-                    size_file = dev / "size"
-                    sz_bytes = 0
-                    if size_file.exists():
-                        try:
-                            sz_bytes = int(size_file.read_text().strip()) * 512
-                        except Exception:
-                            pass
-                    sz_gb = round(sz_bytes / (1024**3), 1)
-                    physical_devices.append({
-                        "id": name,
-                        "target_path": dev_path,
-                        "name": f"Linux Storage Device ({name})",
-                        "type": "NVMe / SSD" if "nvme" in name else "SATA / Block Device",
-                        "media_type": "NVMe / SSD" if "nvme" in name else "SATA / Block Device",
-                        "size_bytes": sz_bytes,
-                        "size_str": f"{sz_gb} GB" if sz_gb > 0 else "System Drive",
-                        "read_only": True,
-                        "is_system_protected": True,
-                        "is_safe": False,
-                        "can_sanitize": False,
-                        "reason": "Host Linux operating system drive. Erasure prohibited."
-                    })
-        except Exception:
-            pass
-        if not physical_devices:
-            physical_devices = [
-                {
-                    "id": "nvme0n1",
-                    "target_path": "/dev/nvme0n1",
-                    "name": "Host Linux Storage Drive (/dev/nvme0n1)",
-                    "type": "NVMe / SSD",
-                    "media_type": "NVMe / SSD",
-                    "size_bytes": 512110190592,
-                    "size_str": "476.9 GB",
-                    "read_only": True,
-                    "is_system_protected": True,
-                    "is_safe": False,
-                    "can_sanitize": False,
-                    "reason": "Host Linux root device. Protected by SystemProtectionGuard."
-                }
-            ]
-    else:
-        physical_devices = [
-            {
-                "id": "PHYSICALDRIVE0",
-                "target_path": "\\\\.\\PhysicalDrive0",
-                "name": "Local OS Storage Drive",
-                "type": "NVMe / SSD",
-                "media_type": "NVMe / SSD",
-                "size_bytes": 512110190592,
-                "size_str": "476.9 GB",
-                "read_only": True,
-                "is_system_protected": True,
-                "is_safe": False,
-                "can_sanitize": False,
-                "reason": "Host operating system drive. Erasure prohibited."
-            },
-            {
-                "id": "PHYSICALDRIVE1",
-                "target_path": "\\\\.\\PhysicalDrive1",
-                "name": "Secondary Workstation Volume (D:)",
-                "type": "SATA / SSD",
-                "media_type": "SATA / SSD",
-                "size_bytes": 1000204886016,
-                "size_str": "931.5 GB",
-                "read_only": True,
-                "is_system_protected": True,
-                "is_safe": False,
-                "can_sanitize": False,
-                "reason": "Active partition root. Erasure prohibited."
-            }
-        ]
+    storage = detect_storage_devices()
+    physical_disks = storage.get("physical_disks", [])
+    mounted_volumes = storage.get("mounted_volumes", [])
+    disk_images = storage.get("disk_images", [])
 
-    # Detect disk images in test_data, configured folders, and cases
-    disk_images = []
-    search_paths = [
-        BASE_DIR / "test_data",
-        BASE_DIR / "test_data" / "disposable",
-        BASE_DIR / "test_data" / "disposable" / "cases"
-    ]
-    try:
-        cfg_folder = get_settings().get("defaultEvidenceFolder")
-        if cfg_folder:
-            norm_cfg = normalize_image_path(cfg_folder)
-            if norm_cfg and Path(norm_cfg).exists():
-                search_paths.append(Path(norm_cfg))
-    except Exception:
-        pass
+    # Format physical devices for backward compatibility
+    physical_devices = []
+    for pd in physical_disks:
+        physical_devices.append({
+            "id": f"PHYSICALDRIVE{pd.get('disk_number', 0)}",
+            "target_path": pd.get("device_path", f"\\\\.\\PhysicalDrive{pd.get('disk_number', 0)}"),
+            "name": f"{pd.get('friendly_name', 'Storage Device')} ({pd.get('bus_type', 'Standard')})",
+            "type": pd.get("bus_type", "Standard"),
+            "media_type": pd.get("bus_type", "Standard"),
+            "size_bytes": pd.get("total_size_bytes", 0),
+            "size_str": pd.get("total_size_formatted", "0 GB"),
+            "read_only": True,
+            "is_system_protected": True,
+            "is_safe": False,
+            "can_sanitize": False,
+            "reason": "Physical host drive. Sanitization prohibited in recovery module."
+        })
 
-    seen = set()
-    valid_exts = {".img", ".dd", ".raw", ".bin", ".iso", ".vhd"}
-    for sp in search_paths:
-        if sp.exists():
-            for file_path in sp.iterdir():
-                if file_path.is_file() and file_path.suffix.lower() in valid_exts:
-                    abs_p = str(file_path.resolve())
-                    if abs_p in seen:
-                        continue
-                    seen.add(abs_p)
-                    sz = file_path.stat().st_size
-                    sz_mb = round(sz / (1024.0 * 1024.0), 2)
-                    disk_images.append({
-                        "name": file_path.name,
-                        "path": abs_p,
-                        "size_bytes": sz,
-                        "size_mb": sz_mb,
-                        "format": "Raw DD/IMG Sector Image",
-                        "is_virtual_image": True,
-                        "is_safe": True,
-                        "read_only_accessible": True
-                    })
+    for mv in mounted_volumes:
+        physical_devices.append({
+            "id": mv.get("drive_letter", "C:"),
+            "target_path": mv.get("drive_letter", "C:"),
+            "name": f"Volume {mv.get('drive_letter')} [{mv.get('volume_name') or 'No Name'}] ({mv.get('filesystem')})",
+            "type": mv.get("drive_type", "FIXED"),
+            "media_type": mv.get("drive_type", "FIXED"),
+            "size_bytes": mv.get("total_bytes", 0),
+            "size_str": mv.get("total_formatted", "0 GB"),
+            "read_only": True,
+            "is_system_protected": mv.get("is_system_drive", False),
+            "is_safe": False,
+            "can_sanitize": False,
+            "reason": "Host mounted partition volume. Read-only forensic mode enforced."
+        })
 
     return {
         "physical_devices": physical_devices,
-        "disk_images": disk_images
+        "disk_images": disk_images,
+        "physical_disks": physical_disks,
+        "mounted_volumes": mounted_volumes,
+        "timestamp": storage.get("timestamp")
     }
+
+@app.get("/api/recovery/storage-sources")
+def get_recovery_storage_sources():
+    """
+    Returns real, live storage device hierarchy:
+    - physical_disks: list of physical disks with their child partitions and drive letters
+    - mounted_volumes: list of direct mounted volumes (C:, D:, E:, etc.) with confirmed filesystem, label, size, free space, and device type
+    - disk_images: list of available forensic disk images in test_data and case evidence folders
+    """
+    return detect_storage_devices()
 
 # ============================================================================
 # 4. Read-Only Streaming Cryptographic Hashing
@@ -949,22 +908,249 @@ def export_carved_files(req: Dict[str, Any]):
 # ============================================================================
 # 8. Filesystem Recovery & Fragment Analysis
 # ============================================================================
+# 8. Forensic File Recovery Pipeline (Partition -> FS -> Metadata -> Allocation -> Extraction)
+# ============================================================================
+
+CURRENT_DELETED_RESULTS: List[Dict[str, Any]] = []
+
+def validate_storage_source(target_path: str) -> str:
+    if not target_path:
+        raise HTTPException(status_code=400, detail="Storage source path is required.")
+    s = target_path.strip().replace("/", "\\")
+    if (len(s) >= 2 and s[1] == ":" and s[0].isalpha()) or s.startswith(r"\\.\PhysicalDrive") or s.lower().startswith("physical drive") or s.lower().startswith("physical disk"):
+        return s
+    p = Path(target_path).resolve()
+    if p.exists():
+        return str(p)
+    raise HTTPException(status_code=404, detail=f"Evidence storage source not found: {target_path}")
+
+@app.post("/api/recovery/partitions")
+def api_detect_partitions(req: RecoveryPartitionsRequest):
+    """
+    Step 1: Parse partition table (MBR or GPT) from raw storage source or forensic image.
+    """
+    source_path = validate_storage_source(req.image_path)
+    parts_result = detect_partitions(source_path)
+    log_audit_event(
+        event_type="RECOVERY",
+        action="DETECT_PARTITIONS",
+        user="Ruben",
+        details={
+            "image_path": source_path,
+            "table_type": parts_result.get("table_type"),
+            "partition_count": len(parts_result.get("partitions", []))
+        }
+    )
+    return parts_result
+
+@app.post("/api/recovery/detect-fs")
+def api_detect_fs(req: RecoveryDetectFsRequest):
+    """
+    Step 2: Probe Volume Boot Record (VBR) at partition offset to identify NTFS, FAT32, or exFAT.
+    """
+    source_path = validate_storage_source(req.image_path)
+    fs_result = inspect_filesystem(source_path, req.start_sector or 0)
+    log_audit_event(
+        event_type="RECOVERY",
+        action="DETECT_FILESYSTEM",
+        user="Ruben",
+        details={
+            "image_path": source_path,
+            "start_sector": req.start_sector or 0,
+            "fs_type": fs_result.get("fs_type"),
+            "is_detected": fs_result.get("is_detected")
+        }
+    )
+    return fs_result
+
+@app.post("/api/recovery/scan-deleted")
+def api_scan_deleted(req: RecoveryScanDeletedRequest):
+    """
+    Step 3: Parse filesystem metadata (MFT records, FAT directory clusters) to find deleted file entries.
+    """
+    source_path = validate_storage_source(req.image_path)
+    case_id = req.case_id or "CASE-2026-001"
+    res = recover_filesystem(
+        source_path,
+        start_sector=req.start_sector or 0,
+        output_dir=str(BASE_DIR / "ForensiVault_Recovered"),
+        case_id=case_id
+    )
+
+    files = res.get("files", [])
+    global CURRENT_DELETED_RESULTS
+    CURRENT_DELETED_RESULTS = files
+
+    log_audit_event(
+        event_type="RECOVERY",
+        action="SCAN_DELETED_FILES",
+        user="Ruben",
+        details={
+            "case_id": case_id,
+            "image_path": source_path,
+            "start_sector": req.start_sector or 0,
+            "fs_type": res.get("fs_type"),
+            "deleted_found": res.get("deleted_entries_found", 0),
+            "recoverable": res.get("recoverable_count", 0),
+            "not_recoverable": res.get("not_recoverable_count", 0)
+        },
+        case_id=case_id
+    )
+    return res
+
+@app.post("/api/recovery/extract")
+def api_extract_files(req: RecoveryExtractRequest):
+    r"""
+    Step 4: Execute real recovery using cluster allocation/data runs, validate, calculate SHA-256,
+    write to D:\SIH\ForensiVault_Recovered\<CASE_ID>\<filename>, log audit events and persist to DB.
+    """
+    source_path = validate_storage_source(req.image_path)
+    case_id = req.case_id or "CASE-2026-001"
+    target_base = req.output_directory or str(BASE_DIR / "ForensiVault_Recovered")
+    
+    res = recover_filesystem(
+        source_path,
+        start_sector=req.start_sector or 0,
+        output_dir=target_base,
+        case_id=case_id
+    )
+
+    files = res.get("files", [])
+    if req.file_ids is not None and len(req.file_ids) > 0:
+        files = [f for f in files if f.get("id") in req.file_ids]
+
+    # Save to SQLite database
+    conn = get_connection()
+    cursor = conn.cursor()
+    now_iso = datetime.now().isoformat()
+    p = Path(source_path)
+    evd_tag = "EVD-" + (p.stem.upper()[:8] if p.stem else "VOL")
+    for f in files:
+        if f.get("is_recoverable") and f.get("recovered_file_path"):
+            cursor.execute("""
+                INSERT INTO recovered_files (
+                    file_id, case_id, evidence_id, file_name, file_type, extension,
+                    mime_type, start_offset, length_bytes, start_sector, sector_span,
+                    is_valid, confidence_score, confidence_level, sha256, entropy,
+                    is_compressed_or_encrypted, recovery_method, validation_notes,
+                    recovered_file_path, recovered_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                f.get("id", 1),
+                case_id,
+                evd_tag,
+                f.get("filename", "recovered_file.dat"),
+                f.get("file_type", "UNKNOWN"),
+                f.get("extension", "dat"),
+                "application/octet-stream",
+                f.get("offset_dec", 0),
+                f.get("size_bytes", 0),
+                (f.get("offset_dec", 0) // 512),
+                ((f.get("size_bytes", 0) + 511) // 512),
+                1,
+                float(f.get("confidence_score", 95.0)),
+                f.get("confidence_level", "High"),
+                f.get("sha256", ""),
+                0.0,
+                0,
+                f.get("method", "Filesystem Metadata"),
+                f"Starting Cluster: {f.get('starting_cluster')}, MFT Record: {f.get('mft_record')}, Fragments: {f.get('fragment_count')}",
+                f.get("recovered_file_path", ""),
+                now_iso
+            ))
+    conn.commit()
+    conn.close()
+
+    # Update in-memory carved/recovered list
+    global CURRENT_CARVED_RESULTS
+    CURRENT_CARVED_RESULTS = files
+
+    # Log cryptographic audit trail
+    log_audit_event(
+        event_type="RECOVERY",
+        action="EXTRACT_RECOVERED_FILES",
+        user="Ruben",
+        details={
+            "case_id": case_id,
+            "image_path": source_path,
+            "evidence_pre_hash": res.get("evidence_pre_hash"),
+            "evidence_post_hash": res.get("evidence_post_hash"),
+            "evidence_unmodified": res.get("evidence_unmodified"),
+            "recovered_count": len([f for f in files if f.get("is_recoverable")]),
+            "output_directory": res.get("output_directory")
+        },
+        case_id=case_id
+    )
+
+    return res
+
+@app.post("/api/recovery/scan-unallocated")
+def api_scan_unallocated(req: RecoveryScanUnallocatedRequest):
+    """
+    Fallback Step: Raw file carving on unallocated space when filesystem metadata is corrupted or unavailable.
+    """
+    source_path = validate_storage_source(req.image_path)
+    case_id = req.case_id or "CASE-2026-001"
+    target_dir = req.output_directory or str(BASE_DIR / "ForensiVault_Recovered" / case_id)
+    Path(target_dir).mkdir(parents=True, exist_ok=True)
+
+    res = run_carving_on_image(source_path, target_dir)
+    carved_files = res.get("carved_files", [])
+
+    # Format for recovery view
+    formatted_files = []
+    for cf in carved_files:
+        formatted_files.append({
+            "id": cf.get("id"),
+            "filename": Path(cf.get("recovered_file_path", "")).name or f"CARVED_{cf.get('id'):05d}.{cf.get('extension', 'dat')}",
+            "original_path": f"/Unallocated/0x{cf.get('start_offset', 0):08X}",
+            "file_type": cf.get("file_type", "UNKNOWN"),
+            "extension": cf.get("extension", "dat"),
+            "size_bytes": cf.get("length_bytes", 0),
+            "offset_hex": f"0x{cf.get('start_offset', 0):08X}",
+            "offset_dec": cf.get("start_offset", 0),
+            "starting_cluster": 0,
+            "mft_record": 0,
+            "fragment_count": 1,
+            "method": "Raw File Carving",
+            "recovery_status": "Recovered" if cf.get("is_valid") else "Partial / Corrupt",
+            "is_recoverable": bool(cf.get("is_valid")),
+            "unrecoverable_reason": "" if cf.get("is_valid") else "Structural container validation failed",
+            "confidence_score": cf.get("confidence_score", 85.0),
+            "confidence_level": cf.get("confidence_level", "High"),
+            "sha256": cf.get("sha256", ""),
+            "recovered_file_path": cf.get("recovered_file_path", "")
+        })
+
+    log_audit_event(
+        event_type="RECOVERY",
+        action="CARVE_UNALLOCATED_SPACE",
+        user="Ruben",
+        details={
+            "case_id": case_id,
+            "image_path": source_path,
+            "files_carved": len(carved_files)
+        },
+        case_id=case_id
+    )
+
+    return {
+        "success": True,
+        "method": "Raw File Carving",
+        "case_id": case_id,
+        "image_path": source_path,
+        "total_carved": len(carved_files),
+        "files": formatted_files
+    }
+
+# Backward compatibility alias
 @app.post("/api/filesystem/recover")
-def recover_filesystem(req: Dict[str, Any]):
+def legacy_filesystem_recover(req: Dict[str, Any]):
     image_path = req.get("image_path")
     if not image_path or not Path(image_path).is_file():
         raise HTTPException(status_code=404, detail="Evidence disk image not found.")
+    return inspect_filesystem(image_path, 0)
 
-    return {
-        "filesystem": "FAT32 / exFAT / NTFS Volume Probe",
-        "volumes_detected": 1,
-        "volume_label": "FORENSIC_VOL",
-        "cluster_size_bytes": 4096,
-        "total_clusters": 262144,
-        "unallocated_clusters": 194500,
-        "deleted_directory_records_found": 12,
-        "status": "STRUCTURE_VALIDATED"
-    }
 
 
 @app.post("/api/analysis/classify")
@@ -1464,34 +1650,59 @@ def create_test_disk_api(req: Optional[CreateTestDiskRequest] = None):
 # 10. Reports & Dossier Generation (Multi-Page PDF & HTML)
 # ============================================================================
 @app.get("/api/reports")
-def list_reports():
+def list_reports(case_id: Optional[str] = None):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM reports ORDER BY generated_at DESC")
+    if case_id and case_id.strip():
+        cursor.execute("SELECT * FROM reports WHERE case_id = ? ORDER BY generated_at DESC", (case_id.strip(),))
+    else:
+        cursor.execute("SELECT * FROM reports ORDER BY generated_at DESC")
     rows = cursor.fetchall()
+
+    cursor.execute("SELECT case_id, case_name FROM cases")
+    case_map = {r["case_id"]: r["case_name"] for r in cursor.fetchall()}
+
+    cursor.execute("SELECT case_id, COUNT(*) as cnt FROM recovered_files GROUP BY case_id")
+    rec_map = {r["case_id"]: r["cnt"] for r in cursor.fetchall()}
     conn.close()
-    
+
     reports = []
     seen_paths = set()
     for r in rows:
         d = dict(r)
         p = Path(d.get("file_path", ""))
-        sz = p.stat().st_size if p.is_file() else 1024
+        sz = p.stat().st_size if p.is_file() else 0
+        cid = d.get("case_id", "")
         d["filename"] = p.name if p.name else f"{d.get('report_id', 'report')}.pdf"
         d["filepath"] = str(p)
         d["size_bytes"] = sz
         d["created_iso"] = d.get("generated_at") or datetime.now().isoformat()
+        d["case_name"] = case_map.get(cid, f"Case {cid}")
+        d["recovered_count"] = rec_map.get(cid, 0)
+        d["status"] = "Generated"
         reports.append(d)
-        seen_paths.add(str(p.resolve()) if p.is_file() else str(p))
+        if p.is_file():
+            seen_paths.add(str(p.resolve()))
 
     if REPORTS_DIR.exists():
         for f in REPORTS_DIR.glob("*.pdf"):
             abs_str = str(f.resolve())
             if abs_str not in seen_paths:
+                m = re.match(r"ForensiVault_([^_]+)_Forensic_Report_(.+)\.pdf", f.name)
+                matched_case = m.group(1) if m else "CASE-GENERAL"
+                if not m and f.name.startswith("forensic_report_"):
+                    parts = f.stem.split("_")
+                    if len(parts) >= 3:
+                        matched_case = parts[2]
+
+                if case_id and case_id.strip() and matched_case != case_id.strip():
+                    continue
+
                 rep_id = f"REP-{f.stem}"
                 reports.append({
                     "report_id": rep_id,
-                    "case_id": "CASE-2026-001",
+                    "case_id": matched_case,
+                    "case_name": case_map.get(matched_case, f"Case {matched_case}"),
                     "title": f"Forensic Dossier ({f.name})",
                     "filename": f.name,
                     "filepath": abs_str,
@@ -1502,7 +1713,9 @@ def list_reports():
                     "size_bytes": f.stat().st_size,
                     "created_iso": datetime.fromtimestamp(f.stat().st_mtime).isoformat(),
                     "generated_at": datetime.fromtimestamp(f.stat().st_mtime).isoformat(),
-                    "sha256": ""
+                    "sha256": "",
+                    "recovered_count": rec_map.get(matched_case, 0),
+                    "status": "Generated"
                 })
                 seen_paths.add(abs_str)
 
@@ -1510,8 +1723,15 @@ def list_reports():
 
 @app.post("/api/reports/generate")
 def generate_report(req: ReportGenerateRequest):
+    if not req.case_id or not req.case_id.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Please select a case before generating a report."
+        )
+    case_id = req.case_id.strip()
+
     now = datetime.now().isoformat()
-    rep_id = f"REP-{int(time.time())}"
+    rep_id = f"REP-{datetime.now().strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:6].upper()}"
     
     settings = get_settings()
     examiner = req.examiner_name or settings.get("examinerName", "Ruben")
@@ -1520,70 +1740,68 @@ def generate_report(req: ReportGenerateRequest):
     # 1. Fetch case details from database
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM cases WHERE case_id = ?", (req.case_id,))
+    cursor.execute("SELECT * FROM cases WHERE case_id = ?", (case_id,))
     case_row = cursor.fetchone()
     case_data = dict(case_row) if case_row else {
-        "case_id": req.case_id,
-        "case_name": f"Investigation {req.case_id}",
+        "case_id": case_id,
+        "case_name": f"Investigation {case_id}",
         "investigator_name": examiner,
         "organization": agency,
+        "description": "Digital Forensic Examination",
         "status": "ACTIVE",
         "created_at": now
     }
 
-    # 2. Fetch evidence list
-    cursor.execute("SELECT * FROM evidence WHERE case_id = ?", (req.case_id,))
+    # 2. Fetch evidence list strictly scoped to case_id
+    cursor.execute("SELECT * FROM evidence WHERE case_id = ?", (case_id,))
     evidence_rows = cursor.fetchall()
     evidence_list = [dict(r) for r in evidence_rows]
-    if not evidence_list:
-        cursor.execute("SELECT * FROM evidence LIMIT 5")
-        evidence_list = [dict(r) for r in cursor.fetchall()]
 
-    # 3. Fetch recovered files
-    cursor.execute("SELECT * FROM recovered_files WHERE case_id = ? ORDER BY id DESC LIMIT 50", (req.case_id,))
+    # 3. Fetch recovered files strictly scoped to case_id
+    cursor.execute("SELECT * FROM recovered_files WHERE case_id = ? ORDER BY id DESC", (case_id,))
     carved_rows = cursor.fetchall()
     recovered_files = [dict(r) for r in carved_rows]
-    if not recovered_files:
-        cursor.execute("SELECT * FROM recovered_files ORDER BY id DESC LIMIT 20")
-        recovered_files = [dict(r) for r in cursor.fetchall()]
 
-    # 4. Fetch audit logs
-    cursor.execute("SELECT * FROM audit_logs ORDER BY id DESC LIMIT 25")
+    # 4. Fetch audit logs strictly scoped to case_id
+    cursor.execute("SELECT * FROM audit_logs WHERE case_id = ? ORDER BY id DESC LIMIT 50", (case_id,))
     audit_rows = cursor.fetchall()
     audit_logs = [dict(r) for r in audit_rows]
     conn.close()
 
-    out_pdf = REPORTS_DIR / f"forensic_report_{req.case_id}_{rep_id}.pdf"
+    # Naming convention: ForensiVault_<CASE_ID>_Forensic_Report_<REPORT_ID>.pdf
+    clean_case = re.sub(r'[^A-Za-z0-9_\-]', '_', case_id).strip('_') or 'CASE'
+    clean_rep = re.sub(r'[^A-Za-z0-9_\-]', '_', rep_id).strip('_')
+    out_pdf = REPORTS_DIR / f"ForensiVault_{clean_case}_Forensic_Report_{clean_rep}.pdf"
     
     metadata = {
         "report_id": rep_id,
-        "case_id": req.case_id,
-        "title": req.title or "Forensic Investigation Dossier",
+        "case_id": case_id,
+        "title": req.title or f"Forensic Investigation Dossier - {case_id}",
         "examiner": examiner,
         "agency": agency,
         "timestamp": now
     }
 
-    evidence_item = evidence_list[0] if evidence_list else {
-        "evidence_id": "EVD-PRIMARY",
-        "name": "Forensic Source Evidence",
-        "source_path": "evidence/source.img",
-        "size_bytes": 1048576,
-        "sha256": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a"
-    }
+    total_files = len(recovered_files)
+    valid_files = len([f for f in recovered_files if f.get("is_valid", 1) in (1, True, "1")])
+    partial_files = len([f for f in recovered_files if f.get("is_valid", 1) in (0, False, "0")])
+    avg_conf = f"{(sum(float(f.get('confidence_score') or 0) for f in recovered_files) / total_files):.1f}%" if total_files > 0 else "0.0%"
+    frag_count = len([f for f in recovered_files if (f.get("sector_span") or 1) > 1 or f.get("fragment_count", 1) > 1])
 
     recovery_stats = {
-        "total_scanned_sectors": 2048,
-        "signatures_matched": len(recovered_files),
-        "files_recovered": len(recovered_files),
-        "valid_integrity_rate": "100%",
+        "total_detected": total_files,
+        "total_recovered": valid_files,
+        "total_partial": partial_files,
+        "total_failed": 0,
+        "avg_confidence": avg_conf,
+        "fragment_candidates": frag_count,
         "scan_time": now
     }
 
     res_path = generate_forensic_pdf(
         output_path=str(out_pdf),
         case_info=case_data,
-        evidence_info=evidence_item,
+        evidence_info=evidence_list,
         recovery_stats=recovery_stats,
         recovered_files=recovered_files,
         audit_events=audit_logs,
@@ -1602,8 +1820,8 @@ def generate_report(req: ReportGenerateRequest):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         rep_id,
-        req.case_id,
-        req.title or "Forensic Investigation Dossier",
+        case_id,
+        req.title or f"Forensic Investigation Dossier - {case_id}",
         examiner,
         agency,
         str(out_pdf),
@@ -1620,13 +1838,13 @@ def generate_report(req: ReportGenerateRequest):
         user=examiner,
         details={
             "report_id": rep_id,
-            "case_id": req.case_id,
+            "case_id": case_id,
             "file_path": str(out_pdf),
             "sha256": sha,
             "size_bytes": size,
             "format": "PDF"
         },
-        case_id=req.case_id
+        case_id=case_id
     )
 
     return {

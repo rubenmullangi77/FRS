@@ -281,16 +281,50 @@ bool NTFSAnalyzer::parseMftRecord(const uint8_t* recordData, size_t recordSize, 
         outRecord.extension = foundName.substr(dotPos + 1);
     }
 
+    outRecord.fragment_count = static_cast<uint32_t>(foundRuns.size());
+
     if (!foundRuns.empty()) {
         outRecord.starting_cluster = foundRuns.front().start_cluster;
         outRecord.byte_offset = volume_info_.partition_offset_bytes + (outRecord.starting_cluster * volume_info_.cluster_size);
+        
+        // Validate runs: check if runs exceed total volume sectors/clusters
+        bool runsValid = true;
+        uint64_t totalClusterSpan = 0;
+        for (const auto& run : foundRuns) {
+            totalClusterSpan += run.cluster_count;
+            if (volume_info_.total_sectors > 0 && volume_info_.sectors_per_cluster > 0) {
+                uint64_t maxCluster = volume_info_.total_sectors / volume_info_.sectors_per_cluster;
+                if (run.start_cluster >= maxCluster || (run.start_cluster + run.cluster_count) > maxCluster + 1024) {
+                    runsValid = false;
+                    break;
+                }
+            }
+        }
+        if (!runsValid) {
+            outRecord.is_recoverable = false;
+            outRecord.unrecoverable_reason = "Required file data or allocation information is unavailable (cluster runs point beyond volume boundary).";
+            outRecord.allocation_status = AllocationStatus::NOT_RECOVERABLE;
+        } else {
+            outRecord.is_recoverable = true;
+            outRecord.allocation_status = isAllocated ? AllocationStatus::ALLOCATED : AllocationStatus::DELETED_CANDIDATE;
+        }
     } else if (residentDataSize > 0) {
         // Resident data offset
         outRecord.starting_cluster = 0;
         outRecord.byte_offset = residentDataOffset; // Relative to record in this context
+        outRecord.is_recoverable = true;
+        outRecord.fragment_count = 1;
+        outRecord.allocation_status = isAllocated ? AllocationStatus::ALLOCATED : AllocationStatus::DELETED_CANDIDATE;
+    } else if (foundSize > 0) {
+        // Non-zero file but missing runs and resident data
+        outRecord.is_recoverable = false;
+        outRecord.unrecoverable_reason = "Required file data or allocation information is unavailable (data runs destroyed or zeroed).";
+        outRecord.allocation_status = AllocationStatus::NOT_RECOVERABLE;
+    } else {
+        outRecord.is_recoverable = true;
+        outRecord.allocation_status = isAllocated ? AllocationStatus::ALLOCATED : AllocationStatus::DELETED_CANDIDATE;
     }
 
-    outRecord.allocation_status = isAllocated ? AllocationStatus::ALLOCATED : AllocationStatus::DELETED_CANDIDATE;
     outRecord.recovery_method = isAllocated ? RecoveryMethod::FILESYSTEM_METADATA_ACTIVE : RecoveryMethod::FILESYSTEM_METADATA_DELETED;
 
     return true;
@@ -312,6 +346,7 @@ std::vector<FsFileRecord> NTFSAnalyzer::scanMftRecords(core::DiskImageReader& re
         FsFileRecord rec;
         bool isAllocated = false;
         if (parseMftRecord(recordBuf.data(), mft_record_size_, rec, isAllocated)) {
+            rec.mft_record_number = i;
             if (lookForDeleted == (!isAllocated)) {
                 // If resident file, mark offset as absolute image offset
                 if (rec.cluster_runs.empty() && rec.byte_offset > 0) {

@@ -270,6 +270,15 @@ std::vector<FsFileRecord> FAT32Analyzer::parseDirectoryCluster(core::DiskImageRe
                 uint64_t numClustersNeeded = (rec.file_size + volume_info_.cluster_size - 1) / volume_info_.cluster_size;
                 if (numClustersNeeded == 0 && rec.file_size > 0) numClustersNeeded = 1;
                 rec.cluster_runs.push_back({rec.starting_cluster, numClustersNeeded});
+                rec.fragment_count = 1;
+                rec.is_recoverable = true;
+            } else if (rec.file_size > 0) {
+                rec.is_recoverable = false;
+                rec.unrecoverable_reason = "Starting cluster is 0 or unavailable.";
+                rec.allocation_status = AllocationStatus::NOT_RECOVERABLE;
+            } else {
+                rec.is_recoverable = true;
+                rec.fragment_count = 0;
             }
 
             results.push_back(rec);

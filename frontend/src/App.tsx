@@ -129,7 +129,7 @@ export const App: React.FC = () => {
       case 'drive_sanitization':
         return <DriveSanitizationPage />;
       case 'reports':
-        return <ReportsPage activeCase={activeCase} />;
+        return <ReportsPage activeCase={activeCase} onSelectCase={setActiveCase} />;
       case 'audit_logs':
         return <AuditLogsPage activeCase={activeCase} />;
       case 'diagnostics':
@@ -160,7 +160,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-[var(--bg-main)] text-[var(--text-primary)] overflow-hidden font-sans antialiased">
+    <div className="flex h-screen w-full max-w-full bg-[var(--bg-main)] text-[var(--text-primary)] overflow-hidden font-sans antialiased box-border">
       {/* Navigation Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -183,7 +183,7 @@ export const App: React.FC = () => {
         />
 
         {/* Scrollable View Container */}
-        <main className="flex-1 overflow-y-auto bg-[var(--bg-main)]">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 bg-[var(--bg-main)] box-border">
           {renderActivePage()}
         </main>
       </div>

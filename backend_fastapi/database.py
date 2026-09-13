@@ -243,9 +243,17 @@ def log_audit_event(event_type: str, action: str, user: str, details: Dict[str, 
     prev_hash = row[0] if row else "0000000000000000000000000000000000000000000000000000000000000000"
     
     now = datetime.now().isoformat()
-    cursor.execute("SELECT COUNT(*) FROM audit_logs")
-    count = cursor.fetchone()[0] + 1
-    event_id = f"EVT-{count:06d}"
+    cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM audit_logs")
+    next_id = cursor.fetchone()[0]
+    event_id = f"EVT-{next_id:06d}"
+    
+    # Ensure event_id is strictly unique
+    while True:
+        cursor.execute("SELECT 1 FROM audit_logs WHERE event_id = ?", (event_id,))
+        if not cursor.fetchone():
+            break
+        next_id += 1
+        event_id = f"EVT-{next_id:06d}"
     
     details_str = json.dumps(details, sort_keys=True)
     payload = f"{now}|{event_id}|{event_type}|{action}|{user}|{details_str}|{prev_hash}"

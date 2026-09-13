@@ -225,6 +225,15 @@ std::vector<FsFileRecord> ExFATAnalyzer::parseDirectoryCluster(core::DiskImageRe
             uint64_t numClusters = (dataLength + volume_info_.cluster_size - 1) / volume_info_.cluster_size;
             if (numClusters == 0 && dataLength > 0) numClusters = 1;
             rec.cluster_runs.push_back({firstCluster, numClusters});
+            rec.fragment_count = 1;
+            rec.is_recoverable = true;
+        } else if (dataLength > 0) {
+            rec.is_recoverable = false;
+            rec.unrecoverable_reason = "exFAT starting cluster unavailable or outside cluster heap.";
+            rec.allocation_status = AllocationStatus::NOT_RECOVERABLE;
+        } else {
+            rec.is_recoverable = true;
+            rec.fragment_count = 0;
         }
 
         results.push_back(rec);

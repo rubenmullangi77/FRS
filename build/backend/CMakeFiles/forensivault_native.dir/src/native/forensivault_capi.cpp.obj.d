@@ -382,6 +382,13 @@ backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj:
  C:/msys64/ucrt64/include/c++/16.1.0/mutex \
  C:/msys64/ucrt64/include/c++/16.1.0/bits/std_mutex.h \
  C:/msys64/ucrt64/include/c++/16.1.0/bits/unique_lock.h \
+ D:/SIH/src/core/partition_table.hpp \
+ D:/SIH/src/core/storage_device_detector.hpp \
+ D:/SIH/src/filesystem/fs_analyzer.hpp \
+ D:/SIH/src/filesystem/fat32_analyzer.hpp \
+ D:/SIH/src/filesystem/exfat_analyzer.hpp \
+ D:/SIH/src/filesystem/ntfs_analyzer.hpp \
+ D:/SIH/src/recovery/recovery_engine.hpp \
  D:/SIH/src/carving/file_carver.hpp D:/SIH/src/carving/file_signature.hpp \
  D:/SIH/src/carving/signature_scanner.hpp \
  C:/msys64/ucrt64/include/c++/16.1.0/functional \

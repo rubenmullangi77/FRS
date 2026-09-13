@@ -30,6 +30,7 @@ enum class AllocationStatus {
     ALLOCATED,           // Active, referenced in directory/MFT table as allocated
     DELETED_CANDIDATE,   // Tombstone record (e.g. 0xE5 in FAT, in-use bit 0 in exFAT/NTFS)
     DAMAGED_CHAIN,       // Metadata points to clusters that appear invalid or truncated
+    NOT_RECOVERABLE,     // Required file data or allocation runs are destroyed/unavailable
     UNKNOWN
 };
 
@@ -38,6 +39,7 @@ inline std::ostream& operator<<(std::ostream& os, AllocationStatus status) {
         case AllocationStatus::ALLOCATED:         return os << "ALLOCATED";
         case AllocationStatus::DELETED_CANDIDATE: return os << "DELETED_CANDIDATE";
         case AllocationStatus::DAMAGED_CHAIN:     return os << "DAMAGED_CHAIN";
+        case AllocationStatus::NOT_RECOVERABLE:   return os << "NOT_RECOVERABLE";
         default:                                  return os << "UNKNOWN";
     }
 }
@@ -103,6 +105,12 @@ struct FsFileRecord {
     int confidence_score{0};
     std::string format_validation_status;
     std::string sha256_hash;
+
+    // Forensic metadata extensions
+    uint64_t mft_record_number{0};
+    uint32_t fragment_count{0};
+    bool is_recoverable{true};
+    std::string unrecoverable_reason;
 };
 
 class FilesystemAnalyzer {

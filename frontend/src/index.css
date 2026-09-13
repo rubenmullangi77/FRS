@@ -210,6 +210,14 @@ body {
   background-color: var(--surface-hover);
 }
 
+.table-compact th {
+  padding: 11px 14px !important;
+}
+
+.table-compact td {
+  padding: 12px 14px !important;
+}
+
 /* Buttons with Clean Borders and Micro-Interactions */
 .btn-primary {
   display: inline-flex;

@@ -415,6 +415,54 @@ __/src/core/disk_image_reader.cpp.s:
 	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/disk_image_reader.cpp.s
 .PHONY : __/src/core/disk_image_reader.cpp.s
 
+__/src/core/partition_table.obj: __/src/core/partition_table.cpp.obj
+.PHONY : __/src/core/partition_table.obj
+
+# target to build an object file
+__/src/core/partition_table.cpp.obj:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj
+.PHONY : __/src/core/partition_table.cpp.obj
+
+__/src/core/partition_table.i: __/src/core/partition_table.cpp.i
+.PHONY : __/src/core/partition_table.i
+
+# target to preprocess a source file
+__/src/core/partition_table.cpp.i:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.i
+.PHONY : __/src/core/partition_table.cpp.i
+
+__/src/core/partition_table.s: __/src/core/partition_table.cpp.s
+.PHONY : __/src/core/partition_table.s
+
+# target to generate assembly for a file
+__/src/core/partition_table.cpp.s:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.s
+.PHONY : __/src/core/partition_table.cpp.s
+
+__/src/core/storage_device_detector.obj: __/src/core/storage_device_detector.cpp.obj
+.PHONY : __/src/core/storage_device_detector.obj
+
+# target to build an object file
+__/src/core/storage_device_detector.cpp.obj:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj
+.PHONY : __/src/core/storage_device_detector.cpp.obj
+
+__/src/core/storage_device_detector.i: __/src/core/storage_device_detector.cpp.i
+.PHONY : __/src/core/storage_device_detector.i
+
+# target to preprocess a source file
+__/src/core/storage_device_detector.cpp.i:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.i
+.PHONY : __/src/core/storage_device_detector.cpp.i
+
+__/src/core/storage_device_detector.s: __/src/core/storage_device_detector.cpp.s
+.PHONY : __/src/core/storage_device_detector.s
+
+# target to generate assembly for a file
+__/src/core/storage_device_detector.cpp.s:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.s
+.PHONY : __/src/core/storage_device_detector.cpp.s
+
 __/src/filesystem/exfat_analyzer.obj: __/src/filesystem/exfat_analyzer.cpp.obj
 .PHONY : __/src/filesystem/exfat_analyzer.obj
 
@@ -1032,6 +1080,12 @@ help:
 	@echo ... __/src/core/disk_image_reader.obj
 	@echo ... __/src/core/disk_image_reader.i
 	@echo ... __/src/core/disk_image_reader.s
+	@echo ... __/src/core/partition_table.obj
+	@echo ... __/src/core/partition_table.i
+	@echo ... __/src/core/partition_table.s
+	@echo ... __/src/core/storage_device_detector.obj
+	@echo ... __/src/core/storage_device_detector.i
+	@echo ... __/src/core/storage_device_detector.s
 	@echo ... __/src/filesystem/exfat_analyzer.obj
 	@echo ... __/src/filesystem/exfat_analyzer.i
 	@echo ... __/src/filesystem/exfat_analyzer.s

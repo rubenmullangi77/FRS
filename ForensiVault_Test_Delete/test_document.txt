@@ -1,0 +1,3 @@
+ForensiVault Real Filesystem Deletion Test Document.
+Confidential test data.
+Timestamp: 2026-09-13T08:09:20.347466
