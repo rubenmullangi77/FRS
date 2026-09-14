@@ -312,6 +312,11 @@ def generate_ntfs_image(filepath):
     rec6 = build_mft_record("SUSPECT.JPG", jpeg_content, False, 6)  # False = DELETED candidate!
     image[mft_base_offset + 6 * record_size:mft_base_offset + 7 * record_size] = rec6
 
+    # Record 7: Deleted file "hello.txt"
+    hello_content = b"ForensiVault REAL NTFS RECOVERY TEST 2026\nForensic Verification Token: FV-NTFS-2026-TOKEN-VERIFIED\n"
+    rec7 = build_mft_record("hello.txt", hello_content, False, 7)  # False = DELETED candidate!
+    image[mft_base_offset + 7 * record_size:mft_base_offset + 8 * record_size] = rec7
+
     with open(filepath, 'wb') as f:
         f.write(image)
     print(f"Generated NTFS image: {filepath} ({len(image)} bytes)")

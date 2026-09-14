@@ -62,8 +62,10 @@ struct CarvedFile {
     double confidenceScore{0.0};       // 0.0 to 100.0%
     std::string confidenceLevel;       // "Very High", "High", "Medium", "Low", "Very Low"
     std::string validationNotes;
-    std::vector<std::string> reasons;  // Explainable reasons for score
-    std::vector<std::string> warnings; // Warnings or missing indicators
+    std::string validationState{"INVALID"}; // "VALID", "PARTIAL", "INVALID"
+    std::string recoveryMethod{"Raw Signature Carving"};
+    std::vector<std::string> reasons;
+    std::vector<std::string> warnings;
     std::string sha256;
     std::string recoveredFilePath;
 };

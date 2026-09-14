@@ -1,0 +1,1247 @@
+%PDF-1.4
+%“Œ‹ž ReportLab Generated PDF document (opensource)
+1 0 obj
+<<
+/F1 2 0 R /F2 3 0 R /F3 4 0 R /F4 5 0 R /F5 6 0 R
+>>
+endobj
+2 0 obj
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
+endobj
+3 0 obj
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/BaseFont /Courier /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
+endobj
+5 0 obj
+<<
+/BaseFont /Helvetica-BoldOblique /Encoding /WinAnsiEncoding /Name /F4 /Subtype /Type1 /Type /Font
+>>
+endobj
+6 0 obj
+<<
+/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F5 /Subtype /Type1 /Type /Font
+>>
+endobj
+7 0 obj
+<<
+/Contents 12 0 R /MediaBox [ 0 0 612 792 ] /Parent 11 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+8 0 obj
+<<
+/Contents 13 0 R /MediaBox [ 0 0 612 792 ] /Parent 11 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+9 0 obj
+<<
+/PageMode /UseNone /Pages 11 0 R /Type /Catalog
+>>
+endobj
+10 0 obj
+<<
+/Author (\(anonymous\)) /CreationDate (D:20260913193122+05'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260913193122+05'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
+>>
+endobj
+11 0 obj
+<<
+/Count 2 /Kids [ 7 0 R 8 0 R ] /Type /Pages
+>>
+endobj
+12 0 obj
+<<
+/Length 11164
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 60 708 cm
+q
+.85098 .419608 .152941 rg
+BT 1 0 0 1 0 4 Tm /F2 20 Tf 24 TL (FORENSIVAULT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 60 690 cm
+q
+BT 1 0 0 1 0 4 Tm 14 TL /F2 10 Tf .458824 .419608 .388235 rg (DIGITAL FORENSIC ANALYSIS & EVIDENCE RECOVERY REPORT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 60 676.5 cm
+q
+1.5 w
+1 J
+.85098 .419608 .152941 RG
+n 0 0 m 492 0 l S
+Q
+Q
+q
+1 0 0 1 54 562.5 cm
+q
+.984314 .972549 .945098 rg
+n 0 104 504 -104 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 88 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Report ID:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 89 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (REP-20260913193122-EA44DF) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 88 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Case ID:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 89 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 68 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Case Name:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 68 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (RECOVERY) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 68 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Case Status:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 68 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (ACTIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 42 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Date / Time:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 42 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:31:22.310305) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 36 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (Lead) Tj T* (Examiner:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 42 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 10 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Agency / Unit:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (ForensiVault Digital Forensics Lab) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 10 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Description:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 4 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Forensic investigation dossier and evidence) Tj T* (artifacts.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 104 m 504 104 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 104 l S
+n 504 0 m 504 104 l S
+n 0 84 m 504 84 l S
+n 0 64 m 504 64 l S
+n 0 32 m 504 32 l S
+n 80 0 m 80 104 l S
+n 250 0 m 250 104 l S
+n 324 0 m 324 104 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 552.5 cm
+Q
+q
+1 0 0 1 60 524.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (1. Evidence Acquisition & Integrity Verification) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 494.5 cm
+q
+.984314 .972549 .945098 rg
+n 0 24 504 -24 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 8 6 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (No evidence records associated with this case.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 24 m 504 24 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 24 l S
+n 504 0 m 504 24 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 484.5 cm
+Q
+q
+1 0 0 1 60 456.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (2. Recovery Statistics & Discovery Summary) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 398.5 cm
+q
+.956863 .937255 .901961 rg
+n 0 52 504 -32 re f*
+.984314 .972549 .945098 rg
+n 0 20 504 -20 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Files Detected) Tj T* ET
+Q
+Q
+q
+1 0 0 1 106 24 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (Successfully) Tj T* (Recovered) Tj T* ET
+Q
+Q
+q
+1 0 0 1 211 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Partial / Carved) Tj T* ET
+Q
+Q
+q
+1 0 0 1 306 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Avg Confidence) Tj T* ET
+Q
+Q
+q
+1 0 0 1 406 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Fragment Candidates) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 4 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 40.942 0 Td (0) Tj T* -40.942 0 Td ET
+Q
+Q
+q
+1 0 0 1 106 4 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 43.442 0 Td (0) Tj T* -43.442 0 Td ET
+Q
+Q
+q
+1 0 0 1 211 4 cm
+q
+.705882 .32549 .035294 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 38.442 0 Td (0) Tj T* -38.442 0 Td ET
+Q
+Q
+q
+1 0 0 1 306 4 cm
+q
+.145098 .388235 .921569 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 31.4655 0 Td (0.0%) Tj T* -31.4655 0 Td ET
+Q
+Q
+q
+1 0 0 1 406 4 cm
+q
+.85098 .419608 .152941 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 42.942 0 Td (0) Tj T* -42.942 0 Td ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 52 m 504 52 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 52 l S
+n 504 0 m 504 52 l S
+n 0 20 m 504 20 l S
+n 100 0 m 100 52 l S
+n 205 0 m 205 52 l S
+n 300 0 m 300 52 l S
+n 400 0 m 400 52 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 386.5 cm
+Q
+q
+1 0 0 1 60 358.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (3. Recovered & Reconstructed Files Catalog) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 324.5 cm
+q
+.984314 .972549 .945098 rg
+n 0 28 504 -28 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 10 8 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (No recovered files were recorded for this case.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 28 m 504 28 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 28 l S
+n 504 0 m 504 28 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 312.5 cm
+Q
+q
+1 0 0 1 60 284.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (4. Chain-of-Custody & Operation Audit Trail) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 80.5 cm
+q
+.956863 .937255 .901961 rg
+n 0 198 504 -18 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 4 183 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Entry #) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 183 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Timestamp) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 183 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Operation) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 183 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Operator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 183 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Target Identifier) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 183 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Status) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 160 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (589) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:31:21) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 160 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 153 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (588) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:31:12) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 123 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (585) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:31:07) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 93 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (582) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:56) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 63 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (579) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:53) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 33 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (576) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:47) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 3 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 198 m 504 198 l S
+n 0 0 m 0 198 l S
+n 504 0 m 504 198 l S
+n 0 0 m 504 0 l S
+n 0 180 m 504 180 l S
+n 0 150 m 504 150 l S
+n 0 120 m 504 120 l S
+n 0 90 m 504 90 l S
+n 0 60 m 504 60 l S
+n 0 30 m 504 30 l S
+n 40 0 m 40 198 l S
+n 135 0 m 135 198 l S
+n 250 0 m 250 198 l S
+n 330 0 m 330 198 l S
+n 444 0 m 444 198 l S
+Q
+Q
+Q
+q
+BT /F2 8 Tf 9.6 TL ET
+.458824 .419608 .388235 rg
+.866667 .823529 .772549 RG
+.5 w
+n 54 45 m 558 45 l S
+BT /F1 7.5 Tf 9 TL ET
+BT 1 0 0 1 54 34 Tm (CONFIDENTIAL & PRIVILEGED \227 FORENSIC CHAIN OF CUSTODY DOCUMENTATION) Tj T* ET
+BT 1 0 0 1 519.6375 34 Tm (Page 1 of 2) Tj T* ET
+Q
+ 
+endstream
+endobj
+13 0 obj
+<<
+/Length 8199
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 54 462 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 4 250 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (573) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 249 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:34) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 249 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 249 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 250 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 243 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 220 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (570) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 219 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:27) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 219 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 219 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 220 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 213 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 190 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (567) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 189 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:25) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 189 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 189 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 190 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 183 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 160 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (564) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:10) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 160 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 153 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (561) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:08) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 123 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (558) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:30:00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 93 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (555) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:29:52) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 63 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (552) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:29:41) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 33 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (545) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:29:30) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (CREATE CASE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (C_DRIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 3 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 0 m 0 270 l S
+n 504 0 m 504 270 l S
+n 0 0 m 504 0 l S
+n 0 270 m 504 270 l S
+n 0 240 m 504 240 l S
+n 0 210 m 504 210 l S
+n 0 180 m 504 180 l S
+n 0 150 m 504 150 l S
+n 0 120 m 504 120 l S
+n 0 90 m 504 90 l S
+n 0 60 m 504 60 l S
+n 0 30 m 504 30 l S
+n 40 0 m 40 270 l S
+n 135 0 m 135 270 l S
+n 250 0 m 250 270 l S
+n 330 0 m 330 270 l S
+n 444 0 m 444 270 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 448 cm
+Q
+q
+1 0 0 1 60 415 cm
+q
+BT 1 0 0 1 0 25.5 Tm 11 TL /F4 7.5 Tf .419608 .384314 .34902 rg (Legal & Technical Disclaimer:) Tj /F5 7.5 Tf ( This report is generated by ForensiVault based on the available analysis results. Recovery results depend on the) Tj T* (condition of the underlying storage data, filesystem allocations, cluster continuity, and sector entropy. No forensic inferences or data points were) Tj T* (simulated or fabricated.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 60 401 cm
+Q
+q
+1 0 0 1 54 342 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 3 cm
+q
+BT 1 0 0 1 0 39.5 Tm 12 TL /F1 8.5 Tf .117647 .101961 .086275 rg (____________________________________________) Tj  T* /F2 8.5 Tf (Lead Forensic Examiner) Tj /F1 8.5 Tf  T* (Ruben) Tj  T* (ForensiVault Digital Forensics Lab) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 3 cm
+q
+BT 1 0 0 1 0 39.5 Tm 12 TL /F1 8.5 Tf .117647 .101961 .086275 rg (____________________________________________) Tj  T* /F2 8.5 Tf (Technical Reviewer / QA Officer) Tj /F1 8.5 Tf  T* (Quality Assurance Laboratory Unit) Tj  T* (ForensiVault Compliance Division) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+BT /F2 8 Tf 9.6 TL ET
+.458824 .419608 .388235 rg
+BT 1 0 0 1 54 752 Tm (FORENSIVAULT FORENSIC INVESTIGATION DOSSIER \227 LAW ENFORCEMENT & COURT ADMISSIBLE) Tj T* ET
+.866667 .823529 .772549 RG
+.5 w
+n 54 746 m 558 746 l S
+.866667 .823529 .772549 RG
+.5 w
+n 54 45 m 558 45 l S
+BT /F1 7.5 Tf 9 TL ET
+BT 1 0 0 1 54 34 Tm (CONFIDENTIAL & PRIVILEGED \227 FORENSIC CHAIN OF CUSTODY DOCUMENTATION) Tj T* ET
+BT 1 0 0 1 519.6375 34 Tm (Page 2 of 2) Tj T* ET
+Q
+ 
+endstream
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000061 00000 n 
+0000000132 00000 n 
+0000000239 00000 n 
+0000000351 00000 n 
+0000000456 00000 n 
+0000000575 00000 n 
+0000000690 00000 n 
+0000000885 00000 n 
+0000001080 00000 n 
+0000001149 00000 n 
+0000001430 00000 n 
+0000001496 00000 n 
+0000012713 00000 n 
+trailer
+<<
+/ID 
+[<6de687630918a6c4a7604551129d5d61><6de687630918a6c4a7604551129d5d61>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 10 0 R
+/Root 9 0 R
+/Size 14
+>>
+startxref
+20964
+%%EOF

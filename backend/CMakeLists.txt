@@ -4,6 +4,7 @@ add_library(forensivault_core STATIC
     ${CMAKE_SOURCE_DIR}/src/core/disk_image_reader.cpp
     ${CMAKE_SOURCE_DIR}/src/core/partition_table.cpp
     ${CMAKE_SOURCE_DIR}/src/core/storage_device_detector.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/portable_device_detector.cpp
     ${CMAKE_SOURCE_DIR}/src/core/binary_utils.cpp
     ${CMAKE_SOURCE_DIR}/src/core/case_manager.cpp
     ${CMAKE_SOURCE_DIR}/src/carving/file_signature.cpp
@@ -43,14 +44,18 @@ target_compile_features(forensivault_core PUBLIC cxx_std_17)
 # Link threading support
 target_link_libraries(forensivault_core PUBLIC Threads::Threads)
 
-# Windows socket / filesystem libraries if needed
+# Windows socket / filesystem / portable device libraries if needed
 if(WIN32)
-    target_link_libraries(forensivault_core PUBLIC ws2_32)
+    target_link_libraries(forensivault_core PUBLIC ws2_32 ole32 oleaut32 uuid portabledeviceguids)
 endif()
 
 # ForensiVault C API Native Shared Library (DLL on Windows, .so on Linux)
 add_library(forensivault_native SHARED
     src/native/forensivault_capi.cpp
+)
+
+set_target_properties(forensivault_native PROPERTIES
+    OUTPUT_NAME "forensivault_native_v2"
 )
 
 target_link_libraries(forensivault_native PRIVATE

@@ -5,6 +5,7 @@ import {
   CaseMetadata,
   EvidenceItem,
   CarveJob,
+  CarvedFile,
   ErasePreview,
   ForensicReportItem,
   AuditLogEntry,
@@ -15,11 +16,16 @@ import {
   FilesystemDetectResponse,
   FsRecoveryResponse,
   FsRecoveryFile,
-  StorageSourcesResponse
+  StorageSourcesResponse,
+  PortableDevice,
+  PortableBrowseResponse,
+  SanitizationDriveItem,
+  CanonicalSource,
+  PrivilegeStatusResponse
 } from '../types';
 
 const isElectronFile = typeof window !== 'undefined' && (window.location.protocol === 'file:' || !!(window as any).forensiVaultDesktop);
-const API_BASE = isElectronFile ? 'http://127.0.0.1:8765/api' : '/api';
+const API_BASE = isElectronFile ? 'http://127.0.0.1:8766/api' : '/api';
 
 export const api = {
   async getStatus(): Promise<BackendStatus> {
@@ -73,19 +79,30 @@ export const api = {
   },
 
   async importEvidence(data: {
-    workspace_path: string;
-    source_image: string;
+    case_id?: string;
+    workspace_path?: string;
+    source_image?: string;
+    source_path?: string;
     evidence_id?: string;
+    name?: string;
     notes?: string;
-  }): Promise<{ success: boolean; evidence: EvidenceItem }> {
+  }): Promise<{ success: boolean; evidence?: EvidenceItem; [key: string]: any }> {
+    const src = data.source_path || data.source_image || '';
+    const payload = {
+      case_id: data.case_id || 'CASE-2026-001',
+      evidence_id: data.evidence_id || `EVD-${Date.now().toString(36).toUpperCase()}`,
+      source_path: src,
+      name: data.name || (src.split(/[\\/]/).pop() || 'evidence.img'),
+      notes: data.notes || 'Imported for forensic analysis'
+    };
     const res = await fetch(`${API_BASE}/evidence/import`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Failed to import evidence');
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to import evidence');
     }
     return res.json();
   },
@@ -105,7 +122,17 @@ export const api = {
     return res.json();
   },
 
-  async startCarving(image_path: string, output_dir?: string): Promise<{ job_id: string; status: string }> {
+  async startCarving(
+    image_path: string,
+    output_dir?: string
+  ): Promise<{
+    job_id: string;
+    status: string;
+    files_carved?: number;
+    discovered_files?: CarvedFile[];
+    carved_files?: CarvedFile[];
+    files?: CarvedFile[];
+  }> {
     const res = await fetch(`${API_BASE}/carve/start`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -118,8 +145,9 @@ export const api = {
     return res.json();
   },
 
-  async getFilesOverview(): Promise<FilesOverviewResponse> {
-    const res = await fetch(`${API_BASE}/files/overview`);
+  async getFilesOverview(caseId?: string): Promise<FilesOverviewResponse> {
+    const url = caseId ? `${API_BASE}/files/overview?case_id=${encodeURIComponent(caseId)}` : `${API_BASE}/files/overview`;
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch forensic files overview');
     return res.json();
   },
@@ -497,11 +525,11 @@ export const api = {
     return res.json();
   },
 
-  async getRecoveryPartitions(image_path: string): Promise<PartitionTableResponse> {
+  async getRecoveryPartitions(image_path: string, source_id?: string, source_type?: string): Promise<PartitionTableResponse> {
     const res = await fetch(`${API_BASE}/recovery/partitions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image_path }),
+      body: JSON.stringify({ image_path, source_id, source_type }),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -510,11 +538,11 @@ export const api = {
     return res.json();
   },
 
-  async detectRecoveryFilesystem(image_path: string, start_sector: number = 0): Promise<FilesystemDetectResponse> {
+  async detectRecoveryFilesystem(image_path: string, start_sector: number = 0, source_id?: string, source_type?: string): Promise<FilesystemDetectResponse> {
     const res = await fetch(`${API_BASE}/recovery/detect-fs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image_path, start_sector }),
+      body: JSON.stringify({ image_path, start_sector, source_id, source_type }),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -527,6 +555,8 @@ export const api = {
     image_path: string;
     start_sector?: number;
     case_id?: string;
+    source_id?: string;
+    source_type?: string;
   }): Promise<FsRecoveryResponse> {
     const res = await fetch(`${API_BASE}/recovery/scan-deleted`, {
       method: 'POST',
@@ -546,6 +576,9 @@ export const api = {
     case_id?: string;
     file_ids?: number[];
     output_directory?: string;
+    mode?: 'filesystem' | 'carving';
+    source_id?: string;
+    source_type?: string;
   }): Promise<FsRecoveryResponse> {
     const res = await fetch(`${API_BASE}/recovery/extract`, {
       method: 'POST',
@@ -559,10 +592,25 @@ export const api = {
     return res.json();
   },
 
+  async openRecoveryFolder(folder_path: string): Promise<{ success: boolean; message: string; folder_path: string }> {
+    const res = await fetch(`${API_BASE}/recovery/open-folder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folder_path }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to open recovery directory');
+    }
+    return res.json();
+  },
+
   async scanRecoveryUnallocated(data: {
     image_path: string;
     case_id?: string;
     output_directory?: string;
+    source_id?: string;
+    source_type?: string;
   }): Promise<{
     success: boolean;
     method: string;
@@ -583,6 +631,35 @@ export const api = {
     return res.json();
   },
 
+  async getRecoveryFilePreview(data: {
+    file_path?: string;
+    case_id?: string;
+    file_id?: number;
+    max_bytes?: number;
+  }): Promise<{
+    success: boolean;
+    file_path: string;
+    filename: string;
+    size_bytes: number;
+    size_formatted: string;
+    extension: string;
+    sha256: string;
+    preview_type: 'image' | 'text' | 'pdf' | 'archive' | 'hex';
+    preview_data: string;
+    extra_meta: Record<string, any>;
+  }> {
+    const res = await fetch(`${API_BASE}/recovery/file-preview`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to retrieve recovered file preview');
+    }
+    return res.json();
+  },
+
   async getStorageSources(): Promise<StorageSourcesResponse> {
     const res = await fetch(`${API_BASE}/recovery/storage-sources`);
     if (!res.ok) {
@@ -591,6 +668,189 @@ export const api = {
     }
     return res.json();
   },
+
+  async getPortableDevices(): Promise<{ timestamp: string; devices: PortableDevice[] }> {
+    const res = await fetch(`${API_BASE}/devices/portable`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to detect portable devices');
+    }
+    return res.json();
+  },
+
+  async browsePortableDevice(data: { device_id: string; object_id?: string }): Promise<PortableBrowseResponse> {
+    const res = await fetch(`${API_BASE}/devices/portable/browse`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to browse portable device');
+    }
+    return res.json();
+  },
+
+  async deletePortableDeviceFile(data: {
+    device_id: string;
+    object_id: string;
+    parent_object_id?: string;
+    name?: string;
+    confirmation: string;
+    password?: string;
+  }): Promise<{
+    success: boolean;
+    status?: string;
+    is_verified?: boolean;
+    verification_status?: string;
+    accessible_after_deletion?: boolean;
+    device_id?: string;
+    object_id?: string;
+    parent_object_id?: string;
+    protocol?: string;
+    message?: string;
+    error?: string;
+  }> {
+    const res = await fetch(`${API_BASE}/devices/portable/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || err.message || 'Failed to delete file on portable device');
+    }
+    return res.json();
+  },
+
+  async getSanitizationDrives(): Promise<{ timestamp: string; drives: SanitizationDriveItem[] }> {
+    const res = await fetch(`${API_BASE}/sanitization/drives`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to fetch sanitization drives');
+    }
+    return res.json();
+  },
+
+  async copyPortableFiles(data: {
+    device_id: string;
+    object_ids: string[];
+    case_id?: string;
+    destination_dir?: string;
+  }): Promise<{
+    success: boolean;
+    exported_count: number;
+    total_requested: number;
+    destination_directory: string;
+    results: any[];
+  }> {
+    const res = await fetch(`${API_BASE}/devices/portable/copy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to export files from portable device');
+    }
+    return res.json();
+  },
+
+  async auditMtpInspection(data: {
+    device_id: string;
+    device_name: string;
+    manufacturer?: string;
+    case_id?: string;
+    examiner_name?: string;
+  }): Promise<{ success: boolean; message: string }> {
+    const res = await fetch(`${API_BASE}/recovery/audit-mtp-inspection`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
+
+  async getCanonicalSources(): Promise<{ timestamp: string; total_sources: number; sources: CanonicalSource[] }> {
+    const res = await fetch(`${API_BASE}/recovery/canonical-sources`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to fetch canonical sources');
+    }
+    return res.json();
+  },
+
+  async getSystemPrivileges(): Promise<PrivilegeStatusResponse> {
+    const res = await fetch(`${API_BASE}/system/privileges`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to fetch privilege status');
+    }
+    return res.json();
+  },
+
+  async relaunchElevated(options?: string | { targetSource?: string; caseId?: string; currentRoute?: string }): Promise<{ success: boolean; status?: string; message: string; cancelled?: boolean }> {
+    const payload = typeof options === 'string'
+      ? { targetSource: options }
+      : (options || {});
+
+    // If desktop electron bridge is available, use native desktop elevation with handshake
+    const desktop = (window as any).forensiVaultDesktop;
+    if (desktop && typeof desktop.relaunchElevated === 'function') {
+      try {
+        const desktopRes = await desktop.relaunchElevated(payload);
+        if (desktopRes) return desktopRes;
+      } catch (err: any) {
+        console.warn('Desktop elevation bridge failed:', err);
+      }
+    }
+
+    const res = await fetch(`${API_BASE}/system/relaunch-elevated`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target_source: payload.targetSource || null })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error || 'Failed to request administrator elevation');
+    }
+    return res.json();
+  },
+
+  async getElevationState(): Promise<{ targetSource?: string; target_source?: string; caseId?: string; case_id?: string; currentRoute?: string; route?: string } | null> {
+    const desktop = (window as any).forensiVaultDesktop;
+    if (desktop && typeof desktop.getElevationState === 'function') {
+      try {
+        return await desktop.getElevationState();
+      } catch (_) {}
+    }
+    return null;
+  },
+
+  async testRawAccess(targetPath: string, caseId?: string): Promise<{
+    success: boolean;
+    target_path: string;
+    handle_opened: boolean;
+    bytes_read: number;
+    error_code: number;
+    error_message: string | null;
+    is_elevated: boolean;
+    elevation_status: string;
+    first_bytes_hex?: string;
+  }> {
+    const res = await fetch(`${API_BASE}/recovery/test-raw-access`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target_path: targetPath, case_id: caseId || null })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || err.error_message || err.error || 'Raw access test failed');
+    }
+    return res.json();
+  }
 };
+
+
 
 

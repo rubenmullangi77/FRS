@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <ctime>
+#include <iostream>
 
 namespace forensivault {
 namespace filesystem {
@@ -332,17 +333,30 @@ bool NTFSAnalyzer::parseMftRecord(const uint8_t* recordData, size_t recordSize, 
 
 std::vector<FsFileRecord> NTFSAnalyzer::scanMftRecords(core::DiskImageReader& reader, bool lookForDeleted) {
     std::vector<FsFileRecord> results;
-    if (!volume_info_.valid || mft_record_size_ == 0) return results;
+    if (!volume_info_.valid || mft_record_size_ == 0) {
+        std::cerr << "[NTFS DEBUG] Cannot scan MFT: volume_info valid=" << volume_info_.valid
+                  << ", mft_record_size=" << mft_record_size_ << std::endl;
+        return results;
+    }
 
     std::vector<uint8_t> recordBuf(mft_record_size_);
     uint64_t currentOffset = mft_byte_offset_;
     const uint64_t maxScanRecords = 5000; // Cap to avoid scanning infinite damaged runs
 
+    std::cout << "[NTFS DEBUG] Stage: scanMftRecords (lookForDeleted=" << lookForDeleted << ")"
+              << ", ReaderSize: " << reader.size()
+              << ", MFTStartOffset: " << mft_byte_offset_
+              << ", RecordSize: " << mft_record_size_
+              << ", MaxScan: " << maxScanRecords << std::endl;
+
+    uint64_t recordsProcessed = 0;
     for (uint64_t i = 0; i < maxScanRecords && currentOffset + mft_record_size_ <= reader.size(); ++i) {
         if (!reader.read(currentOffset, recordBuf.data(), mft_record_size_)) {
+            std::cerr << "[NTFS DEBUG] Read failed at MFT offset " << currentOffset << ", record " << i << std::endl;
             break;
         }
 
+        recordsProcessed++;
         FsFileRecord rec;
         bool isAllocated = false;
         if (parseMftRecord(recordBuf.data(), mft_record_size_, rec, isAllocated)) {
@@ -358,6 +372,9 @@ std::vector<FsFileRecord> NTFSAnalyzer::scanMftRecords(core::DiskImageReader& re
 
         currentOffset += mft_record_size_;
     }
+
+    std::cout << "[NTFS DEBUG] scanMftRecords complete. Records examined: " << recordsProcessed
+              << ", Matches cataloged: " << results.size() << std::endl;
 
     return results;
 }

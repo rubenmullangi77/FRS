@@ -30,7 +30,8 @@ import {
   NavigationTab,
   CarvedFile,
   DeletedFileItem,
-  FilesOverviewResponse
+  FilesOverviewResponse,
+  FilesOverviewMetrics
 } from '../types';
 import { FileDetailsDrawer } from '../components/FileDetailsDrawer';
 
@@ -48,12 +49,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   const [activeView, setActiveView] = useState<'deleted' | 'recovered'>('deleted');
   const [deletedFiles, setDeletedFiles] = useState<DeletedFileItem[]>([]);
   const [recoveredFiles, setRecoveredFiles] = useState<CarvedFile[]>([]);
-  const [metrics, setMetrics] = useState({
+  const [metrics, setMetrics] = useState<FilesOverviewMetrics>({
     total_deleted: 0,
     total_recovered: 0,
-    recovery_success_rate: 100,
+    recovery_success_rate: null,
     total_recovered_bytes: 0,
-    images_scanned: 5
+    images_scanned: 0
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +68,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     setLoading(true);
     setError(null);
     try {
-      const res: FilesOverviewResponse = await api.getFilesOverview();
+      const res: FilesOverviewResponse = await api.getFilesOverview(activeCase?.case_id);
       setDeletedFiles(res.deleted_files || []);
       setRecoveredFiles(res.recovered_files || []);
       if (res.metrics) {
@@ -82,7 +83,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
   useEffect(() => {
     fetchFiles();
-  }, []);
+  }, [activeCase?.case_id]);
 
   const formatBytes = (bytes: number): string => {
     if (!bytes || bytes === 0) return '0 B';
@@ -215,11 +216,16 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
+            type="button"
             onClick={fetchFiles}
             disabled={loading}
+            aria-label="Scan and Refresh"
             className="btn-secondary h-10 px-4 text-[13px] font-medium flex items-center gap-2 cursor-pointer"
           >
-            <RefreshCw size={14} className={loading ? 'animate-spin text-[var(--primary-orange)]' : 'text-[var(--text-secondary)]'} />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <RefreshCw size={14} className={loading ? 'animate-spin text-[var(--primary-orange)]' : 'text-[var(--text-secondary)]'} aria-hidden="true" focusable="false" role="presentation" />
+            </span>
+            {' '}
             <span>Scan & Refresh</span>
           </button>
         </div>
@@ -234,11 +240,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <button
             type="button"
             onClick={() => onNavigate?.('recovery')}
+            aria-label="File Recovery"
             className="workstation-card p-4 flex items-center justify-between gap-3 text-left hover:border-[var(--primary-orange)] transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-[var(--primary-orange)]/10 text-[var(--primary-orange)] flex items-center justify-center flex-shrink-0 border border-[var(--primary-orange)]/20 group-hover:scale-105 transition-transform">
-                <RotateCcw size={18} />
+                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                  <RotateCcw size={18} aria-hidden="true" focusable="false" role="presentation" />
+                </span>
               </div>
               <div className="min-w-0">
                 <div className="font-semibold text-[13.5px] text-[var(--text-primary)] group-hover:text-[var(--primary-orange)] transition-colors truncate">
@@ -249,17 +258,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </div>
               </div>
             </div>
-            <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[var(--primary-orange)] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[var(--primary-orange)] group-hover:translate-x-0.5 transition-all flex-shrink-0" aria-hidden="true" focusable="false" role="presentation" />
+            </span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate?.('carving')}
+            aria-label="Recover from Raw Data"
             className="workstation-card p-4 flex items-center justify-between gap-3 text-left hover:border-[#3B82F6] transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-[#3B82F6]/10 text-[#3B82F6] flex items-center justify-center flex-shrink-0 border border-[#3B82F6]/20 group-hover:scale-105 transition-transform">
-                <Binary size={18} />
+                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                  <Binary size={18} aria-hidden="true" focusable="false" role="presentation" />
+                </span>
               </div>
               <div className="min-w-0">
                 <div className="font-semibold text-[13.5px] text-[var(--text-primary)] group-hover:text-[#3B82F6] transition-colors truncate">
@@ -270,38 +284,48 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </div>
               </div>
             </div>
-            <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#3B82F6] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#3B82F6] group-hover:translate-x-0.5 transition-all flex-shrink-0" aria-hidden="true" focusable="false" role="presentation" />
+            </span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate?.('file_eraser')}
+            aria-label="Secure File Deletion"
             className="workstation-card p-4 flex items-center justify-between gap-3 text-left hover:border-[#EF4444] transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-[#EF4444]/10 text-[#EF4444] flex items-center justify-center flex-shrink-0 border border-[#EF4444]/20 group-hover:scale-105 transition-transform">
-                <ShieldAlert size={18} />
+                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                  <ShieldAlert size={18} aria-hidden="true" focusable="false" role="presentation" />
+                </span>
               </div>
               <div className="min-w-0">
                 <div className="font-semibold text-[13.5px] text-[var(--text-primary)] group-hover:text-[#EF4444] transition-colors truncate">
                   Secure File Deletion
                 </div>
                 <div className="text-[11.5px] text-[var(--text-muted)] truncate">
-                  DoD / NIST permanent wipe
+                  Secure Data Sanitization
                 </div>
               </div>
             </div>
-            <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#EF4444] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#EF4444] group-hover:translate-x-0.5 transition-all flex-shrink-0" aria-hidden="true" focusable="false" role="presentation" />
+            </span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate?.('drive_sanitization')}
+            aria-label="Secure Drive Eraser"
             className="workstation-card p-4 flex items-center justify-between gap-3 text-left hover:border-[#EAB308] transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-[#EAB308]/10 text-[#EAB308] flex items-center justify-center flex-shrink-0 border border-[#EAB308]/20 group-hover:scale-105 transition-transform">
-                <Disc size={18} />
+                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                  <Disc size={18} aria-hidden="true" focusable="false" role="presentation" />
+                </span>
               </div>
               <div className="min-w-0">
                 <div className="font-semibold text-[13.5px] text-[var(--text-primary)] group-hover:text-[#EAB308] transition-colors truncate">
@@ -312,17 +336,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </div>
               </div>
             </div>
-            <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#EAB308] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#EAB308] group-hover:translate-x-0.5 transition-all flex-shrink-0" aria-hidden="true" focusable="false" role="presentation" />
+            </span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate?.('reports')}
+            aria-label="Forensic Reports"
             className="workstation-card p-4 flex items-center justify-between gap-3 text-left hover:border-[#10B981] transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-[#10B981]/10 text-[#10B981] flex items-center justify-center flex-shrink-0 border border-[#10B981]/20 group-hover:scale-105 transition-transform">
-                <ScrollText size={18} />
+                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                  <ScrollText size={18} aria-hidden="true" focusable="false" role="presentation" />
+                </span>
               </div>
               <div className="min-w-0">
                 <div className="font-semibold text-[13.5px] text-[var(--text-primary)] group-hover:text-[#10B981] transition-colors truncate">
@@ -333,17 +362,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </div>
               </div>
             </div>
-            <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#10B981] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#10B981] group-hover:translate-x-0.5 transition-all flex-shrink-0" aria-hidden="true" focusable="false" role="presentation" />
+            </span>
           </button>
 
           <button
             type="button"
             onClick={() => onNavigate?.('audit_logs')}
+            aria-label="Activity and Audit Log"
             className="workstation-card p-4 flex items-center justify-between gap-3 text-left hover:border-[#8B5CF6] transition-all cursor-pointer group"
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-[#8B5CF6]/10 text-[#8B5CF6] flex items-center justify-center flex-shrink-0 border border-[#8B5CF6]/20 group-hover:scale-105 transition-transform">
-                <ShieldCheck size={18} />
+                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                  <ShieldCheck size={18} aria-hidden="true" focusable="false" role="presentation" />
+                </span>
               </div>
               <div className="min-w-0">
                 <div className="font-semibold text-[13.5px] text-[var(--text-primary)] group-hover:text-[#8B5CF6] transition-colors truncate">
@@ -354,21 +388,27 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </div>
               </div>
             </div>
-            <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#8B5CF6] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+              <ArrowRight size={15} className="text-[var(--text-muted)] group-hover:text-[#8B5CF6] group-hover:translate-x-0.5 transition-all flex-shrink-0" aria-hidden="true" focusable="false" role="presentation" />
+            </span>
           </button>
         </div>
       </div>
 
       {error && (
         <div className="p-4 rounded-xl bg-[#C53030]/10 border border-[#C53030]/30 text-[#C53030] text-[13px] flex items-center gap-3">
-          <AlertTriangle size={18} className="flex-shrink-0" />
+          <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+            <AlertTriangle size={18} aria-hidden="true" focusable="false" role="presentation" />
+          </span>
           <span>{error}</span>
         </div>
       )}
 
       {recoveryNotification && (
         <div className="p-4 rounded-xl bg-[#2E7D32]/10 border border-[#2E7D32]/30 text-[#2E7D32] text-[13px] flex items-center gap-3 animate-fade-in">
-          <CheckCircle2 size={18} className="flex-shrink-0" />
+          <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+            <CheckCircle2 size={18} aria-hidden="true" focusable="false" role="presentation" />
+          </span>
           <span>{recoveryNotification}</span>
         </div>
       )}
@@ -380,15 +420,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           onClick={() => setActiveView('deleted')}
           className={`workstation-card p-4 sm:p-5 cursor-pointer transition-all ${
             activeView === 'deleted'
-              ? 'border-[var(--primary-orange)] ring-1 ring-[var(--primary-orange)]/30'
-              : ''
+              ? 'border-[var(--primary-orange)] ring-1 ring-[var(--primary-orange)]/20'
+              : 'hover:border-[var(--border-strong)]'
           }`}
         >
-          <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-            <span>Deleted Files Identified</span>
-            <FileSearch size={15} className="text-[var(--primary-orange)]" />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+              Deleted Files Identified
+            </span>
+            <div className="w-6 h-6 rounded flex items-center justify-center bg-[var(--surface-secondary)] text-[var(--primary-orange)] shrink-0" aria-hidden="true" data-nosnippet="true">
+              <FileSearch size={14} focusable="false" role="presentation" />
+            </div>
           </div>
-          <div className="stat-number text-[28px] sm:text-[32px] font-bold font-mono text-[var(--text-primary)]">
+          <div className="stat-number text-[26px] sm:text-[30px] font-bold font-mono text-[var(--text-primary)]">
             {metrics.total_deleted}
           </div>
           <p className="text-[12px] text-[var(--text-secondary)] mt-1">
@@ -401,15 +445,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           onClick={() => setActiveView('recovered')}
           className={`workstation-card p-4 sm:p-5 cursor-pointer transition-all ${
             activeView === 'recovered'
-              ? 'border-[var(--primary-orange)] ring-1 ring-[var(--primary-orange)]/30'
-              : ''
+              ? 'border-[var(--primary-orange)] ring-1 ring-[var(--primary-orange)]/20'
+              : 'hover:border-[var(--border-strong)]'
           }`}
         >
-          <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-            <span>Files Recovered</span>
-            <CheckCircle2 size={15} className="text-[#2E7D32]" />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+              Files Recovered
+            </span>
+            <div className="w-6 h-6 rounded flex items-center justify-center bg-[var(--surface-secondary)] text-emerald-400 shrink-0" aria-hidden="true" data-nosnippet="true">
+              <CheckCircle2 size={14} focusable="false" role="presentation" />
+            </div>
           </div>
-          <div className="stat-number text-[28px] sm:text-[32px] font-bold font-mono text-[#2E7D32]">
+          <div className="stat-number text-[26px] sm:text-[30px] font-bold font-mono text-emerald-400">
             {metrics.total_recovered}
           </div>
           <p className="text-[12px] text-[var(--text-secondary)] mt-1">
@@ -419,25 +467,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
         {/* Card 3: Cryptographic Integrity */}
         <div className="workstation-card p-4 sm:p-5">
-          <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-            <span>Cryptographic Integrity</span>
-            <ShieldCheck size={15} className="text-[#3B82F6]" />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+              Cryptographic Integrity
+            </span>
+            <div className="w-6 h-6 rounded flex items-center justify-center bg-[var(--surface-secondary)] text-[var(--primary-orange)] shrink-0" aria-hidden="true" data-nosnippet="true">
+              <ShieldCheck size={14} focusable="false" role="presentation" />
+            </div>
           </div>
-          <div className="stat-number text-[28px] sm:text-[32px] font-bold font-mono text-[#3B82F6]">
-            {metrics.recovery_success_rate}%
+          <div className="stat-number text-[26px] sm:text-[30px] font-bold font-mono text-[var(--primary-orange)]">
+            {metrics.recovery_success_rate !== null && metrics.recovery_success_rate !== undefined && metrics.total_recovered > 0
+              ? `${metrics.recovery_success_rate}%`
+              : 'N/A'}
           </div>
           <p className="text-[12px] text-[var(--text-secondary)] mt-1">
-            SHA-256 verified integrity
+            {metrics.total_recovered > 0 ? 'SHA-256 verified integrity' : 'No active recovery'}
           </p>
         </div>
 
         {/* Card 4: Total Recovered Volume */}
         <div className="workstation-card p-4 sm:p-5">
-          <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
-            <span>Recovered Volume</span>
-            <HardDrive size={15} className="text-[var(--text-secondary)]" />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+              Recovered Volume
+            </span>
+            <div className="w-6 h-6 rounded flex items-center justify-center bg-[var(--surface-secondary)] text-[var(--text-secondary)] shrink-0" aria-hidden="true" data-nosnippet="true">
+              <HardDrive size={14} focusable="false" role="presentation" />
+            </div>
           </div>
-          <div className="stat-number text-[28px] sm:text-[32px] font-bold font-mono text-[var(--text-primary)]">
+          <div className="stat-number text-[26px] sm:text-[30px] font-bold font-mono text-[var(--text-primary)]">
             {formatBytes(metrics.total_recovered_bytes)}
           </div>
           <p className="text-[12px] text-[var(--text-secondary)] mt-1">
@@ -453,14 +511,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           {/* Main View Tabs */}
           <div className="flex items-center gap-2 p-1 bg-[var(--surface-secondary)] rounded-lg">
             <button
+              type="button"
               onClick={() => setActiveView('deleted')}
+              aria-label="Deleted Files"
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-[13px] font-semibold transition-all cursor-pointer ${
                 activeView === 'deleted'
                   ? 'bg-[var(--surface)] text-[var(--primary-orange)] shadow-sm'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <FileSearch size={15} />
+              <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                <FileSearch size={15} aria-hidden="true" focusable="false" role="presentation" />
+              </span>
               <span>Deleted Files</span>
               <span className="ml-1 px-2 py-0.5 rounded-full text-[11px] font-mono bg-[var(--surface-secondary)] border border-[var(--border)]">
                 {deletedFiles.length}
@@ -468,14 +530,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </button>
 
             <button
+              type="button"
               onClick={() => setActiveView('recovered')}
+              aria-label="Recovered Files"
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-[13px] font-semibold transition-all cursor-pointer ${
                 activeView === 'recovered'
                   ? 'bg-[var(--surface)] text-[#2E7D32] shadow-sm'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <CheckCircle2 size={15} />
+              <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                <CheckCircle2 size={15} aria-hidden="true" focusable="false" role="presentation" />
+              </span>
               <span>Recovered Files</span>
               <span className="ml-1 px-2 py-0.5 rounded-full text-[11px] font-mono bg-[var(--surface-secondary)] border border-[var(--border)]">
                 {recoveredFiles.length}
@@ -486,7 +552,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           {/* Search Input & Category Badges */}
           <div className="flex flex-wrap items-center gap-2.5">
             <div className="relative min-w-[200px] flex-1 sm:flex-initial">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+              <span aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] inline-flex items-center shrink-0 pointer-events-none select-none">
+                <Search size={14} aria-hidden="true" focusable="false" role="presentation" />
+              </span>
               <input
                 type="text"
                 value={searchQuery}
@@ -500,6 +568,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               {['ALL', 'DOCUMENTS', 'IMAGES', 'ARCHIVES', 'MEDIA'].map((cat) => (
                 <button
                   key={cat}
+                  type="button"
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-2.5 py-1 rounded-lg text-[11.5px] font-medium transition-colors cursor-pointer ${
                     selectedCategory === cat
@@ -525,7 +594,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     <th className="w-12 text-center">#</th>
                     <th className="min-w-[170px]">Deleted Candidate File</th>
                     <th className="min-w-[130px]">Source Evidence</th>
-                    <th className="min-w-[110px]">Sector Offset</th>
                     <th className="min-w-[90px]">Size</th>
                     <th className="min-w-[140px]">Deletion Record / State</th>
                     <th className="w-32 text-right">Action</th>
@@ -534,15 +602,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-[13px] text-[var(--text-secondary)]">
-                        <RefreshCw size={18} className="animate-spin inline-block mr-2 text-[var(--primary-orange)]" />
+                      <td colSpan={6} className="py-12 text-center text-[13px] text-[var(--text-secondary)]">
+                        <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none mr-2">
+                          <RefreshCw size={18} className="animate-spin text-[var(--primary-orange)]" aria-hidden="true" focusable="false" role="presentation" />
+                        </span>
                         Scanning evidence images for deleted files...
                       </td>
                     </tr>
                   ) : filteredDeleted.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-[13px] text-[var(--text-secondary)] font-mono">
-                        No deleted files found matching your search filter.
+                      <td colSpan={6} className="py-12 text-center text-[13px] text-[var(--text-secondary)] font-mono">
+                        {searchQuery || selectedCategory !== 'ALL'
+                          ? 'No deleted files found matching your search filter.'
+                          : 'No evidence source selected. Choose or import an evidence container to catalog deleted files.'}
                       </td>
                     </tr>
                   ) : (
@@ -554,7 +626,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         <td>
                           <div className="flex items-center gap-2.5 min-w-0">
                             <div className="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] flex items-center justify-center flex-shrink-0 border border-[var(--border)]">
-                              {getFileIcon(item.file_type, item.extension)}
+                              <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                                {getFileIcon(item.file_type, item.extension)}
+                              </span>
                             </div>
                             <div className="min-w-0">
                               <div className="font-semibold text-[13px] text-[var(--text-primary)] truncate max-w-[200px]" title={item.filename}>
@@ -569,14 +643,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         <td>
                           <span className="font-mono text-[11.5px] text-[var(--text-secondary)] bg-[var(--surface-secondary)] px-2 py-0.5 rounded border border-[var(--border-subtle)] truncate inline-block max-w-[140px]" title={item.source_path}>
                             {item.source_image}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="font-mono text-[12px] text-[var(--text-primary)] font-medium block">
-                            {item.offset_hex}
-                          </span>
-                          <span className="text-[10.5px] font-mono text-[var(--text-muted)]">
-                            dec: {item.offset_dec}
                           </span>
                         </td>
                         <td className="font-mono text-[12px] text-[var(--text-primary)]">
@@ -595,18 +661,24 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                         </td>
                         <td className="text-right">
                           <button
+                            type="button"
                             onClick={() => handleRecoverSingleFile(item)}
                             disabled={recoveringId === item.id}
+                            aria-label={`Recover file ${item.filename}`}
                             className="btn-primary h-8 px-3 text-[11.5px] font-semibold inline-flex items-center gap-1.5"
                           >
                             {recoveringId === item.id ? (
                               <>
-                                <RefreshCw size={12} className="animate-spin" />
+                                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                                  <RefreshCw size={12} className="animate-spin" aria-hidden="true" focusable="false" role="presentation" />
+                                </span>
                                 <span>Extracting...</span>
                               </>
                             ) : (
                               <>
-                                <Download size={12} />
+                                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                                  <Download size={12} aria-hidden="true" focusable="false" role="presentation" />
+                                </span>
                                 <span>Recover File</span>
                               </>
                             )}
@@ -628,7 +700,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   <tr>
                     <th className="w-12 text-center">#</th>
                     <th className="min-w-[170px]">Recovered File Artifact</th>
-                    <th className="min-w-[110px]">Sector Offset</th>
                     <th className="min-w-[90px]">Size</th>
                     <th className="min-w-[130px]">SHA-256 Digest</th>
                     <th className="min-w-[140px]">Forensic Confidence</th>
@@ -638,15 +709,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-[13px] text-[var(--text-secondary)]">
-                        <RefreshCw size={18} className="animate-spin inline-block mr-2 text-[var(--primary-orange)]" />
+                      <td colSpan={6} className="py-12 text-center text-[13px] text-[var(--text-secondary)]">
+                        <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none mr-2">
+                          <RefreshCw size={18} className="animate-spin text-[var(--primary-orange)]" aria-hidden="true" focusable="false" role="presentation" />
+                        </span>
                         Loading recovered forensic files...
                       </td>
                     </tr>
                   ) : filteredRecovered.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-[13px] text-[var(--text-secondary)] font-mono">
-                        No recovered files found. Run recovery on deleted files above!
+                      <td colSpan={6} className="py-12 text-center text-[13px] text-[var(--text-secondary)] font-mono">
+                        {searchQuery || selectedCategory !== 'ALL'
+                          ? 'No recovered files found matching your search filter.'
+                          : 'No recovered files found. Select an evidence container and initiate recovery.'}
                       </td>
                     </tr>
                   ) : (
@@ -660,7 +735,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                           <td>
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div className="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] flex items-center justify-center flex-shrink-0 border border-[var(--border)]">
-                                {getFileIcon(file.file_type, file.extension)}
+                                <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                                  {getFileIcon(file.file_type, file.extension)}
+                                </span>
                               </div>
                               <div className="min-w-0">
                                 <div className="font-semibold text-[13px] text-[var(--text-primary)] truncate max-w-[200px]" title={name}>
@@ -671,14 +748,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                                 </div>
                               </div>
                             </div>
-                          </td>
-                          <td>
-                            <span className="font-mono text-[12px] text-[var(--text-primary)] font-medium block">
-                              {file.offset_hex}
-                            </span>
-                            <span className="text-[10.5px] font-mono text-[var(--text-muted)]">
-                              dec: {file.offset_dec}
-                            </span>
                           </td>
                           <td className="font-mono text-[12px] text-[var(--text-primary)]">
                             {formatBytes(file.size_bytes)}
@@ -693,16 +762,22 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                           </td>
                           <td>
                             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold bg-[#2E7D32]/10 text-[#2E7D32] border border-[#2E7D32]/20">
-                              <CheckCircle2 size={12} />
+                              <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                                <CheckCircle2 size={12} aria-hidden="true" focusable="false" role="presentation" />
+                              </span>
                               <span>{file.confidence_score}% ({file.confidence_level})</span>
                             </span>
                           </td>
                           <td className="text-right">
                             <button
+                              type="button"
                               onClick={() => setSelectedFileForDrawer(file)}
+                              aria-label={`Inspect ${name}`}
                               className="btn-secondary h-8 px-2.5 text-[11.5px] font-medium inline-flex items-center gap-1"
                             >
-                              <ExternalLink size={12} />
+                              <span aria-hidden="true" className="inline-flex items-center shrink-0 pointer-events-none select-none">
+                                <ExternalLink size={12} aria-hidden="true" focusable="false" role="presentation" />
+                              </span>
                               <span>Inspect</span>
                             </button>
                           </td>

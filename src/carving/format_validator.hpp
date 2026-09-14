@@ -12,6 +12,7 @@ namespace forensivault::carving {
  */
 struct FormatValidationDetails {
     bool isValid{false};
+    std::string validationState{"INVALID"}; // "VALID", "PARTIAL", "INVALID"
     std::string classifiedType;       // e.g., "DOCX" if ZIP contains word/document.xml
     std::string classifiedExtension;  // e.g., "docx"
     std::string classifiedMime;       // e.g., "application/vnd.openxmlformats-officedocument.wordprocessingml.document"

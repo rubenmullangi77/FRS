@@ -46,6 +46,46 @@ std::string formatSize(uint64_t bytes) {
     ss << std::fixed << std::setprecision(2) << size << " " << units[unitIdx];
     return ss.str();
 }
+#if defined(_WIN32)
+std::string busTypeToString(DWORD busType) {
+    switch (busType) {
+        case 1: return "SCSI";
+        case 2: return "ATAPI";
+        case 3: return "ATA";
+        case 4: return "1394";
+        case 5: return "SSA";
+        case 6: return "Fibre";
+        case 7: return "USB";
+        case 8: return "RAID";
+        case 9: return "iSCSI";
+        case 10: return "SAS";
+        case 11: return "SATA";
+        case 12: return "SD";
+        case 13: return "MMC";
+        case 14: return "Virtual";
+        case 15: return "FileBackedVirtual";
+        case 16: return "Spaces";
+        case 17: return "NVMe";
+        case 18: return "SCM";
+        case 19: return "UFS";
+        default: return "Standard";
+    }
+}
+
+std::string extractStringFromDesc(const uint8_t* buffer, DWORD offset, DWORD maxLen) {
+    if (offset == 0 || offset >= maxLen) return "";
+    const char* strPtr = reinterpret_cast<const char*>(buffer + offset);
+    size_t len = 0;
+    while ((offset + len < maxLen) && strPtr[len] != '\0') {
+        len++;
+    }
+    std::string s(strPtr, len);
+    size_t first = s.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) return "";
+    size_t last = s.find_last_not_of(" \t\r\n");
+    return s.substr(first, (last - first + 1));
+}
+#endif
 } // anonymous namespace
 
 StorageHierarchy StorageDeviceDetector::detectAllStorage() {
@@ -113,6 +153,33 @@ StorageHierarchy StorageDeviceDetector::detectAllStorage() {
                 vInfo.is_system_drive = true;
             }
 
+            // Query volume disk extents to identify physical disk number and partition offset
+            std::string volDevPath = "\\\\.\\" + std::string(1, letterChar) + ":";
+            std::wstring wVolDevPath(volDevPath.begin(), volDevPath.end());
+            HANDLE hVol = CreateFileW(
+                wVolDevPath.c_str(),
+                0, // query access, works without Administrator privileges
+                FILE_SHARE_READ | FILE_SHARE_WRITE,
+                NULL,
+                OPEN_EXISTING,
+                0,
+                NULL
+            );
+            if (hVol != INVALID_HANDLE_VALUE) {
+                std::vector<uint8_t> extBuf(1024, 0);
+                DWORD bytesRet = 0;
+                if (DeviceIoControl(hVol, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, extBuf.data(), static_cast<DWORD>(extBuf.size()), &bytesRet, NULL)) {
+                    auto* extents = reinterpret_cast<VOLUME_DISK_EXTENTS*>(extBuf.data());
+                    if (extents->NumberOfDiskExtents > 0) {
+                        vInfo.disk_number = extents->Extents[0].DiskNumber;
+                        vInfo.starting_offset = extents->Extents[0].StartingOffset.QuadPart;
+                        vInfo.extent_length = extents->Extents[0].ExtentLength.QuadPart;
+                        vInfo.has_disk_extent = true;
+                    }
+                }
+                CloseHandle(hVol);
+            }
+
             hierarchy.mounted_volumes.push_back(vInfo);
         }
     }
@@ -124,7 +191,7 @@ StorageHierarchy StorageDeviceDetector::detectAllStorage() {
 
         HANDLE hDisk = CreateFileW(
             wDiskPath.c_str(),
-            GENERIC_READ,
+            0, // Query access (0) succeeds without Administrator privileges
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL,
             OPEN_EXISTING,
@@ -133,31 +200,32 @@ StorageHierarchy StorageDeviceDetector::detectAllStorage() {
         );
 
         if (hDisk == INVALID_HANDLE_VALUE) {
-            // If failed to open directly (e.g. non-admin), create a descriptor if there are volumes mapped
-            bool hasVolumesOnDisk = false;
+            // Check if any mounted volume maps to this disk number via disk extents
+            std::vector<VolumeInfo> volsOnDisk;
             for (const auto& vol : hierarchy.mounted_volumes) {
-                if (diskNum == 0 && (vol.drive_letter == "C:" || vol.drive_letter == "D:")) {
-                    hasVolumesOnDisk = true;
-                    break;
+                if (vol.has_disk_extent && vol.disk_number == diskNum) {
+                    volsOnDisk.push_back(vol);
                 }
             }
-            if (hasVolumesOnDisk) {
+            if (!volsOnDisk.empty()) {
                 PhysicalDiskInfo pDisk;
                 pDisk.disk_number = diskNum;
                 pDisk.device_path = diskPath;
-                pDisk.friendly_name = "Physical Storage Device " + std::to_string(diskNum);
-                pDisk.bus_type = (diskNum == 0) ? "NVMe" : "SATA";
+                pDisk.friendly_name = "Physical Storage Disk " + std::to_string(diskNum);
+                pDisk.bus_type = (volsOnDisk[0].drive_type == "REMOVABLE") ? "USB" : "Fixed";
                 pDisk.partition_style = "GPT";
                 pDisk.total_size_bytes = 0;
 
-                // Add volumes as partitions
-                for (const auto& vol : hierarchy.mounted_volumes) {
+                for (const auto& vol : volsOnDisk) {
                     PhysicalPartitionInfo part;
                     part.disk_number = diskNum;
                     part.partition_number = static_cast<uint32_t>(pDisk.partitions.size() + 1);
                     part.drive_letter = vol.drive_letter;
+                    part.starting_offset = vol.starting_offset;
                     part.size_bytes = vol.total_bytes;
                     part.partition_type = "Basic Data Partition";
+                    part.filesystem = vol.filesystem;
+                    part.volume_label = vol.volume_name;
                     part.is_boot = vol.is_system_drive;
                     part.is_system = vol.is_system_drive;
                     pDisk.total_size_bytes += vol.total_bytes;
@@ -174,6 +242,33 @@ StorageHierarchy StorageDeviceDetector::detectAllStorage() {
         pDisk.friendly_name = "Physical Storage Disk " + std::to_string(diskNum);
         pDisk.bus_type = "Standard";
         pDisk.partition_style = "RAW";
+
+        // Query storage device descriptor for bus type, vendor, product, and serial
+        STORAGE_PROPERTY_QUERY propQuery;
+        memset(&propQuery, 0, sizeof(propQuery));
+        propQuery.PropertyId = StorageDeviceProperty;
+        propQuery.QueryType = PropertyStandardQuery;
+        std::vector<uint8_t> descBuf(2048, 0);
+        DWORD descBytesRet = 0;
+        if (DeviceIoControl(hDisk, IOCTL_STORAGE_QUERY_PROPERTY, &propQuery, sizeof(propQuery), descBuf.data(), static_cast<DWORD>(descBuf.size()), &descBytesRet, NULL)) {
+            auto* desc = reinterpret_cast<STORAGE_DEVICE_DESCRIPTOR*>(descBuf.data());
+            pDisk.bus_type = busTypeToString(static_cast<DWORD>(desc->BusType));
+            pDisk.is_removable = (desc->RemovableMedia != FALSE);
+
+            std::string vendor = extractStringFromDesc(descBuf.data(), desc->VendorIdOffset, descBytesRet);
+            std::string product = extractStringFromDesc(descBuf.data(), desc->ProductIdOffset, descBytesRet);
+            std::string serial = extractStringFromDesc(descBuf.data(), desc->SerialNumberOffset, descBytesRet);
+
+            pDisk.manufacturer = vendor;
+            pDisk.serial_number = serial;
+            if (!product.empty()) {
+                if (!vendor.empty() && product.find(vendor) == std::string::npos) {
+                    pDisk.friendly_name = vendor + " " + product;
+                } else {
+                    pDisk.friendly_name = product;
+                }
+            }
+        }
 
         DISK_GEOMETRY_EX geomEx;
         DWORD bytesRet = 0;
@@ -211,7 +306,47 @@ StorageHierarchy StorageDeviceDetector::detectAllStorage() {
                     part.is_boot = pEntry.Mbr.BootIndicator != 0;
                 }
 
+                // Match with mounted volumes on this disk
+                for (const auto& vol : hierarchy.mounted_volumes) {
+                    if (vol.has_disk_extent && vol.disk_number == diskNum) {
+                        uint64_t vStart = vol.starting_offset;
+                        uint64_t pStart = part.starting_offset;
+                        uint64_t pEnd = pStart + part.size_bytes;
+                        if (vStart >= pStart && vStart < pEnd) {
+                            part.drive_letter = vol.drive_letter;
+                            part.filesystem = vol.filesystem;
+                            part.volume_label = vol.volume_name;
+                            part.is_boot = vol.is_system_drive;
+                            part.is_system = vol.is_system_drive;
+                            break;
+                        }
+                    }
+                }
+
                 pDisk.partitions.push_back(part);
+            }
+        }
+
+        // If partition table layout has no partitions, check if any mounted volume belongs to this disk
+        if (pDisk.partitions.empty()) {
+            for (const auto& vol : hierarchy.mounted_volumes) {
+                if (vol.has_disk_extent && vol.disk_number == diskNum) {
+                    PhysicalPartitionInfo part;
+                    part.disk_number = diskNum;
+                    part.partition_number = static_cast<uint32_t>(pDisk.partitions.size() + 1);
+                    part.drive_letter = vol.drive_letter;
+                    part.starting_offset = vol.starting_offset;
+                    part.size_bytes = vol.total_bytes;
+                    part.partition_type = "Basic Data Partition";
+                    part.filesystem = vol.filesystem;
+                    part.volume_label = vol.volume_name;
+                    part.is_boot = vol.is_system_drive;
+                    part.is_system = vol.is_system_drive;
+                    if (pDisk.total_size_bytes == 0) {
+                        pDisk.total_size_bytes += vol.total_bytes;
+                    }
+                    pDisk.partitions.push_back(part);
+                }
             }
         }
 
@@ -252,7 +387,10 @@ std::string StorageDeviceDetector::detectAllStorageJson() {
            << "\"device_path\":\"" << escapeJson(d.device_path) << "\","
            << "\"friendly_name\":\"" << escapeJson(d.friendly_name) << "\","
            << "\"bus_type\":\"" << escapeJson(d.bus_type) << "\","
+           << "\"manufacturer\":\"" << escapeJson(d.manufacturer) << "\","
+           << "\"serial_number\":\"" << escapeJson(d.serial_number) << "\","
            << "\"partition_style\":\"" << escapeJson(d.partition_style) << "\","
+           << "\"is_removable\":" << (d.is_removable ? "true" : "false") << ","
            << "\"total_size_bytes\":" << d.total_size_bytes << ","
            << "\"total_size_formatted\":\"" << escapeJson(formatSize(d.total_size_bytes)) << "\","
            << "\"partitions\":[";
@@ -268,6 +406,8 @@ std::string StorageDeviceDetector::detectAllStorageJson() {
                << "\"size_bytes\":" << p.size_bytes << ","
                << "\"size_formatted\":\"" << escapeJson(formatSize(p.size_bytes)) << "\","
                << "\"partition_type\":\"" << escapeJson(p.partition_type) << "\","
+               << "\"filesystem\":\"" << escapeJson(p.filesystem) << "\","
+               << "\"volume_label\":\"" << escapeJson(p.volume_label) << "\","
                << "\"is_boot\":" << (p.is_boot ? "true" : "false") << ","
                << "\"is_system\":" << (p.is_system ? "true" : "false")
                << "}";
@@ -286,6 +426,8 @@ std::string StorageDeviceDetector::detectAllStorageJson() {
            << "\"filesystem\":\"" << escapeJson(v.filesystem) << "\","
            << "\"detection_status\":\"" << (v.filesystem.empty() || v.filesystem == "UNKNOWN" ? "Unidentified" : "Confirmed") << "\","
            << "\"drive_type\":\"" << escapeJson(v.drive_type) << "\","
+           << "\"disk_number\":" << v.disk_number << ","
+           << "\"starting_offset\":" << v.starting_offset << ","
            << "\"total_bytes\":" << v.total_bytes << ","
            << "\"total_formatted\":\"" << escapeJson(formatSize(v.total_bytes)) << "\","
            << "\"free_bytes\":" << v.free_bytes << ","

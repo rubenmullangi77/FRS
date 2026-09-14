@@ -1,0 +1,3390 @@
+%PDF-1.4
+%“Œ‹ž ReportLab Generated PDF document (opensource)
+1 0 obj
+<<
+/F1 2 0 R /F2 3 0 R /F3 4 0 R /F4 5 0 R /F5 6 0 R
+>>
+endobj
+2 0 obj
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
+endobj
+3 0 obj
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/BaseFont /Courier /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
+endobj
+5 0 obj
+<<
+/BaseFont /Helvetica-BoldOblique /Encoding /WinAnsiEncoding /Name /F4 /Subtype /Type1 /Type /Font
+>>
+endobj
+6 0 obj
+<<
+/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F5 /Subtype /Type1 /Type /Font
+>>
+endobj
+7 0 obj
+<<
+/Contents 14 0 R /MediaBox [ 0 0 612 792 ] /Parent 13 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+8 0 obj
+<<
+/Contents 15 0 R /MediaBox [ 0 0 612 792 ] /Parent 13 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+9 0 obj
+<<
+/Contents 16 0 R /MediaBox [ 0 0 612 792 ] /Parent 13 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+10 0 obj
+<<
+/Contents 17 0 R /MediaBox [ 0 0 612 792 ] /Parent 13 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+11 0 obj
+<<
+/PageMode /UseNone /Pages 13 0 R /Type /Catalog
+>>
+endobj
+12 0 obj
+<<
+/Author (\(anonymous\)) /CreationDate (D:20260913211001+05'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260913211001+05'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
+>>
+endobj
+13 0 obj
+<<
+/Count 4 /Kids [ 7 0 R 8 0 R 9 0 R 10 0 R ] /Type /Pages
+>>
+endobj
+14 0 obj
+<<
+/Length 14035
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 60 708 cm
+q
+.85098 .419608 .152941 rg
+BT 1 0 0 1 0 4 Tm /F2 20 Tf 24 TL (FORENSIVAULT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 60 690 cm
+q
+BT 1 0 0 1 0 4 Tm 14 TL /F2 10 Tf .458824 .419608 .388235 rg (DIGITAL FORENSIC ANALYSIS & EVIDENCE RECOVERY REPORT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 60 676.5 cm
+q
+1.5 w
+1 J
+.85098 .419608 .152941 RG
+n 0 0 m 492 0 l S
+Q
+Q
+q
+1 0 0 1 54 574.5 cm
+q
+.984314 .972549 .945098 rg
+n 0 92 504 -92 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 76 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Report ID:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 77 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (REP-20260913211001-D050A8) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 76 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Case ID:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 77 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 56 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Case Name:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 56 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Investigation CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 56 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Case Status:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 56 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (ACTIVE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Date / Time:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 30 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T21:10:01.672620) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 24 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (Lead) Tj T* (Examiner:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 30 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 4 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Agency / Unit:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 86 4 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (ForensiVault Digital Forensics Lab) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 4 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Description:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 4 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Digital Forensic Examination) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 92 m 504 92 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 92 l S
+n 504 0 m 504 92 l S
+n 0 72 m 504 72 l S
+n 0 52 m 504 52 l S
+n 0 20 m 504 20 l S
+n 80 0 m 80 92 l S
+n 250 0 m 250 92 l S
+n 324 0 m 324 92 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 564.5 cm
+Q
+q
+1 0 0 1 60 536.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (1. Evidence Acquisition & Integrity Verification) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 506.5 cm
+q
+.984314 .972549 .945098 rg
+n 0 24 504 -24 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 8 6 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (No evidence records associated with this case.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 24 m 504 24 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 24 l S
+n 504 0 m 504 24 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 496.5 cm
+Q
+q
+1 0 0 1 60 468.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (2. Recovery Statistics & Discovery Summary) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 410.5 cm
+q
+.956863 .937255 .901961 rg
+n 0 52 504 -32 re f*
+.984314 .972549 .945098 rg
+n 0 20 504 -20 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Files Detected) Tj T* ET
+Q
+Q
+q
+1 0 0 1 106 24 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (Successfully) Tj T* (Recovered) Tj T* ET
+Q
+Q
+q
+1 0 0 1 211 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Partial / Carved) Tj T* ET
+Q
+Q
+q
+1 0 0 1 306 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Avg Confidence) Tj T* ET
+Q
+Q
+q
+1 0 0 1 406 30 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Fragment Candidates) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 4 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 37.884 0 Td (35) Tj T* -37.884 0 Td ET
+Q
+Q
+q
+1 0 0 1 106 4 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 40.384 0 Td (35) Tj T* -40.384 0 Td ET
+Q
+Q
+q
+1 0 0 1 211 4 cm
+q
+.705882 .32549 .035294 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 38.442 0 Td (0) Tj T* -38.442 0 Td ET
+Q
+Q
+q
+1 0 0 1 306 4 cm
+q
+.145098 .388235 .921569 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 28.4075 0 Td (85.7%) Tj T* -28.4075 0 Td ET
+Q
+Q
+q
+1 0 0 1 406 4 cm
+q
+.85098 .419608 .152941 rg
+BT 1 0 0 1 0 1 Tm /F2 11 Tf 12 TL 39.884 0 Td (10) Tj T* -39.884 0 Td ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 52 m 504 52 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 52 l S
+n 504 0 m 504 52 l S
+n 0 20 m 504 20 l S
+n 100 0 m 100 52 l S
+n 205 0 m 205 52 l S
+n 300 0 m 300 52 l S
+n 400 0 m 400 52 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 398.5 cm
+Q
+q
+1 0 0 1 60 370.5 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (3. Recovered & Reconstructed Files Catalog) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 100.5 cm
+q
+.956863 .937255 .901961 rg
+n 0 264 504 -30 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 3 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (File Name) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Type) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Size) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Method) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 237 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (Offset /) Tj T* (Sec) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Frags) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Conf) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (SHA-256 Digest) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 243 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Status) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 207 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_030720.mp4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 195 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (34.00 KB) Tj T* (\(34,816) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 201 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x7800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (68) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 207 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (58b0fcaedbf91df2...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 207 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 165 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_023040.mp3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 153 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (2.00 KB) Tj T* (\(2,048) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x5A00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 165 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (2afa561b02ddfde3...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 165 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_015360.docx) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (DOCX) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (497 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 123 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x3C00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (d36df7acc5508e9f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 129 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_010240.zip) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (ZIP) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (169 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 93 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x2800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (47b5265b6dd8ac6f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 99 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_006144.pdf) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PDF) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (329 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 63 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x1800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (e04a0c9963113049...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 69 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_003072.png) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PNG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (70 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 33 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0xC00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (100%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4ff6ab670a58c142...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 39 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_001024.jpg) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (JPEG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (149 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 3 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x400) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (35db403b284a7b50...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 9 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 264 m 504 264 l S
+n 0 0 m 0 264 l S
+n 504 0 m 504 264 l S
+n 0 0 m 504 0 l S
+n 0 234 m 504 234 l S
+n 0 192 m 504 192 l S
+n 0 150 m 504 150 l S
+n 0 120 m 504 120 l S
+n 0 90 m 504 90 l S
+n 0 60 m 504 60 l S
+n 0 30 m 504 30 l S
+n 85 0 m 85 264 l S
+n 117 0 m 117 264 l S
+n 165 0 m 165 264 l S
+n 220 0 m 220 264 l S
+n 270 0 m 270 264 l S
+n 302 0 m 302 264 l S
+n 340 0 m 340 264 l S
+n 454 0 m 454 264 l S
+Q
+Q
+Q
+q
+BT /F2 8 Tf 9.6 TL ET
+.458824 .419608 .388235 rg
+.866667 .823529 .772549 RG
+.5 w
+n 54 45 m 558 45 l S
+BT /F1 7.5 Tf 9 TL ET
+BT 1 0 0 1 54 34 Tm (CONFIDENTIAL & PRIVILEGED \227 FORENSIC CHAIN OF CUSTODY DOCUMENTATION) Tj T* ET
+BT 1 0 0 1 519.6375 34 Tm (Page 1 of 4) Tj T* ET
+Q
+ 
+endstream
+endobj
+15 0 obj
+<<
+/Length 21639
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 54 60 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 3 645 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_030720.mp4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 646 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 633 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (34.00 KB) Tj T* (\(34,816) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 639 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 646 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x7800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 646 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (68) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 645 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 646 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (58b0fcaedbf91df2...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 645 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 603 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_023040.mp3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 604 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 591 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (2.00 KB) Tj T* (\(2,048) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 597 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 604 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x5A00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 604 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 603 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 604 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (2afa561b02ddfde3...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 603 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 567 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_015360.docx) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 568 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (DOCX) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 567 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (497 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 561 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 568 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x3C00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 568 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 567 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 568 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (d36df7acc5508e9f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 567 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 537 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_010240.zip) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 538 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (ZIP) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 537 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (169 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 531 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 538 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x2800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 538 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 537 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 538 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (47b5265b6dd8ac6f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 537 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 507 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_006144.pdf) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 508 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PDF) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 507 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (329 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 501 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 508 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x1800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 508 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 507 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 508 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (e04a0c9963113049...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 507 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 477 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_003072.png) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 478 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PNG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 477 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (70 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 471 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 478 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0xC00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 478 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 477 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (100%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 478 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4ff6ab670a58c142...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 477 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 447 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_001024.jpg) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 448 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (JPEG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 447 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (149 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 441 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 448 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x400) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 448 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 447 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 448 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (35db403b284a7b50...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 447 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 411 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_030720.mp4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 412 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 399 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (34.00 KB) Tj T* (\(34,816) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 405 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 412 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x7800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 412 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (68) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 411 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 412 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (58b0fcaedbf91df2...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 411 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 369 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_023040.mp3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 370 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 357 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (2.00 KB) Tj T* (\(2,048) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 363 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 370 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x5A00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 370 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 369 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 370 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (2afa561b02ddfde3...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 369 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 333 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_015360.docx) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 334 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (DOCX) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 333 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (497 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 327 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 334 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x3C00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 334 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 333 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 334 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (d36df7acc5508e9f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 333 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 303 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_010240.zip) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 304 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (ZIP) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 303 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (169 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 297 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 304 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x2800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 304 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 303 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 304 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (47b5265b6dd8ac6f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 303 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 273 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_006144.pdf) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 274 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PDF) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 273 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (329 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 267 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 274 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x1800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 274 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 273 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 274 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (e04a0c9963113049...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 273 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_003072.png) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PNG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (70 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 237 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0xC00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (100%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4ff6ab670a58c142...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 243 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 213 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_001024.jpg) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 214 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (JPEG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 213 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (149 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 207 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 214 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x400) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 214 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 213 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 214 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (35db403b284a7b50...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 213 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 177 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_030720.mp4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 178 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 165 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (34.00 KB) Tj T* (\(34,816) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 171 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 178 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x7800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 178 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (68) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 177 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 178 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (58b0fcaedbf91df2...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 177 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 135 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_023040.mp3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 136 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 123 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (2.00 KB) Tj T* (\(2,048) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 136 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x5A00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 136 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 135 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 136 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (2afa561b02ddfde3...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 135 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_015360.docx) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (DOCX) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (497 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 93 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x3C00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (d36df7acc5508e9f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 99 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_010240.zip) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (ZIP) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (169 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 63 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x2800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (47b5265b6dd8ac6f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 69 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_006144.pdf) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PDF) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (329 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 33 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x1800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (e04a0c9963113049...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 39 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_003072.png) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PNG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (70 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 3 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0xC00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (100%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4ff6ab670a58c142...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 9 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 0 m 0 672 l S
+n 504 0 m 504 672 l S
+n 0 672 m 504 672 l S
+n 0 0 m 504 0 l S
+n 0 630 m 504 630 l S
+n 0 588 m 504 588 l S
+n 0 558 m 504 558 l S
+n 0 528 m 504 528 l S
+n 0 498 m 504 498 l S
+n 0 468 m 504 468 l S
+n 0 438 m 504 438 l S
+n 0 396 m 504 396 l S
+n 0 354 m 504 354 l S
+n 0 324 m 504 324 l S
+n 0 294 m 504 294 l S
+n 0 264 m 504 264 l S
+n 0 234 m 504 234 l S
+n 0 204 m 504 204 l S
+n 0 162 m 504 162 l S
+n 0 120 m 504 120 l S
+n 0 90 m 504 90 l S
+n 0 60 m 504 60 l S
+n 0 30 m 504 30 l S
+n 85 0 m 85 672 l S
+n 117 0 m 117 672 l S
+n 165 0 m 165 672 l S
+n 220 0 m 220 672 l S
+n 270 0 m 270 672 l S
+n 302 0 m 302 672 l S
+n 340 0 m 340 672 l S
+n 454 0 m 454 672 l S
+Q
+Q
+Q
+q
+BT /F2 8 Tf 9.6 TL ET
+.458824 .419608 .388235 rg
+BT 1 0 0 1 54 752 Tm (FORENSIVAULT FORENSIC INVESTIGATION DOSSIER \227 LAW ENFORCEMENT & COURT ADMISSIBLE) Tj T* ET
+.866667 .823529 .772549 RG
+.5 w
+n 54 746 m 558 746 l S
+.866667 .823529 .772549 RG
+.5 w
+n 54 45 m 558 45 l S
+BT /F1 7.5 Tf 9 TL ET
+BT 1 0 0 1 54 34 Tm (CONFIDENTIAL & PRIVILEGED \227 FORENSIC CHAIN OF CUSTODY DOCUMENTATION) Tj T* ET
+BT 1 0 0 1 519.6375 34 Tm (Page 2 of 4) Tj T* ET
+Q
+ 
+endstream
+endobj
+16 0 obj
+<<
+/Length 17304
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 54 468 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 3 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_001024.jpg) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (JPEG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (149 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 237 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x400) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 244 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (35db403b284a7b50...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 243 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 207 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_030720.mp4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 195 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (34.00 KB) Tj T* (\(34,816) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 201 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x7800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (68) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 207 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 208 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (58b0fcaedbf91df2...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 207 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 165 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_023040.mp3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (MP3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 153 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 27.5 Tm /F1 8.5 Tf 12 TL (2.00 KB) Tj T* (\(2,048) Tj T* (bytes\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x5A00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 165 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (60%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 166 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (2afa561b02ddfde3...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 165 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_015360.docx) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (DOCX) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (497 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 123 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x3C00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (d36df7acc5508e9f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 129 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_010240.zip) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (ZIP) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (169 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 93 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x2800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (47b5265b6dd8ac6f...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 99 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_006144.pdf) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PDF) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (329 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 63 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x1800) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (e04a0c9963113049...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 69 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_003072.png) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (PNG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (70 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 33 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0xC00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (100%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (4ff6ab670a58c142...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 39 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 3 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (FILE_001024.jpg) Tj T* ET
+Q
+Q
+q
+1 0 0 1 88 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (JPEG) Tj T* ET
+Q
+Q
+q
+1 0 0 1 120 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (149 bytes) Tj T* ET
+Q
+Q
+q
+1 0 0 1 168 3 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Raw File) Tj T* (Carving) Tj T* ET
+Q
+Q
+q
+1 0 0 1 223 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (0x400) Tj T* ET
+Q
+Q
+q
+1 0 0 1 273 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 305 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (95%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 343 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (35db403b284a7b50...) Tj T* ET
+Q
+Q
+q
+1 0 0 1 457 9 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (INTACT) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 0 m 0 264 l S
+n 504 0 m 504 264 l S
+n 0 0 m 504 0 l S
+n 0 264 m 504 264 l S
+n 0 234 m 504 234 l S
+n 0 192 m 504 192 l S
+n 0 150 m 504 150 l S
+n 0 120 m 504 120 l S
+n 0 90 m 504 90 l S
+n 0 60 m 504 60 l S
+n 0 30 m 504 30 l S
+n 85 0 m 85 264 l S
+n 117 0 m 117 264 l S
+n 165 0 m 165 264 l S
+n 220 0 m 220 264 l S
+n 270 0 m 270 264 l S
+n 302 0 m 302 264 l S
+n 340 0 m 340 264 l S
+n 454 0 m 454 264 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 456 cm
+Q
+q
+1 0 0 1 60 428 cm
+q
+BT 1 0 0 1 0 4 Tm 16 TL /F2 12 Tf .117647 .101961 .086275 rg (4. Chain-of-Custody & Operation Audit Trail) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54 134 cm
+q
+.956863 .937255 .901961 rg
+n 0 288 504 -18 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 4 273 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Entry #) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 273 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Timestamp) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 273 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Operation) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 273 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Operator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 273 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Target Identifier) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 273 cm
+q
+.227451 .203922 .180392 rg
+BT 1 0 0 1 0 3.5 Tm /F2 8.5 Tf 12 TL (Status) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 250 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (526) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 249 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:13:35) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 249 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (MTP DEVICE INSPECTED) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 243 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Senior Investigator) Tj T* (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 250 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 243 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 220 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (511) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 219 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T19:13:09) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 219 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (MTP DEVICE INSPECTED) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 213 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (Senior Investigator) Tj T* (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 220 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 213 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 190 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (461) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 189 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:37:15) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 183 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (EXTRACT RECOVERED) Tj T* (FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 189 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 190 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 183 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 160 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (460) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:37:11) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 153 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (CARVE UNALLOCATED) Tj T* (SPACE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 159 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 160 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 153 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (459) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:37:10) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 129 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 130 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 123 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (458) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:37:08) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (SCAN DELETED FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 99 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 100 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 93 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (457) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:32:32) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 63 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (EXTRACT RECOVERED) Tj T* (FILES) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 69 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 70 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 63 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (456) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:32:30) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 33 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (CARVE UNALLOCATED) Tj T* (SPACE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 39 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 40 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 33 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 0 0 1 4 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (455) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (2026-09-13T18:32:01) Tj T* ET
+Q
+Q
+q
+1 0 0 1 139 3 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 15.5 Tm /F1 8.5 Tf 12 TL (CARVE UNALLOCATED) Tj T* (SPACE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 254 9 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 3.5 Tm /F1 8.5 Tf 12 TL (Ruben) Tj T* ET
+Q
+Q
+q
+1 0 0 1 334 10 cm
+q
+.117647 .101961 .086275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 7.5 Tf 10 TL (CASE-2026-001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 448 3 cm
+q
+.180392 .490196 .196078 rg
+BT 1 0 0 1 0 15.5 Tm /F2 8.5 Tf 12 TL (COMPLETE) Tj T* (D) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.898039 .866667 .796078 RG
+.5 w
+n 0 288 m 504 288 l S
+n 0 0 m 504 0 l S
+n 0 0 m 0 288 l S
+n 504 0 m 504 288 l S
+n 0 270 m 504 270 l S
+n 0 240 m 504 240 l S
+n 0 210 m 504 210 l S
+n 0 180 m 504 180 l S
+n 0 150 m 504 150 l S
+n 0 120 m 504 120 l S
+n 0 90 m 504 90 l S
+n 0 60 m 504 60 l S
+n 0 30 m 504 30 l S
+n 40 0 m 40 288 l S
+n 135 0 m 135 288 l S
+n 250 0 m 250 288 l S
+n 330 0 m 330 288 l S
+n 444 0 m 444 288 l S
+Q
+Q
+Q
+q
+1 0 0 1 60 120 cm
+Q
+q
+1 0 0 1 60 87 cm
+q
+BT 1 0 0 1 0 25.5 Tm 11 TL /F4 7.5 Tf .419608 .384314 .34902 rg (Legal & Technical Disclaimer:) Tj /F5 7.5 Tf ( This report is generated by ForensiVault based on the available analysis results. Recovery results depend on the) Tj T* (condition of the underlying storage data, filesystem allocations, cluster continuity, and sector entropy. No forensic inferences or data points were) Tj T* (simulated or fabricated.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 60 73 cm
+Q
+q
+BT /F2 8 Tf 9.6 TL ET
+.458824 .419608 .388235 rg
+BT 1 0 0 1 54 752 Tm (FORENSIVAULT FORENSIC INVESTIGATION DOSSIER \227 LAW ENFORCEMENT & COURT ADMISSIBLE) Tj T* ET
+.866667 .823529 .772549 RG
+.5 w
+n 54 746 m 558 746 l S
+.866667 .823529 .772549 RG
+.5 w
+n 54 45 m 558 45 l S
+BT /F1 7.5 Tf 9 TL ET
+BT 1 0 0 1 54 34 Tm (CONFIDENTIAL & PRIVILEGED \227 FORENSIC CHAIN OF CUSTODY DOCUMENTATION) Tj T* ET
+BT 1 0 0 1 519.6375 34 Tm (Page 3 of 4) Tj T* ET
+Q
+ 
+endstream
+endobj
+17 0 obj
+<<
+/Length 1104
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 54 673 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 3 cm
+q
+BT 1 0 0 1 0 39.5 Tm 12 TL /F1 8.5 Tf .117647 .101961 .086275 rg (____________________________________________) Tj  T* /F2 8.5 Tf (Lead Forensic Examiner) Tj /F1 8.5 Tf  T* (Ruben) Tj  T* (ForensiVault Digital Forensics Lab) Tj T* ET
+Q
+Q
+q
+1 0 0 1 256 3 cm
+q
+BT 1 0 0 1 0 39.5 Tm 12 TL /F1 8.5 Tf .117647 .101961 .086275 rg (____________________________________________) Tj  T* /F2 8.5 Tf (Technical Reviewer / QA Officer) Tj /F1 8.5 Tf  T* (Quality Assurance Laboratory Unit) Tj  T* (ForensiVault Compliance Division) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+BT /F2 8 Tf 9.6 TL ET
+.458824 .419608 .388235 rg
+BT 1 0 0 1 54 752 Tm (FORENSIVAULT FORENSIC INVESTIGATION DOSSIER \227 LAW ENFORCEMENT & COURT ADMISSIBLE) Tj T* ET
+.866667 .823529 .772549 RG
+.5 w
+n 54 746 m 558 746 l S
+.866667 .823529 .772549 RG
+.5 w
+n 54 45 m 558 45 l S
+BT /F1 7.5 Tf 9 TL ET
+BT 1 0 0 1 54 34 Tm (CONFIDENTIAL & PRIVILEGED \227 FORENSIC CHAIN OF CUSTODY DOCUMENTATION) Tj T* ET
+BT 1 0 0 1 519.6375 34 Tm (Page 4 of 4) Tj T* ET
+Q
+ 
+endstream
+endobj
+xref
+0 18
+0000000000 65535 f 
+0000000061 00000 n 
+0000000132 00000 n 
+0000000239 00000 n 
+0000000351 00000 n 
+0000000456 00000 n 
+0000000575 00000 n 
+0000000690 00000 n 
+0000000885 00000 n 
+0000001080 00000 n 
+0000001275 00000 n 
+0000001471 00000 n 
+0000001541 00000 n 
+0000001822 00000 n 
+0000001901 00000 n 
+0000015989 00000 n 
+0000037681 00000 n 
+0000055038 00000 n 
+trailer
+<<
+/ID 
+[<1dc4d0066ec6cb735f34d4a53ff62739><1dc4d0066ec6cb735f34d4a53ff62739>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 12 0 R
+/Root 11 0 R
+/Size 18
+>>
+startxref
+56194
+%%EOF

@@ -439,6 +439,30 @@ __/src/core/partition_table.cpp.s:
 	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.s
 .PHONY : __/src/core/partition_table.cpp.s
 
+__/src/core/portable_device_detector.obj: __/src/core/portable_device_detector.cpp.obj
+.PHONY : __/src/core/portable_device_detector.obj
+
+# target to build an object file
+__/src/core/portable_device_detector.cpp.obj:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj
+.PHONY : __/src/core/portable_device_detector.cpp.obj
+
+__/src/core/portable_device_detector.i: __/src/core/portable_device_detector.cpp.i
+.PHONY : __/src/core/portable_device_detector.i
+
+# target to preprocess a source file
+__/src/core/portable_device_detector.cpp.i:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.i
+.PHONY : __/src/core/portable_device_detector.cpp.i
+
+__/src/core/portable_device_detector.s: __/src/core/portable_device_detector.cpp.s
+.PHONY : __/src/core/portable_device_detector.s
+
+# target to generate assembly for a file
+__/src/core/portable_device_detector.cpp.s:
+	cd /d D:\SIH\build && $(MAKE) $(MAKESILENT) -f backend\CMakeFiles\forensivault_core.dir\build.make backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.s
+.PHONY : __/src/core/portable_device_detector.cpp.s
+
 __/src/core/storage_device_detector.obj: __/src/core/storage_device_detector.cpp.obj
 .PHONY : __/src/core/storage_device_detector.obj
 
@@ -1083,6 +1107,9 @@ help:
 	@echo ... __/src/core/partition_table.obj
 	@echo ... __/src/core/partition_table.i
 	@echo ... __/src/core/partition_table.s
+	@echo ... __/src/core/portable_device_detector.obj
+	@echo ... __/src/core/portable_device_detector.i
+	@echo ... __/src/core/portable_device_detector.s
 	@echo ... __/src/core/storage_device_detector.obj
 	@echo ... __/src/core/storage_device_detector.i
 	@echo ... __/src/core/storage_device_detector.s

@@ -8,7 +8,8 @@ import {
   Settings,
   ChevronDown,
   Sun,
-  Moon
+  Moon,
+  Shield
 } from 'lucide-react';
 import { BackendStatus, CaseMetadata, NavigationTab } from '../types';
 import { settingsService } from '../services/settings';
@@ -83,13 +84,18 @@ export const Header: React.FC<HeaderProps> = ({
           {activeTabTitle}
         </h1>
 
-        {activeCase && (
+        {activeCase ? (
           <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-[var(--border)]">
             <FolderLock size={14} className="text-[var(--primary-orange)]" aria-hidden="true" focusable="false" />
             <span className="text-[12px] text-[var(--text-secondary)]">Current Case:</span>
             <span className="text-[12px] font-mono font-medium text-[var(--text-primary)] px-2 py-0.5 rounded bg-[var(--surface-secondary)] border border-[var(--border)]">
               {activeCase.case_id}
             </span>
+          </div>
+        ) : (
+          <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-[var(--border)]">
+            <FolderLock size={14} className="text-[var(--text-muted)]" aria-hidden="true" focusable="false" />
+            <span className="text-[12px] text-[var(--text-muted)] italic">No active case</span>
           </div>
         )}
       </div>
@@ -178,20 +184,23 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </div>
 
-        {/* 53/53 Tests Badge */}
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface)] border border-[#2E7D32]/40 text-[12px] text-[#2E7D32]">
-          <CheckCircle2 size={13} aria-hidden="true" focusable="false" />
-          <span className="font-semibold font-mono">53/53 Tests</span>
+        {/* Read-Only State Badge */}
+        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[12px] text-[var(--text-secondary)]">
+          <Shield size={13} className="text-blue-400" aria-hidden="true" focusable="false" />
+          <span className="font-medium font-mono text-[11px]">READ-ONLY</span>
         </div>
 
         {/* Refresh Button */}
         <button
           onClick={onRefresh}
           disabled={isLoading}
+          aria-label="Refresh hardware inventory and backend status"
           title="Refresh hardware inventory and backend status"
-          className="p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-secondary)] text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--primary-orange)]/40 transition-colors disabled:opacity-50 flex items-center justify-center cursor-pointer"
+          className="p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-secondary)] text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--primary-orange)] transition-colors disabled:opacity-50 flex items-center justify-center cursor-pointer"
         >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin text-[var(--primary-orange)]' : 'text-[var(--text-secondary)]'} aria-hidden="true" focusable="false" />
+          <span className="shrink-0 flex items-center" aria-hidden="true">
+            <RefreshCw size={14} className={isLoading ? 'animate-spin text-[var(--primary-orange)]' : 'text-[var(--text-secondary)]'} aria-hidden="true" focusable="false" />
+          </span>
         </button>
       </div>
     </header>

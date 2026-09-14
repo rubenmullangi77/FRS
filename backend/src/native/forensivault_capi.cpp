@@ -12,6 +12,7 @@
 #include "core/disk_image_reader.hpp"
 #include "core/partition_table.hpp"
 #include "core/storage_device_detector.hpp"
+#include "core/portable_device_detector.hpp"
 #include "filesystem/fs_analyzer.hpp"
 #include "filesystem/fat32_analyzer.hpp"
 #include "filesystem/exfat_analyzer.hpp"
@@ -65,6 +66,25 @@ void safeCopy(char* dest, size_t max_len, const std::string& src) {
 std::string computeReaderSha256(forensivault::core::DiskImageReader& reader) {
     CryptoHash::Sha256Context ctx;
     uint64_t totalSize = reader.size();
+    
+    // For large volumes/live devices (> 4GB), hashing the entire volume in 64KB blocks
+    // synchronously stalls the scanner for hours. For evidence immutability on live devices,
+    // hash the VBR and filesystem metadata header (first 64KB), or sample sectors.
+    const uint64_t maxFullHashSize = 4ULL * 1024 * 1024 * 1024; // 4 GB
+    bool isLiveDevice = reader.filepath().rfind("\\\\.\\", 0) == 0 ||
+                        reader.filepath().rfind("\\\\?\\", 0) == 0 ||
+                        (reader.filepath().size() <= 3 && reader.filepath().find(':') != std::string::npos);
+
+    if (totalSize > maxFullHashSize || isLiveDevice) {
+        // Hash the first 64KB containing Boot Sector, BIOS Parameter Block (BPB), and metadata anchor
+        size_t headerBytes = static_cast<size_t>(std::min<uint64_t>(65536, totalSize));
+        auto headerBuf = reader.readBytes(0, headerBytes);
+        if (!headerBuf.empty()) {
+            ctx.update(headerBuf.data(), headerBuf.size());
+        }
+        return "METADATA-VBR:" + ctx.finalize();
+    }
+
     uint64_t offset = 0;
     const size_t chunkSize = 65536;
     while (offset < totalSize) {
@@ -149,13 +169,52 @@ FV_EXPORT int fv_read_sectors(const char* image_path, uint64_t start_sector, uin
     return 0;
 }
 
+// 3b. Process Privilege Detection
+FV_EXPORT int fv_is_process_elevated() {
+#if defined(_WIN32)
+    BOOL isElevated = FALSE;
+    HANDLE hToken = NULL;
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        TOKEN_ELEVATION elevation;
+        DWORD cbSize = sizeof(TOKEN_ELEVATION);
+        if (GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &cbSize)) {
+            isElevated = elevation.TokenIsElevated;
+        }
+        CloseHandle(hToken);
+    }
+    return isElevated ? 1 : 0;
+#else
+    return (geteuid() == 0) ? 1 : 0;
+#endif
+}
+
 // 4. File Carving
 FV_EXPORT int fv_carve_image(const char* image_path, const char* output_dir,
                              char* out_json, size_t max_json_len) {
     if (!image_path || !out_json || max_json_len == 0) return -1;
     
     core::DiskImageReader reader;
-    if (!reader.open(image_path)) return -2;
+    if (!reader.open(image_path)) {
+        std::string err = reader.lastError();
+        uint32_t errCode = reader.lastErrorCode();
+        bool isAccessDenied = (errCode == 5) || (err.find("Access Denied") != std::string::npos) || (err.find("Error 5") != std::string::npos);
+        if (err.empty()) err = "Failed to open target disk or image: " + std::string(image_path);
+        std::ostringstream ss;
+        ss << "{"
+           << "\"error\":true,"
+           << "\"error_type\":\"" << (isAccessDenied ? "RAW_ACCESS_DENIED" : "OPEN_FAILED") << "\","
+           << "\"error_code\":" << errCode << ","
+           << "\"error_message\":\"" << escapeJson(err) << "\","
+           << "\"requires_elevation\":" << (isAccessDenied ? "true" : "false") << ","
+           << "\"raw_access\":false,"
+           << "\"raw_access_status\":\"DENIED\","
+           << "\"device_detected\":true,"
+           << "\"image_path\":\"" << escapeJson(image_path) << "\","
+           << "\"carved_files\":[]"
+           << "}";
+        safeCopy(out_json, max_json_len, ss.str());
+        return -2;
+    }
     
     carving::CarverOptions opts;
     if (output_dir && strlen(output_dir) > 0) {
@@ -196,6 +255,9 @@ FV_EXPORT int fv_carve_image(const char* image_path, const char* output_dir,
            << "\"start_sector\":" << cf.startSector << ","
            << "\"sector_span\":" << cf.sectorSpan << ","
            << "\"is_valid\":" << (cf.isValid ? "true" : "false") << ","
+           << "\"validation_state\":\"" << escapeJson(cf.validationState) << "\","
+           << "\"recovery_status\":\"" << escapeJson(cf.validationState) << "\","
+           << "\"recovery_method\":\"" << escapeJson(cf.recoveryMethod) << "\","
            << "\"confidence_score\":" << cf.confidenceScore << ","
            << "\"confidence_level\":\"" << escapeJson(cf.confidenceLevel) << "\","
            << "\"sha256\":\"" << escapeJson(cf.sha256) << "\","
@@ -258,7 +320,14 @@ FV_EXPORT int fv_reconstruct_fragments(const char* image_path, const char* file_
     if (!image_path || !out_json || max_json_len == 0) return -1;
 
     core::DiskImageReader reader;
-    if (!reader.open(image_path)) return -2;
+    if (!reader.open(image_path)) {
+        std::string err = reader.lastError();
+        if (err.empty()) err = "Failed to open target disk or image: " + std::string(image_path);
+        std::ostringstream ss;
+        ss << "{\"success\":false,\"error_message\":\"" << escapeJson(err) << "\",\"fragments\":[],\"reconstructions\":[]}";
+        safeCopy(out_json, max_json_len, ss.str());
+        return -2;
+    }
 
     std::string targetType = file_type ? file_type : "JPEG";
     std::string outDir = (output_dir && strlen(output_dir) > 0) ? output_dir : "recovered";
@@ -412,7 +481,14 @@ FV_EXPORT int fv_reconstruct_fragments(const char* image_path, const char* file_
 FV_EXPORT int fv_detect_partitions(const char* image_path, char* out_json, size_t max_json_len) {
     if (!image_path || !out_json || max_json_len == 0) return -1;
     core::DiskImageReader reader;
-    if (!reader.open(image_path)) return -2;
+    if (!reader.open(image_path)) {
+        std::string err = reader.lastError();
+        if (err.empty()) err = "Failed to open target disk or image: " + std::string(image_path);
+        std::ostringstream ss;
+        ss << "{\"table_type\":\"Unknown\",\"error\":true,\"error_message\":\"" << escapeJson(err) << "\",\"partitions\":[]}";
+        safeCopy(out_json, max_json_len, ss.str());
+        return -2;
+    }
 
     auto partMap = core::PartitionDetector::detectPartitions(reader);
     reader.close();
@@ -459,7 +535,31 @@ FV_EXPORT int fv_detect_storage_devices(char* out_json, size_t max_json_len) {
 FV_EXPORT int fv_inspect_filesystem(const char* image_path, uint64_t start_sector, char* out_json, size_t max_json_len) {
     if (!image_path || !out_json || max_json_len == 0) return -1;
     core::DiskImageReader reader;
-    if (!reader.open(image_path)) return -2;
+    if (!reader.open(image_path)) {
+        std::string err = reader.lastError();
+        uint32_t errCode = reader.lastErrorCode();
+        bool isAccessDenied = (errCode == 5) || (err.find("Access Denied") != std::string::npos) || (err.find("Error 5") != std::string::npos);
+        if (err.empty()) err = "Failed to open target disk or image: " + std::string(image_path);
+        std::ostringstream ss;
+        ss << "{"
+           << "\"success\":false,"
+           << "\"is_detected\":false,"
+           << "\"error\":true,"
+           << "\"error_type\":\"" << (isAccessDenied ? "RAW_ACCESS_DENIED" : "OPEN_FAILED") << "\","
+           << "\"error_code\":" << errCode << ","
+           << "\"error_message\":\"" << escapeJson(err) << "\","
+           << "\"message\":\"" << escapeJson(err) << "\","
+           << "\"requires_elevation\":" << (isAccessDenied ? "true" : "false") << ","
+           << "\"raw_access\":false,"
+           << "\"raw_access_status\":\"DENIED\","
+           << "\"device_detected\":true,"
+           << "\"fs_type\":\"Unknown\","
+           << "\"detection_status\":\"Access Failed\","
+           << "\"partition_start_sector\":" << start_sector
+           << "}";
+        safeCopy(out_json, max_json_len, ss.str());
+        return -2;
+    }
 
     recovery::RecoveryEngine engine;
     auto analyzer = engine.detectFilesystem(reader, start_sector);
@@ -520,7 +620,28 @@ FV_EXPORT int fv_recover_filesystem(const char* image_path, uint64_t start_secto
                                     char* out_json, size_t max_json_len) {
     if (!image_path || !out_json || max_json_len == 0) return -1;
     core::DiskImageReader reader;
-    if (!reader.open(image_path)) return -2;
+    if (!reader.open(image_path)) {
+        std::string err = reader.lastError();
+        uint32_t errCode = reader.lastErrorCode();
+        bool isAccessDenied = (errCode == 5) || (err.find("Access Denied") != std::string::npos) || (err.find("Error 5") != std::string::npos);
+        if (err.empty()) err = "Failed to open target disk or image: " + std::string(image_path);
+        std::ostringstream ss;
+        ss << "{"
+           << "\"success\":false,"
+           << "\"error\":\"" << (isAccessDenied ? "RAW_ACCESS_DENIED" : "ACCESS_DENIED") << "\","
+           << "\"error_type\":\"" << (isAccessDenied ? "RAW_ACCESS_DENIED" : "ACCESS_DENIED") << "\","
+           << "\"error_code\":" << errCode << ","
+           << "\"error_message\":\"" << escapeJson(err) << "\","
+           << "\"message\":\"" << escapeJson(err) << "\","
+           << "\"requires_elevation\":" << (isAccessDenied ? "true" : "false") << ","
+           << "\"raw_access\":false,"
+           << "\"raw_access_status\":\"DENIED\","
+           << "\"device_detected\":true,"
+           << "\"files\":[]"
+           << "}";
+        safeCopy(out_json, max_json_len, ss.str());
+        return -2;
+    }
 
     recovery::RecoveryEngine engine;
     auto analyzer = engine.detectFilesystem(reader, start_sector);
@@ -566,16 +687,42 @@ FV_EXPORT int fv_recover_filesystem(const char* image_path, uint64_t start_secto
     // Process deleted candidate files
     for (size_t i = 0; i < deletedFiles.size(); ++i) {
         auto& f = deletedFiles[i];
-        std::string status = "Recovered";
+        std::string qualitativeState = "UNKNOWN";
+        std::string runIntegrity = "UNAVAILABLE";
+        bool boundsValid = false;
         std::string sha256Hex = "";
         std::string savedPath = "";
 
-        if (!f.is_recoverable) {
-            status = "Not Recoverable";
+        uint64_t readerSz = reader.size();
+        if (f.file_size == 0) {
+            boundsValid = true;
+            qualitativeState = "RECOVERABLE";
+            runIntegrity = "INTACT";
+        } else if (readerSz > 0 && f.byte_offset <= readerSz && (readerSz - f.byte_offset) >= f.file_size) {
+            boundsValid = true;
+        }
+
+        if (!f.is_recoverable || f.allocation_status == filesystem::AllocationStatus::NOT_RECOVERABLE) {
+            qualitativeState = "NOT_RECOVERABLE";
+            runIntegrity = "UNAVAILABLE";
             unrecoverableCount++;
+        } else if (!boundsValid) {
+            qualitativeState = "NOT_RECOVERABLE";
+            runIntegrity = "DAMAGED";
+            f.unrecoverable_reason = "Cluster allocation offset exceeds volume boundary.";
+            unrecoverableCount++;
+        } else if (f.allocation_status == filesystem::AllocationStatus::DAMAGED_CHAIN) {
+            qualitativeState = "PARTIALLY_RECOVERABLE";
+            runIntegrity = "PARTIALLY_INTACT";
+            partialCount++;
         } else {
+            qualitativeState = "RECOVERABLE";
+            runIntegrity = "INTACT";
+        }
+
+        if (qualitativeState == "RECOVERABLE") {
             auto data = analyzer->extractFile(f, reader);
-            if (!data.empty()) {
+            if (!data.empty() || f.file_size == 0) {
                 sha256Hex = CryptoHash::sha256(data.data(), data.size());
                 f.sha256_hash = sha256Hex;
                 try {
@@ -589,8 +736,9 @@ FV_EXPORT int fv_recover_filesystem(const char* image_path, uint64_t start_secto
                     }
                 } catch (...) {}
             } else {
-                status = "Not Recoverable";
-                f.unrecoverable_reason = "Required file data or allocation information is unavailable.";
+                qualitativeState = "NOT_RECOVERABLE";
+                runIntegrity = "UNAVAILABLE";
+                f.unrecoverable_reason = "Sector payload unreadable or zeroed.";
                 unrecoverableCount++;
             }
         }
@@ -611,11 +759,14 @@ FV_EXPORT int fv_recover_filesystem(const char* image_path, uint64_t start_secto
                 << "\"created_time\":\"" << escapeJson(f.created_time) << "\","
                 << "\"modified_time\":\"" << escapeJson(f.modified_time) << "\","
                 << "\"method\":\"" << escapeJson(fsName + " Filesystem") << "\","
-                << "\"recovery_status\":\"" << escapeJson(status) << "\","
-                << "\"is_recoverable\":" << (status == "Recovered" ? "true" : "false") << ","
+                << "\"recovery_status\":\"" << escapeJson(qualitativeState) << "\","
+                << "\"qualitative_state\":\"" << escapeJson(qualitativeState) << "\","
+                << "\"is_recoverable\":" << (qualitativeState == "RECOVERABLE" ? "true" : "false") << ","
+                << "\"bounds_valid\":" << (boundsValid ? "true" : "false") << ","
+                << "\"cluster_run_integrity\":\"" << escapeJson(runIntegrity) << "\","
                 << "\"unrecoverable_reason\":\"" << escapeJson(f.unrecoverable_reason) << "\","
-                << "\"confidence_score\":" << (status == "Recovered" ? 95 : 20) << ","
-                << "\"confidence_level\":\"" << (status == "Recovered" ? "High" : "Low") << "\","
+                << "\"confidence_score\":" << (qualitativeState == "RECOVERABLE" ? 100 : (qualitativeState == "PARTIALLY_RECOVERABLE" ? 50 : 0)) << ","
+                << "\"confidence_level\":\"" << (qualitativeState == "RECOVERABLE" ? "High" : (qualitativeState == "PARTIALLY_RECOVERABLE" ? "Medium" : "None")) << "\","
                 << "\"sha256\":\"" << escapeJson(sha256Hex) << "\","
                 << "\"recovered_file_path\":\"" << escapeJson(savedPath) << "\""
                 << "}";
@@ -643,4 +794,65 @@ FV_EXPORT int fv_recover_filesystem(const char* image_path, uint64_t start_secto
     safeCopy(out_json, max_json_len, ss.str());
     return recoveredCount;
 }
+
+FV_EXPORT int fv_detect_portable_devices(char* out_json, size_t max_json_len) {
+    if (!out_json || max_json_len == 0) return -1;
+    try {
+        std::string json = forensivault::core::PortableDeviceDetector::detectPortableDevicesJson();
+        safeCopy(out_json, max_json_len, json);
+        return 0;
+    } catch (const std::exception& e) {
+        std::string err = std::string("{\"error\":\"") + escapeJson(e.what()) + "\",\"devices\":[]}";
+        safeCopy(out_json, max_json_len, err);
+        return -1;
+    }
+}
+
+FV_EXPORT int fv_browse_portable_device(const char* device_id, const char* object_id, char* out_json, size_t max_json_len) {
+    if (!out_json || max_json_len == 0) return -1;
+    try {
+        std::string dId = device_id ? device_id : "";
+        std::string oId = object_id ? object_id : "";
+        std::string json = forensivault::core::PortableDeviceDetector::browseDeviceJson(dId, oId);
+        safeCopy(out_json, max_json_len, json);
+        return 0;
+    } catch (const std::exception& e) {
+        std::string err = std::string("{\"error\":\"") + escapeJson(e.what()) + "\",\"items\":[]}";
+        safeCopy(out_json, max_json_len, err);
+        return -1;
+    }
+}
+
+FV_EXPORT int fv_delete_portable_device_file(const char* device_id, const char* object_id, const char* parent_object_id, char* out_json, size_t max_json_len) {
+    if (!out_json || max_json_len == 0) return -1;
+    try {
+        std::string dId = device_id ? device_id : "";
+        std::string oId = object_id ? object_id : "";
+        std::string pId = parent_object_id ? parent_object_id : "";
+        std::string json = forensivault::core::PortableDeviceDetector::deleteDeviceFileJson(dId, oId, pId);
+        safeCopy(out_json, max_json_len, json);
+        return 0;
+    } catch (const std::exception& e) {
+        std::string err = std::string("{\"success\":false,\"error\":\"") + escapeJson(e.what()) + "\"}";
+        safeCopy(out_json, max_json_len, err);
+        return -1;
+    }
+}
+
+FV_EXPORT int fv_copy_portable_device_file(const char* device_id, const char* object_id, const char* dest_dir, char* out_json, size_t max_json_len) {
+    if (!out_json || max_json_len == 0) return -1;
+    try {
+        std::string dId = device_id ? device_id : "";
+        std::string oId = object_id ? object_id : "";
+        std::string dDir = dest_dir ? dest_dir : ".";
+        std::string json = forensivault::core::PortableDeviceDetector::copyDeviceFileJson(dId, oId, dDir);
+        safeCopy(out_json, max_json_len, json);
+        return 0;
+    } catch (const std::exception& e) {
+        std::string err = std::string("{\"success\":false,\"error\":\"") + escapeJson(e.what()) + "\"}";
+        safeCopy(out_json, max_json_len, err);
+        return -1;
+    }
+}
+
 

@@ -384,6 +384,7 @@ backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj:
  C:/msys64/ucrt64/include/c++/16.1.0/bits/unique_lock.h \
  D:/SIH/src/core/partition_table.hpp \
  D:/SIH/src/core/storage_device_detector.hpp \
+ D:/SIH/src/core/portable_device_detector.hpp \
  D:/SIH/src/filesystem/fs_analyzer.hpp \
  D:/SIH/src/filesystem/fat32_analyzer.hpp \
  D:/SIH/src/filesystem/exfat_analyzer.hpp \

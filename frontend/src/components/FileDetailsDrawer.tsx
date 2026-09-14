@@ -42,7 +42,7 @@ export const FileDetailsDrawer: React.FC<FileDetailsDrawerProps> = ({ file, onCl
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-[var(--surface)] border-l border-[var(--border)] shadow-2xl z-50 flex flex-col select-none animate-fade-in">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] max-w-full min-w-0 bg-[var(--surface)] border-l border-[var(--border)] shadow-2xl z-50 flex flex-col select-none animate-fade-in">
       {/* Drawer Header */}
       <div className="p-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--surface-secondary)]">
         <div className="flex items-center gap-3">
@@ -75,14 +75,24 @@ export const FileDetailsDrawer: React.FC<FileDetailsDrawerProps> = ({ file, onCl
             {getConfidenceBadge(file.confidence_score, file.confidence_level)}
           </div>
           <div className="flex items-center justify-between text-xs pt-2.5 border-t border-[var(--border-subtle)]">
-            <span className="text-[var(--text-secondary)]">Validation Status</span>
+            <span className="text-[var(--text-secondary)]">Validation State</span>
             <span
               className={`font-bold flex items-center gap-1.5 ${
-                file.is_valid ? 'text-[#2E7D32]' : 'text-[#B45309]'
+                (file.validation_state === 'VALID' || (!file.validation_state && file.is_valid)) ? 'text-[#2E7D32]' : 'text-[#B45309]'
               }`}
             >
-              {file.is_valid ? <CheckCircle size={14} /> : <AlertTriangle size={14} />}
-              {file.status}
+              {(file.validation_state === 'VALID' || (!file.validation_state && file.is_valid)) ? (
+                <CheckCircle size={14} />
+              ) : (
+                <AlertTriangle size={14} />
+              )}
+              {file.validation_state || file.status || (file.is_valid ? 'VALID' : 'PARTIAL')}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-xs pt-2.5 border-t border-[var(--border-subtle)]">
+            <span className="text-[var(--text-secondary)]">Recovery Method</span>
+            <span className="font-mono font-medium text-[var(--text-primary)]">
+              {file.recovery_method || 'Raw Signature Carving'}
             </span>
           </div>
         </div>
@@ -134,10 +144,10 @@ export const FileDetailsDrawer: React.FC<FileDetailsDrawerProps> = ({ file, onCl
               </span>
             </div>
           )}
-          <div className="flex justify-between py-2 border-b border-[var(--border-subtle)]">
+          <div className="flex flex-col gap-1 py-2 border-b border-[var(--border-subtle)]">
             <span className="text-[var(--text-secondary)]">Recovered Path:</span>
-            <span className="text-[var(--text-primary)] truncate max-w-[220px]" title={file.recovered_path}>
-              {file.recovered_path}
+            <span className="text-[var(--text-primary)] break-all text-[11px] bg-[var(--surface-secondary)] p-2 rounded border border-[var(--border-subtle)]" title={file.recovered_path}>
+              {file.recovered_path || 'N/A'}
             </span>
           </div>
         </div>

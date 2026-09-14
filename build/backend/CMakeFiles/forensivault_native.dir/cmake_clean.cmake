@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
-  "../bin/libforensivault_native.dll"
-  "../bin/libforensivault_native.dll.manifest"
-  "../bin/libforensivault_native.pdb"
-  "../lib/libforensivault_native.dll.a"
+  "../bin/libforensivault_native_v2.dll"
+  "../bin/libforensivault_native_v2.dll.manifest"
+  "../bin/libforensivault_native_v2.pdb"
+  "../lib/libforensivault_native_v2.dll.a"
   "CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj"
   "CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj.d"
 )

@@ -403,7 +403,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({ activeCase, onSelectCa
                 </div>
 
                 {/* Right: Always-Visible Action Buttons (Never Pushed Off-Screen) */}
-                <div className="flex items-center gap-2 flex-shrink-0 self-start md:self-center">
+                <div className="flex flex-wrap items-center gap-2 flex-shrink-0 self-start md:self-center">
                   <button
                     onClick={() => handleOpenReport(rep)}
                     className="btn-secondary h-[32px] px-3 text-[11.5px] gap-1.5 flex items-center font-medium"

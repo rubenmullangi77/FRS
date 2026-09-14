@@ -21,6 +21,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/forensivault_core.dir/__/src/core/disk_image_reader.cpp.obj.d"
   "CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj"
   "CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj.d"
+  "CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj"
+  "CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj.d"
   "CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj"
   "CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj.d"
   "CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj"

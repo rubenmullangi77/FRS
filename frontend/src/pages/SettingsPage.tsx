@@ -83,8 +83,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
     const defaultSettings: UserSettings = {
       examinerName: 'Ruben Mullangi',
       agencyName: 'National Cyber Crime Forensics Lab',
-      defaultCaseName: 'SIH Demo Case',
-      defaultEvidenceFolder: 'test_data',
+      defaultCaseName: 'Forensic Investigation Case',
+      defaultEvidenceFolder: '',
       theme: 'dark',
       notificationsEnabled: true
     };
@@ -413,7 +413,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="text"
                 value={settings.defaultCaseName}
                 onChange={(e) => setSettings({ ...settings, defaultCaseName: e.target.value })}
-                placeholder="SIH Demo Case"
+                placeholder="Forensic Investigation Case"
                 className="w-full h-13 px-4.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] focus:border-[var(--primary-orange)] focus:ring-2 focus:ring-[var(--primary-orange)]/25 text-[14px] text-[var(--text-primary)] outline-none transition-all"
               />
               <p className="text-[12px] text-[var(--text-muted)]">
@@ -430,7 +430,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="text"
                 value={settings.defaultEvidenceFolder}
                 onChange={(e) => setSettings({ ...settings, defaultEvidenceFolder: e.target.value })}
-                placeholder="test_data"
+                placeholder="e.g. D:\Evidence"
                 className="w-full h-13 px-4.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] focus:border-[var(--primary-orange)] focus:ring-2 focus:ring-[var(--primary-orange)]/25 font-mono text-[13.5px] text-[var(--text-primary)] outline-none transition-all"
               />
               <p className="text-[12px] text-[var(--text-muted)]">

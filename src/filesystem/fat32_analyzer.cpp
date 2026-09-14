@@ -180,12 +180,32 @@ std::string FAT32Analyzer::format83Name(const uint8_t* raw, bool is_deleted) con
     return base + "." + ext;
 }
 
+static std::string parseLfnChars(const uint8_t* entry) {
+    std::string out;
+    const size_t offsets[13] = {
+        1, 3, 5, 7, 9,
+        14, 16, 18, 20, 22, 24,
+        28, 30
+    };
+    for (size_t off : offsets) {
+        uint16_t c = static_cast<uint16_t>(entry[off]) | (static_cast<uint16_t>(entry[off + 1]) << 8);
+        if (c == 0x0000 || c == 0xFFFF) break;
+        if (c < 128) {
+            out.push_back(static_cast<char>(c));
+        } else {
+            out.push_back('?');
+        }
+    }
+    return out;
+}
+
 std::vector<FsFileRecord> FAT32Analyzer::parseDirectoryCluster(core::DiskImageReader& reader, uint32_t cluster, bool lookForDeleted) {
     std::vector<FsFileRecord> results;
     if (cluster < 2) return results;
 
     const uint64_t clusterBytes = volume_info_.cluster_size;
     std::vector<uint8_t> clusterData(clusterBytes);
+    std::vector<std::string> pendingLfnParts;
 
     uint32_t currClus = cluster;
     uint32_t loopGuard = 0;
@@ -212,6 +232,7 @@ std::vector<FsFileRecord> FAT32Analyzer::parseDirectoryCluster(core::DiskImageRe
             uint8_t firstByte = entry[0];
 
             if (firstByte == 0x00) {
+                pendingLfnParts.clear();
                 // End of directory entries
                 if (!lookForDeleted) {
                     return results;
@@ -222,9 +243,20 @@ std::vector<FsFileRecord> FAT32Analyzer::parseDirectoryCluster(core::DiskImageRe
 
             uint8_t attr = entry[11];
             if (attr == 0x0F) {
-                // Long file name entry, skip for now in raw parsing
+                // Long file name entry
+                std::string part = parseLfnChars(entry);
+                if (!part.empty()) {
+                    pendingLfnParts.insert(pendingLfnParts.begin(), part);
+                }
                 continue;
             }
+
+            // Reconstruct LFN if available
+            std::string reconstructedLfn;
+            for (const auto& p : pendingLfnParts) {
+                reconstructedLfn += p;
+            }
+            pendingLfnParts.clear();
 
             bool isDeleted = (firstByte == 0xE5);
             if (lookForDeleted != isDeleted) {
@@ -239,7 +271,12 @@ std::vector<FsFileRecord> FAT32Analyzer::parseDirectoryCluster(core::DiskImageRe
             FsFileRecord rec;
             rec.attributes = attr;
             rec.is_directory = (attr & 0x10) != 0;
-            rec.filename = format83Name(entry, isDeleted);
+
+            if (!reconstructedLfn.empty()) {
+                rec.filename = reconstructedLfn;
+            } else {
+                rec.filename = format83Name(entry, isDeleted);
+            }
             
             // Extract extension
             size_t dotPos = rec.filename.rfind('.');
@@ -265,13 +302,23 @@ std::vector<FsFileRecord> FAT32Analyzer::parseDirectoryCluster(core::DiskImageRe
             rec.allocation_status = isDeleted ? AllocationStatus::DELETED_CANDIDATE : AllocationStatus::ALLOCATED;
             rec.recovery_method = isDeleted ? RecoveryMethod::FILESYSTEM_METADATA_DELETED : RecoveryMethod::FILESYSTEM_METADATA_ACTIVE;
 
-            // Compute cluster run
+            // Compute cluster run and validate bounds
             if (rec.starting_cluster >= 2 && volume_info_.cluster_size > 0) {
                 uint64_t numClustersNeeded = (rec.file_size + volume_info_.cluster_size - 1) / volume_info_.cluster_size;
                 if (numClustersNeeded == 0 && rec.file_size > 0) numClustersNeeded = 1;
-                rec.cluster_runs.push_back({rec.starting_cluster, numClustersNeeded});
-                rec.fragment_count = 1;
-                rec.is_recoverable = true;
+
+                uint64_t maxClus = volume_info_.total_clusters > 0 ? (2 + volume_info_.total_clusters) : 0xFFFFFF0ULL;
+                if (rec.starting_cluster >= maxClus ||
+                    (reader.size() > 0 && (rec.byte_offset > reader.size() || (reader.size() - rec.byte_offset) < rec.file_size))) {
+                    rec.is_recoverable = false;
+                    rec.unrecoverable_reason = "Cluster runs point beyond storage boundary.";
+                    rec.allocation_status = AllocationStatus::NOT_RECOVERABLE;
+                } else {
+                    rec.cluster_runs.push_back({rec.starting_cluster, numClustersNeeded});
+                    rec.fragment_count = 1;
+                    rec.is_recoverable = true;
+                    rec.allocation_status = isDeleted ? AllocationStatus::DELETED_CANDIDATE : AllocationStatus::ALLOCATED;
+                }
             } else if (rec.file_size > 0) {
                 rec.is_recoverable = false;
                 rec.unrecoverable_reason = "Starting cluster is 0 or unavailable.";

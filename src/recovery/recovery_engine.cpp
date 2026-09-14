@@ -19,9 +19,23 @@ namespace {
 
 std::string computeReaderSha256(core::DiskImageReader& reader) {
     CryptoHash::Sha256Context ctx;
+    uint64_t totalSize = reader.size();
+
+    const uint64_t maxFullHashSize = 4ULL * 1024 * 1024 * 1024; // 4 GB
+    bool isLiveDevice = reader.filepath().rfind("\\\\.\\", 0) == 0 ||
+                        reader.filepath().rfind("\\\\?\\", 0) == 0 ||
+                        (reader.filepath().size() <= 3 && reader.filepath().find(':') != std::string::npos);
+
+    if (totalSize > maxFullHashSize || isLiveDevice) {
+        size_t headerBytes = static_cast<size_t>(std::min<uint64_t>(65536, totalSize));
+        auto headerBuf = reader.readBytes(0, headerBytes);
+        if (!headerBuf.empty()) {
+            ctx.update(headerBuf.data(), headerBuf.size());
+        }
+        return "METADATA-VBR:" + ctx.finalize();
+    }
 
     const size_t bufSize = 64 * 1024;
-    uint64_t totalSize = reader.size();
     uint64_t offset = 0;
 
     while (offset < totalSize) {

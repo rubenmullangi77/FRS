@@ -10,7 +10,16 @@ namespace forensivault::carving {
 FormatValidationDetails FormatValidator::validate(const FileSignature& sig, 
                                                   const uint8_t* data, size_t length) {
     if (!data || length < sig.minSize) {
-        return {false, sig.fileType, sig.extension, sig.mimeType, 0, 0.0, "Data size below minimum required for format"};
+        FormatValidationDetails res;
+        res.isValid = false;
+        res.validationState = "INVALID";
+        res.classifiedType = sig.fileType;
+        res.classifiedExtension = sig.extension;
+        res.classifiedMime = sig.mimeType;
+        res.trueLength = 0;
+        res.confidenceScore = 0.0;
+        res.notes = "Data size below minimum required for format";
+        return res;
     }
 
     if (sig.fileType == "JPEG") {
@@ -28,7 +37,16 @@ FormatValidationDetails FormatValidator::validate(const FileSignature& sig,
     }
 
     // Default fallback
-    return {true, sig.fileType, sig.extension, sig.mimeType, length, 50.0, "Basic signature match without deep parser"};
+    FormatValidationDetails res;
+    res.isValid = true;
+    res.validationState = "VALID";
+    res.classifiedType = sig.fileType;
+    res.classifiedExtension = sig.extension;
+    res.classifiedMime = sig.mimeType;
+    res.trueLength = length;
+    res.confidenceScore = 50.0;
+    res.notes = "Basic signature match without deep parser";
+    return res;
 }
 
 // ---------------- 1. JPEG Validator ----------------
@@ -37,9 +55,11 @@ FormatValidationDetails FormatValidator::validateJpeg(const uint8_t* data, size_
     res.classifiedType = "JPEG";
     res.classifiedExtension = "jpg";
     res.classifiedMime = "image/jpeg";
+    res.validationState = "INVALID";
 
     if (length < 4 || data[0] != 0xFF || data[1] != 0xD8 || data[2] != 0xFF) {
         res.notes = "Invalid JPEG Start of Image (SOI) marker";
+        res.validationState = "INVALID";
         return res;
     }
 
@@ -62,15 +82,17 @@ FormatValidationDetails FormatValidator::validateJpeg(const uint8_t* data, size_
     }
 
     if (eoiPos <= 0) {
-        res.notes = "JPEG SOI header found, but End of Image (EOI 0xFFD9) marker is missing (truncated/fragmented)";
+        res.notes = "JPEG SOI header found, but End of Image (EOI 0xFFD9) marker missing (Partial recovery / fragmentation unresolved)";
         res.trueLength = length;
         res.confidenceScore = 35.0; // Partial confidence
         res.isValid = false;
+        res.validationState = "PARTIAL";
         return res;
     }
 
     res.trueLength = static_cast<uint64_t>(eoiPos);
     res.isValid = true;
+    res.validationState = "VALID";
     res.confidenceScore = 95.0;
     res.notes = "Valid JPEG image: SOI (FFD8) and EOI (FFD9) verified with internal segment consistency";
     return res;
@@ -82,11 +104,13 @@ FormatValidationDetails FormatValidator::validatePng(const uint8_t* data, size_t
     res.classifiedType = "PNG";
     res.classifiedExtension = "png";
     res.classifiedMime = "image/png";
+    res.validationState = "INVALID";
 
     // Header check: 89 50 4E 47 0D 0A 1A 0A
     const uint8_t pngHeader[] = {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     if (length < 8 || std::memcmp(data, pngHeader, 8) != 0) {
         res.notes = "Missing standard 8-byte PNG header";
+        res.validationState = "INVALID";
         return res;
     }
 
@@ -108,6 +132,7 @@ FormatValidationDetails FormatValidator::validatePng(const uint8_t* data, size_t
                 foundIhdr = true;
             } else {
                 res.notes = "First chunk is not IHDR";
+                res.validationState = "INVALID";
                 break;
             }
         }
@@ -126,10 +151,7 @@ FormatValidationDetails FormatValidator::validatePng(const uint8_t* data, size_t
 
         uint32_t actualCrc = CryptoHash::crc32(data + offset + 4, chunkLen + 4);
         if (expectedCrc != actualCrc) {
-            res.notes = "PNG chunk '" + chunkType + "' has corrupted CRC (expected " + 
-                        core::BinaryUtils::byteToHex(expectedCrc >> 24) + ", calculated " + 
-                        core::BinaryUtils::byteToHex(actualCrc >> 24) + ")";
-            // Still continue to see if IEND is reachable, but note corruption
+            res.notes = "PNG chunk '" + chunkType + "' has corrupted CRC";
         }
 
         offset += 12 + chunkLen;
@@ -142,14 +164,16 @@ FormatValidationDetails FormatValidator::validatePng(const uint8_t* data, size_t
 
     if (foundIhdr && foundIend) {
         res.isValid = true;
+        res.validationState = "VALID";
         res.trueLength = offset;
         res.confidenceScore = 98.0;
         res.notes = "Valid PNG image with verified IHDR and IEND chunks";
     } else {
         res.isValid = false;
+        res.validationState = foundIhdr ? "PARTIAL" : "INVALID";
         res.trueLength = offset;
         res.confidenceScore = foundIhdr ? 45.0 : 10.0;
-        if (res.notes.empty()) res.notes = "Incomplete PNG structure (IEND not reached)";
+        if (res.notes.empty()) res.notes = "Incomplete PNG structure: IEND chunk not reached (Partial recovery / fragmentation unresolved)";
     }
 
     return res;
@@ -161,20 +185,20 @@ FormatValidationDetails FormatValidator::validatePdf(const uint8_t* data, size_t
     res.classifiedType = "PDF";
     res.classifiedExtension = "pdf";
     res.classifiedMime = "application/pdf";
+    res.validationState = "INVALID";
 
     if (length < 5 || std::memcmp(data, "%PDF-", 5) != 0) {
         res.notes = "Invalid PDF magic header";
+        res.validationState = "INVALID";
         return res;
     }
 
     // Search for %%EOF footer
-    // Look backwards from end of candidate buffer
     const std::string eofTag = "%%EOF";
     int64_t lastEof = -1;
 
     for (size_t i = 5; i + 5 <= length; ++i) {
         if (std::memcmp(data + i, eofTag.data(), 5) == 0) {
-            // Include trailing newline / carriage return if present
             size_t endPos = i + 5;
             while (endPos < length && (data[endPos] == '\r' || data[endPos] == '\n')) {
                 endPos++;
@@ -185,13 +209,15 @@ FormatValidationDetails FormatValidator::validatePdf(const uint8_t* data, size_t
 
     if (lastEof <= 0) {
         res.isValid = false;
+        res.validationState = "PARTIAL";
         res.trueLength = length;
         res.confidenceScore = 40.0;
-        res.notes = "PDF header %PDF- found, but %%EOF trailer marker missing";
+        res.notes = "PDF header %PDF- found, but %%EOF trailer marker missing (Partial recovery / fragmentation unresolved)";
         return res;
     }
 
     res.isValid = true;
+    res.validationState = "VALID";
     res.trueLength = static_cast<uint64_t>(lastEof);
     res.confidenceScore = 95.0;
     res.notes = "Valid PDF document: verified %PDF- header and %%EOF trailer marker";
@@ -204,15 +230,16 @@ FormatValidationDetails FormatValidator::validateZipAndOffice(const uint8_t* dat
     res.classifiedType = "ZIP";
     res.classifiedExtension = "zip";
     res.classifiedMime = "application/zip";
+    res.validationState = "INVALID";
 
     const uint8_t zipHeader[] = {0x50, 0x4B, 0x03, 0x04};
     if (length < 22 || std::memcmp(data, zipHeader, 4) != 0) {
         res.notes = "Invalid ZIP local file header (PK\x03\x04 missing)";
+        res.validationState = "INVALID";
         return res;
     }
 
     // Search for End of Central Directory Record (EOCD: 50 4B 05 06)
-    // Find the earliest valid EOCD record corresponding to this archive
     int64_t eocdOffset = -1;
     for (size_t i = 0; i + 22 <= length; ++i) {
         if (data[i] == 0x50 && data[i + 1] == 0x4B && data[i + 2] == 0x05 && data[i + 3] == 0x06) {
@@ -220,24 +247,25 @@ FormatValidationDetails FormatValidator::validateZipAndOffice(const uint8_t* dat
                                  (static_cast<uint16_t>(data[i + 21]) << 8);
             if (i + 22 + commentLen <= length) {
                 eocdOffset = static_cast<int64_t>(i + 22 + commentLen);
-                break; // Stop at the first valid EOCD for this ZIP archive
+                break;
             }
         }
     }
 
     if (eocdOffset <= 0) {
         res.isValid = false;
+        res.validationState = "PARTIAL";
         res.trueLength = length;
         res.confidenceScore = 35.0;
-        res.notes = "PK\x03\x04 header found, but End of Central Directory (EOCD 0x06054B50) missing or truncated";
+        res.notes = "PK\x03\x04 header found, but End of Central Directory (EOCD 0x06054B50) missing or truncated (Partial recovery / fragmentation unresolved)";
         return res;
     }
 
     res.isValid = true;
+    res.validationState = "VALID";
     res.trueLength = static_cast<uint64_t>(eocdOffset);
 
     // Deep inspect contents of ZIP to determine if it is DOCX, XLSX, PPTX
-    // Search string indicators in the uncompressed / central directory entries
     std::string archiveContent(reinterpret_cast<const char*>(data), static_cast<size_t>(res.trueLength));
 
     if (archiveContent.find("word/document.xml") != std::string::npos ||
@@ -291,6 +319,7 @@ FormatValidationDetails FormatValidator::validateMp3(const uint8_t* data, size_t
         uint64_t id3Total = 10 + tagSize;
 
         res.isValid = true;
+        res.validationState = "VALID";
         res.trueLength = std::min<uint64_t>(length, std::max<uint64_t>(id3Total, 2048));
         res.confidenceScore = 90.0;
         res.notes = "Valid MP3 audio container: ID3v2 header and syncsafe tag size (" + 
@@ -301,6 +330,7 @@ FormatValidationDetails FormatValidator::validateMp3(const uint8_t* data, size_t
     // Check for MPEG frame sync: 0xFF 0xFB (or 0xFF 0xFA, 0xFF 0xF3, 0xFF 0xF2)
     if (data[0] == 0xFF && (data[1] & 0xE0) == 0xE0) {
         res.isValid = true;
+        res.validationState = "VALID";
         res.trueLength = length;
         res.confidenceScore = 80.0;
         res.notes = "Valid MPEG Audio frame synchronization sequence detected";
@@ -362,6 +392,7 @@ FormatValidationDetails FormatValidator::validateMp4(const uint8_t* data, size_t
     }
 
     res.isValid = true;
+    res.validationState = "VALID";
     res.trueLength = std::min<uint64_t>(length, std::max<uint64_t>(totalMediaLength, 512));
     res.confidenceScore = foundMdatOrMoov ? 95.0 : 85.0;
     res.notes = "Valid MP4 / ISO Base Media File container: verified 'ftyp' atom and box headers";

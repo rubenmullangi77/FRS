@@ -131,11 +131,26 @@ backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.s"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\SIH\src\core\storage_device_detector.cpp -o CMakeFiles\forensivault_core.dir\__\src\core\storage_device_detector.cpp.s
 
+backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj: backend/CMakeFiles/forensivault_core.dir/flags.make
+backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
+backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj: D:/SIH/src/core/portable_device_detector.cpp
+backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj"
+	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\core\portable_device_detector.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\core\portable_device_detector.cpp.obj -c D:\SIH\src\core\portable_device_detector.cpp
+
+backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.i"
+	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\SIH\src\core\portable_device_detector.cpp > CMakeFiles\forensivault_core.dir\__\src\core\portable_device_detector.cpp.i
+
+backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.s"
+	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\SIH\src\core\portable_device_detector.cpp -o CMakeFiles\forensivault_core.dir\__\src\core\portable_device_detector.cpp.s
+
 backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj: backend/CMakeFiles/forensivault_core.dir/flags.make
 backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj: D:/SIH/src/core/binary_utils.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\core\binary_utils.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\core\binary_utils.cpp.obj -c D:\SIH\src\core\binary_utils.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.i: cmake_force
@@ -150,7 +165,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj: backe
 backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj: D:/SIH/src/core/case_manager.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\core\case_manager.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\core\case_manager.cpp.obj -c D:\SIH\src\core\case_manager.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.i: cmake_force
@@ -165,7 +180,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj: 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj: D:/SIH/src/carving/file_signature.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\carving\file_signature.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\carving\file_signature.cpp.obj -c D:\SIH\src\carving\file_signature.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.i: cmake_force
@@ -180,7 +195,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj: D:/SIH/src/carving/format_validator.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\carving\format_validator.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\carving\format_validator.cpp.obj -c D:\SIH\src\carving\format_validator.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/format_validator.cpp.i: cmake_force
@@ -195,7 +210,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.ob
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.obj: D:/SIH/src/carving/signature_scanner.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\carving\signature_scanner.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\carving\signature_scanner.cpp.obj -c D:\SIH\src\carving\signature_scanner.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/signature_scanner.cpp.i: cmake_force
@@ -210,7 +225,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj: bac
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj: D:/SIH/src/carving/file_carver.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\carving\file_carver.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\carving\file_carver.cpp.obj -c D:\SIH\src\carving\file_carver.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_carver.cpp.i: cmake_force
@@ -225,7 +240,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.ob
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.obj: D:/SIH/src/carving/confidence_scorer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\carving\confidence_scorer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\carving\confidence_scorer.cpp.obj -c D:\SIH\src\carving\confidence_scorer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/confidence_scorer.cpp.i: cmake_force
@@ -240,7 +255,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.c
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.obj: D:/SIH/src/carving/fragment_reconstructor.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\carving\fragment_reconstructor.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\carving\fragment_reconstructor.cpp.obj -c D:\SIH\src\carving\fragment_reconstructor.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/carving/fragment_reconstructor.cpp.i: cmake_force
@@ -255,7 +270,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.ob
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj: D:/SIH/src/filesystem/fat32_analyzer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\filesystem\fat32_analyzer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\filesystem\fat32_analyzer.cpp.obj -c D:\SIH\src\filesystem\fat32_analyzer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.i: cmake_force
@@ -270,7 +285,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.ob
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj: D:/SIH/src/filesystem/exfat_analyzer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\filesystem\exfat_analyzer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\filesystem\exfat_analyzer.cpp.obj -c D:\SIH\src\filesystem\exfat_analyzer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.i: cmake_force
@@ -285,7 +300,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj: D:/SIH/src/filesystem/ntfs_analyzer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\filesystem\ntfs_analyzer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\filesystem\ntfs_analyzer.cpp.obj -c D:\SIH\src\filesystem\ntfs_analyzer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/ntfs_analyzer.cpp.i: cmake_force
@@ -300,7 +315,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj
 backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj: D:/SIH/src/recovery/recovery_engine.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\recovery\recovery_engine.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\recovery\recovery_engine.cpp.obj -c D:\SIH\src\recovery\recovery_engine.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/recovery/recovery_engine.cpp.i: cmake_force
@@ -315,7 +330,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.c
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.obj: D:/SIH/src/sanitization/system_protection.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\system_protection.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\system_protection.cpp.obj -c D:\SIH\src\sanitization\system_protection.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/system_protection.cpp.i: cmake_force
@@ -330,7 +345,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.obj: D:/SIH/src/sanitization/secure_file_eraser.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\secure_file_eraser.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\secure_file_eraser.cpp.obj -c D:\SIH\src\sanitization\secure_file_eraser.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_file_eraser.cpp.i: cmake_force
@@ -345,7 +360,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_erase
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.obj: D:/SIH/src/sanitization/secure_folder_eraser.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\secure_folder_eraser.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\secure_folder_eraser.cpp.obj -c D:\SIH\src\sanitization\secure_folder_eraser.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/secure_folder_eraser.cpp.i: cmake_force
@@ -360,7 +375,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.obj: D:/SIH/src/sanitization/erase_operation.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\erase_operation.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\erase_operation.cpp.obj -c D:\SIH\src\sanitization\erase_operation.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/erase_operation.cpp.i: cmake_force
@@ -375,7 +390,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.
 backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.obj: D:/SIH/src/verification/erase_verification.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\verification\erase_verification.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\verification\erase_verification.cpp.obj -c D:\SIH\src\verification\erase_verification.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/verification/erase_verification.cpp.i: cmake_force
@@ -390,7 +405,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj: ba
 backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj: D:/SIH/src/logging/audit_logger.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\logging\audit_logger.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\logging\audit_logger.cpp.obj -c D:\SIH\src\logging\audit_logger.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/logging/audit_logger.cpp.i: cmake_force
@@ -405,7 +420,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strate
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.obj: D:/SIH/src/sanitization/sanitization_strategy.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\sanitization_strategy.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\sanitization_strategy.cpp.obj -c D:\SIH\src\sanitization\sanitization_strategy.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_strategy.cpp.i: cmake_force
@@ -420,7 +435,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.obj: D:/SIH/src/sanitization/drive_detector.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\drive_detector.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\drive_detector.cpp.obj -c D:\SIH\src\sanitization\drive_detector.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/drive_detector.cpp.i: cmake_force
@@ -435,7 +450,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifi
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.obj: D:/SIH/src/sanitization/sanitization_verifier.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\sanitization_verifier.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\sanitization_verifier.cpp.obj -c D:\SIH\src\sanitization\sanitization_verifier.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/sanitization_verifier.cpp.i: cmake_force
@@ -450,7 +465,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.o
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.obj: D:/SIH/src/sanitization/hdd_sanitizer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\hdd_sanitizer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\hdd_sanitizer.cpp.obj -c D:\SIH\src\sanitization\hdd_sanitizer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/hdd_sanitizer.cpp.i: cmake_force
@@ -465,7 +480,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.o
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.obj: D:/SIH/src/sanitization/ssd_sanitizer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\ssd_sanitizer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\ssd_sanitizer.cpp.obj -c D:\SIH\src\sanitization\ssd_sanitizer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/ssd_sanitizer.cpp.i: cmake_force
@@ -480,7 +495,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.obj: D:/SIH/src/sanitization/image_sanitizer.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\sanitization\image_sanitizer.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\sanitization\image_sanitizer.cpp.obj -c D:\SIH\src\sanitization\image_sanitizer.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/sanitization/image_sanitizer.cpp.i: cmake_force
@@ -495,7 +510,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.ob
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.obj: D:/SIH/src/reporting/forensic_report.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\reporting\forensic_report.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\reporting\forensic_report.cpp.obj -c D:\SIH\src\reporting\forensic_report.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/forensic_report.cpp.i: cmake_force
@@ -510,7 +525,7 @@ backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.o
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj: backend/CMakeFiles/forensivault_core.dir/includes_CXX.rsp
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj: D:/SIH/src/reporting/report_generator.cpp
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj: backend/CMakeFiles/forensivault_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj"
 	cd /d D:\SIH\build\backend && C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj -MF CMakeFiles\forensivault_core.dir\__\src\reporting\report_generator.cpp.obj.d -o CMakeFiles\forensivault_core.dir\__\src\reporting\report_generator.cpp.obj -c D:\SIH\src\reporting\report_generator.cpp
 
 backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.i: cmake_force
@@ -527,6 +542,7 @@ forensivault_core_OBJECTS = \
 "CMakeFiles/forensivault_core.dir/__/src/core/disk_image_reader.cpp.obj" \
 "CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj" \
 "CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj" \
+"CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj" \
 "CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj" \
 "CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj" \
 "CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj" \
@@ -561,6 +577,7 @@ lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/src/common/
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/core/disk_image_reader.cpp.obj
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj
+lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/core/binary_utils.cpp.obj
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/carving/file_signature.cpp.obj
@@ -589,7 +606,7 @@ lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/repo
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/__/src/reporting/report_generator.cpp.obj
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/build.make
 lib/libforensivault_core.a: backend/CMakeFiles/forensivault_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Linking CXX static library ..\lib\libforensivault_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\SIH\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Linking CXX static library ..\lib\libforensivault_core.a"
 	cd /d D:\SIH\build\backend && $(CMAKE_COMMAND) -P CMakeFiles\forensivault_core.dir\cmake_clean_target.cmake
 	cd /d D:\SIH\build\backend && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\forensivault_core.dir\link.txt --verbose=$(VERBOSE)
 

@@ -22,8 +22,8 @@ class ThemeService {
     } catch {
       // Ignore storage errors
     }
-    // Default to dark mode as requested for modern forensic workstation aesthetics
-    return 'dark';
+    // Default to light mode for forensic workstation aesthetics
+    return 'light';
   }
 
   getTheme(): ThemeMode {

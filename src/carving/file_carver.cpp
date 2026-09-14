@@ -73,8 +73,8 @@ std::optional<CarvedFile> FileCarver::carveSingle(core::DiskImageReader& reader,
         candidateBuffer.resize(static_cast<size_t>(carveLength));
     }
 
-    // Check minimum confidence threshold
-    if (val.confidenceScore < options_.minimumConfidence) {
+    // Reject invalid candidates immediately
+    if (val.validationState == "INVALID" || val.confidenceScore < options_.minimumConfidence) {
         return std::nullopt;
     }
 
@@ -94,14 +94,15 @@ std::optional<CarvedFile> FileCarver::carveSingle(core::DiskImageReader& reader,
     file.hasValidHeader = (eval.breakdown.headerScore > 0);
     file.hasValidFooter = (eval.breakdown.footerScore > 0);
     file.isValid = val.isValid;
+    file.validationState = val.validationState;
+    file.recoveryMethod = "Raw Signature Carving";
     file.confidenceScore = eval.confidenceScore;
     file.confidenceLevel = confidenceLevelToString(eval.confidenceLevel);
     file.validationNotes = val.notes;
     file.reasons = eval.reasons;
     file.warnings = eval.warnings;
-    file.sha256 = core::BinaryUtils::sha256(candidateBuffer);
 
-    // Extract to disk if requested
+    // Extract to disk if requested and compute SHA-256 directly from output disk file
     if (options_.extractFiles) {
         // Folder name: JPG, PNG, PDF, ZIP, etc.
         std::string folderName = file.fileType;
@@ -113,7 +114,20 @@ std::optional<CarvedFile> FileCarver::carveSingle(core::DiskImageReader& reader,
             outFile.write(reinterpret_cast<const char*>(candidateBuffer.data()), candidateBuffer.size());
             outFile.close();
             file.recoveredFilePath = outPath;
+
+            // Re-read physical output file directly from disk to compute authentic SHA-256
+            std::ifstream inFile(outPath, std::ios::binary);
+            if (inFile) {
+                std::vector<uint8_t> diskData((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
+                file.sha256 = CryptoHash::sha256(diskData.data(), diskData.size());
+            } else {
+                file.sha256 = core::BinaryUtils::sha256(candidateBuffer);
+            }
+        } else {
+            file.sha256 = core::BinaryUtils::sha256(candidateBuffer);
         }
+    } else {
+        file.sha256 = core::BinaryUtils::sha256(candidateBuffer);
     }
 
     return file;
@@ -140,7 +154,7 @@ CarvingSessionResult FileCarver::carve(core::DiskImageReader& reader,
     for (size_t i = 0; i < matches.size(); ++i) {
         const auto& m = matches[i];
 
-        // Skip if this match is entirely inside a previously carved valid file
+        // Skip if this match is entirely inside a previously carved valid container (e.g. inside a ZIP/DOCX)
         if (m.offset < lastCarvedEndOffset) {
             continue;
         }
@@ -152,7 +166,7 @@ CarvingSessionResult FileCarver::carve(core::DiskImageReader& reader,
             carved->id = fileIdCounter++;
             if (carved->isValid) {
                 session.validFilesCount++;
-                lastCarvedEndOffset = carved->startOffset + carved->lengthBytes;
+                lastCarvedEndOffset = std::max(lastCarvedEndOffset, carved->startOffset + carved->lengthBytes);
             } else {
                 session.partialFilesCount++;
             }

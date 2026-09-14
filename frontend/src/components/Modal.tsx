@@ -74,7 +74,7 @@ export const Modal: React.FC<ModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface-secondary)] flex items-center justify-end gap-3">
+        <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--surface-secondary)] flex flex-wrap items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}

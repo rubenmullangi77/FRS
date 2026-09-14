@@ -67,6 +67,8 @@ export interface CarvedFile {
   is_valid: boolean;
   recovered_path: string;
   status: 'Successfully Recovered' | 'Partially Recovered' | 'Corrupted' | 'Unvalidated' | 'Not Recoverable' | string;
+  validation_state?: 'VALID' | 'PARTIAL' | 'INVALID' | string;
+  recovery_method?: string;
   reasons?: string[];
   warnings?: string[];
   errors?: string[];
@@ -91,7 +93,7 @@ export interface DeletedFileItem {
 export interface FilesOverviewMetrics {
   total_deleted: number;
   total_recovered: number;
-  recovery_success_rate: number;
+  recovery_success_rate: number | null;
   total_recovered_bytes: number;
   images_scanned: number;
 }
@@ -146,21 +148,32 @@ export interface ForensicReportItem {
 
 export interface AuditLogEntry {
   entry_id: number;
+  id?: number;
+  event_id?: string;
   timestamp: string;
   case_id?: string;
   evidence_id?: string;
   operation_id?: string;
   operator_name?: string;
+  user?: string;
   tool_version?: string;
+  event_type?: string;
   operation_type: string;
+  action?: string;
+  severity?: 'INFO' | 'WARNING' | 'ERROR' | string;
   source_identifier?: string;
+  source_type?: string;
   source_sha256?: string;
   method?: string;
   status: string;
+  message?: string;
   details?: string;
+  details_parsed?: Record<string, any>;
   verification_results?: string;
   previous_hash?: string;
   entry_hash?: string;
+  prev_hash?: string;
+  record_hash?: string;
 }
 
 export type NavigationTab = 
@@ -235,6 +248,9 @@ export interface PartitionItem {
   type_guid: string;
   partition_name: string;
   is_bootable: boolean;
+  is_boot?: boolean;
+  drive_letter?: string;
+  filesystem?: string;
 }
 
 export interface PartitionTableResponse {
@@ -251,6 +267,7 @@ export interface FilesystemDetectResponse {
   fs_type: string;
   detection_status: string;
   sector_size: number;
+  bytes_per_sector?: number;
   cluster_size: number;
   sectors_per_cluster: number;
   partition_start_sector: number;
@@ -258,7 +275,7 @@ export interface FilesystemDetectResponse {
   partition_size_bytes: number;
   partition_size_formatted: string;
   volume_label: string;
-  serial_number?: number;
+  serial_number?: number | string;
   total_clusters?: number;
   message: string;
 }
@@ -278,7 +295,10 @@ export interface FsRecoveryFile {
   created_time?: string;
   modified_time?: string;
   method: string;
-  recovery_status: 'Recovered' | 'Not Recoverable' | 'Partial / Corrupt' | string;
+  recovery_status: 'RECOVERABLE' | 'PARTIALLY_RECOVERABLE' | 'NOT_RECOVERABLE' | 'Recovered' | 'Not Recoverable' | 'Partial / Corrupt' | string;
+  qualitative_state?: string;
+  bounds_valid?: boolean;
+  cluster_run_integrity?: string;
   is_recoverable: boolean;
   unrecoverable_reason?: string;
   confidence_score: number;
@@ -287,10 +307,23 @@ export interface FsRecoveryFile {
   recovered_file_path: string;
 }
 
+export interface RecoveryReportMeta {
+  report_id: string;
+  filename: string;
+  file_path: string;
+  sha256: string;
+  generated_at: string;
+  total_recovered: number;
+  total_failed: number;
+  total_bytes: number;
+  total_bytes_formatted?: string;
+}
+
 export interface FsRecoveryResponse {
   success: boolean;
   fs_type: string;
   case_id: string;
+  recovery_op_id?: string;
   evidence_pre_hash: string;
   evidence_post_hash: string;
   evidence_unmodified: boolean;
@@ -301,6 +334,9 @@ export interface FsRecoveryResponse {
   not_recoverable_count: number;
   output_directory: string;
   files: FsRecoveryFile[];
+  report_generated?: boolean;
+  report_error?: string | null;
+  recovery_report?: RecoveryReportMeta | null;
   error?: string;
   message?: string;
 }
@@ -317,15 +353,22 @@ export interface DevicePartitionInfo {
 }
 
 export interface PhysicalDiskInfo {
-  disk_index: number;
-  device_id: string;
+  disk_number?: number;
+  disk_index?: number;
+  device_id?: string;
+  device_path?: string;
   friendly_name: string;
   bus_type: string;
-  media_type: string;
-  size_bytes: number;
-  size_formatted: string;
+  manufacturer?: string;
+  serial_number?: string;
+  media_type?: string;
+  size_bytes?: number;
+  total_size_bytes?: number;
+  size_formatted?: string;
+  total_size_formatted?: string;
   partition_style: string;
-  is_read_only: boolean;
+  is_removable?: boolean;
+  is_read_only?: boolean;
   partitions: DevicePartitionInfo[];
 }
 
@@ -352,4 +395,151 @@ export interface StorageSourcesResponse {
   detection_source: string;
 }
 
+export interface PortableDeviceItem {
+  object_id: string;
+  parent_object_id?: string;
+  name: string;
+  path: string;
+  is_folder: boolean;
+  size_bytes: number;
+  modified_iso: string;
+  content_type: string;
+  can_delete: boolean;
+}
+
+export interface PortableDevice {
+  device_id: string;
+  name: string;
+  manufacturer: string;
+  description: string;
+  protocol: string;
+  connection_type: string;
+  status: string;
+  is_portable: boolean;
+  storage_names: string[];
+}
+
+export interface PortableBrowseResponse {
+  device_id: string;
+  object_id: string;
+  current_object_id?: string;
+  parent_object_id?: string;
+  current_folder_name?: string;
+  current_path?: string;
+  items: PortableDeviceItem[];
+  error?: string;
+  opened?: boolean;
+}
+
+export interface SanitizationDriveItem {
+  id: string;
+  device_type: 'PHYSICAL_DISK' | 'MOUNTED_VOLUME';
+  name: string;
+  device_path: string;
+  disk_number?: number;
+  drive_letter?: string;
+  filesystem?: string;
+  media_type: string;
+  bus_type: string;
+  is_removable: boolean;
+  is_system_protected: boolean;
+  can_sanitize: boolean;
+  sanitization_status: 'READY' | 'LOCKED';
+  reason: string;
+  capacity_bytes: number;
+  capacity_str: string;
+  free_bytes?: number;
+  free_str?: string;
+  used_bytes?: number;
+  used_str?: string;
+  partitions_count?: number;
+  partitions?: any[];
+}
+
+export type RecoverySourceType =
+  | 'PHYSICAL_DISK'
+  | 'PARTITION'
+  | 'MOUNTED_VOLUME'
+  | 'USB_MASS_STORAGE'
+  | 'FORENSIC_IMAGE'
+  | 'MTP_DEVICE'
+  | 'WPD_DEVICE'
+  | 'UNKNOWN_DEVICE';
+
+export interface PrivilegeStatusResponse {
+  is_elevated: boolean;
+  privilege_status: 'ELEVATED' | 'NOT_ELEVATED' | 'UNKNOWN';
+  elevation_level: 'Administrator' | 'Standard User' | string;
+  elevation_display?: string;
+  username?: string;
+  can_read_physical_disks: boolean;
+  can_read_volumes_raw: boolean;
+  can_read_forensic_images: boolean;
+  can_access_mtp: boolean;
+  message: string;
+}
+
+export interface TestRawAccessResponse {
+  success: boolean;
+  target_path: string;
+  handle_opened: boolean;
+  bytes_read: number;
+  error_code: number;
+  error_message: string | null;
+  is_elevated: boolean;
+  elevation_status: string;
+  first_bytes_hex?: string;
+}
+
+export interface CanonicalSource {
+  source_type: RecoverySourceType;
+  source_id: string;
+  device_id?: string;
+  display_name: string;
+  device_path: string;
+  physical_disk_number?: number | null;
+  partition_number?: number | null;
+  protocol: string;
+  manufacturer: string;
+  model: string;
+  serial_number?: string;
+  capacity: number;
+  capacity_bytes?: number;
+  capacity_formatted?: string;
+  bus_type?: string;
+  drive_letter?: string | null;
+  volume_label?: string | null;
+  volume_guid?: string | null;
+  filesystem: string;
+  connection_type: string;
+  removable?: boolean;
+  is_removable?: boolean;
+  access_mode?: string;
+  read_only?: boolean;
+  mounted?: boolean;
+  detection_status?: string;
+  device_detected?: boolean;
+  filesystem_detected?: boolean;
+  raw_access?: boolean;
+  raw_access_status?: 'AVAILABLE' | 'DENIED' | 'NOT_SUPPORTED' | string;
+  raw_access_error?: string | null;
+  operation_mode?: string;
+  requires_elevation?: boolean;
+  capabilities: {
+    can_browse_live: boolean;
+    can_copy_files: boolean;
+    can_raw_carve: boolean;
+    can_carve?: boolean;
+    can_read_files?: boolean;
+    can_read_raw?: boolean;
+    requires_elevation?: boolean;
+    can_parse_filesystem: boolean;
+    can_recover_deleted: boolean;
+    can_inspect_partitions?: boolean;
+    can_write?: boolean;
+    requires_admin?: boolean;
+    admin_privilege_held?: boolean;
+    permission_warning?: string | null;
+  };
+}
 

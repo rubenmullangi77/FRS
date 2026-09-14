@@ -18,6 +18,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "D:/SIH/src/core/case_manager.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/core/case_manager.cpp.obj.d"
   "D:/SIH/src/core/disk_image_reader.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/core/disk_image_reader.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/core/disk_image_reader.cpp.obj.d"
   "D:/SIH/src/core/partition_table.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/core/partition_table.cpp.obj.d"
+  "D:/SIH/src/core/portable_device_detector.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/core/portable_device_detector.cpp.obj.d"
   "D:/SIH/src/core/storage_device_detector.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/core/storage_device_detector.cpp.obj.d"
   "D:/SIH/src/filesystem/exfat_analyzer.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/exfat_analyzer.cpp.obj.d"
   "D:/SIH/src/filesystem/fat32_analyzer.cpp" "backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj" "gcc" "backend/CMakeFiles/forensivault_core.dir/__/src/filesystem/fat32_analyzer.cpp.obj.d"

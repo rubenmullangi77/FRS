@@ -126,8 +126,14 @@ public:
      */
     [[nodiscard]] const std::string& lastError() const;
 
+    /**
+     * @brief Retrieve the last native system error code (e.g. 5 for ERROR_ACCESS_DENIED).
+     */
+    [[nodiscard]] uint32_t lastErrorCode() const;
+
 private:
     void setError(const std::string& errorMsg) const;
+    void setErrorWithCode(const std::string& errorMsg, uint32_t errorCode) const;
     void clearError() const;
 
     std::string filepath_;
@@ -135,7 +141,10 @@ private:
     uint64_t fileSize_{0};
     uint64_t totalSectors_{0};
     std::unique_ptr<std::ifstream> stream_;
+    void* winDeviceHandle_{nullptr};
+    uint64_t currentOffset_{0};
     mutable std::string lastError_;
+    mutable uint32_t lastErrorCode_{0};
     mutable std::mutex ioMutex_;
 };
 

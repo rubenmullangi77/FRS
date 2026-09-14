@@ -441,6 +441,8 @@ backend/CMakeFiles/forensivault_native.dir/src/native/forensivault_capi.cpp.obj:
   D:/SIH/src/carving/signature_scanner.hpp \
   D:/SIH/src/core/disk_image_reader.hpp \
   D:/SIH/src/core/partition_table.hpp \
+  D:/SIH/src/core/portable_device_detector.hpp \
+  D:/SIH/src/core/storage_device_detector.hpp \
   D:/SIH/src/filesystem/exfat_analyzer.hpp \
   D:/SIH/src/filesystem/fat32_analyzer.hpp \
   D:/SIH/src/filesystem/fs_analyzer.hpp \
@@ -502,6 +504,8 @@ C:/msys64/ucrt64/include/string.h:
 C:/msys64/ucrt64/include/concurrencysal.h:
 
 C:/msys64/ucrt64/include/c++/16.1.0/bits/functexcept.h:
+
+D:/SIH/src/core/storage_device_detector.hpp:
 
 C:/msys64/ucrt64/include/_mingw_mac.h:
 
@@ -1156,6 +1160,8 @@ C:/msys64/ucrt64/include/securitybaseapi.h:
 C:/msys64/ucrt64/include/signal.h:
 
 C:/msys64/ucrt64/include/specstrings.h:
+
+D:/SIH/src/core/portable_device_detector.hpp:
 
 C:/msys64/ucrt64/include/stdarg.h:
 

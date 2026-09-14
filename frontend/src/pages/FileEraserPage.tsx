@@ -17,11 +17,14 @@ import {
   File,
   Folder,
   Info,
-  ArrowUp
+  ArrowUp,
+  Smartphone,
+  Usb
 } from 'lucide-react';
 import { api } from '../services/api';
-import { DiskImage, ImageFileEntry, ImageInspectResponse, ImageFileDeleteResponse } from '../types';
+import { DiskImage, ImageFileEntry, ImageInspectResponse, ImageFileDeleteResponse, PortableDevice, PortableDeviceItem } from '../types';
 import { Modal } from '../components/Modal';
+
 
 export const FileEraserPage: React.FC = () => {
   const [availableImages, setAvailableImages] = useState<DiskImage[]>([]);
@@ -109,8 +112,102 @@ export const FileEraserPage: React.FC = () => {
     }
   };
 
-  // Top-level mode tab
-  const [modeTab, setModeTab] = useState<'real_fs' | 'image'>('real_fs');
+  // Top-level mode tab: 'real_fs' | 'portable' | 'image'
+  const [modeTab, setModeTab] = useState<'real_fs' | 'portable' | 'image'>('real_fs');
+
+  // Portable Device (Android MTP) State
+  const [portableDevices, setPortableDevices] = useState<PortableDevice[]>([]);
+  const [selectedPortableDevice, setSelectedPortableDevice] = useState<PortableDevice | null>(null);
+  const [portableItems, setPortableItems] = useState<PortableDeviceItem[]>([]);
+  const [portableCurrentPath, setPortableCurrentPath] = useState<string>('/');
+  const [portablePathHistory, setPortablePathHistory] = useState<{ id: string; name: string }[]>([]);
+  const [selectedPortableFile, setSelectedPortableFile] = useState<PortableDeviceItem | null>(null);
+  const [isPortableLoading, setIsPortableLoading] = useState<boolean>(false);
+  const [isPortableDeleting, setIsPortableDeleting] = useState<boolean>(false);
+  const [portableConfirmOpen, setPortableConfirmOpen] = useState<boolean>(false);
+  const [portableConfirmCode, setPortableConfirmCode] = useState<string>('');
+
+  const loadPortableDevices = async () => {
+    setIsPortableLoading(true);
+    try {
+      const res = await api.getPortableDevices();
+      const devs = res.devices || [];
+      setPortableDevices(devs);
+      if (devs.length > 0) {
+        setSelectedPortableDevice((prev) => {
+          if (prev) {
+            const found = devs.find((d) => d.device_id === prev.device_id);
+            if (found) return found;
+          }
+          return devs[0];
+        });
+      } else {
+        setSelectedPortableDevice(null);
+        setPortableItems([]);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsPortableLoading(false);
+    }
+  };
+
+  const browsePortable = async (deviceId: string, objectId: string = '', objName: string = 'Root') => {
+    setIsPortableLoading(true);
+    setError(null);
+    try {
+      const res = await api.browsePortableDevice({ device_id: deviceId, object_id: objectId });
+      setPortableItems(res.items || []);
+      setPortableCurrentPath(res.current_path || '/');
+      if (objectId === '') {
+        setPortablePathHistory([]);
+      } else {
+        setPortablePathHistory((prev) => {
+          const existingIdx = prev.findIndex((p) => p.id === objectId);
+          if (existingIdx !== -1) {
+            return prev.slice(0, existingIdx + 1);
+          }
+          return [...prev, { id: objectId, name: objName }];
+        });
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to browse portable device contents');
+    } finally {
+      setIsPortableLoading(false);
+    }
+  };
+
+  const [portableDeleteResult, setPortableDeleteResult] = useState<any | null>(null);
+
+  const handleDeletePortableFile = async () => {
+    if (!selectedPortableDevice || !selectedPortableFile) return;
+    if (portableConfirmCode.trim().toUpperCase() !== 'DELETE') {
+      setError('Please type DELETE to confirm file erasure from the portable device.');
+      return;
+    }
+    setIsPortableDeleting(true);
+    setError(null);
+    setPortableDeleteResult(null);
+    try {
+      const res = await api.deletePortableDeviceFile({
+        device_id: selectedPortableDevice.device_id,
+        object_id: selectedPortableFile.object_id,
+        confirmation: 'DELETE'
+      });
+      setPortableDeleteResult(res);
+      setSuccessMessage(`Successfully deleted ${selectedPortableFile.name} from ${selectedPortableDevice.name}. Verification: ${res.verification_status || 'VERIFIED'}`);
+      setPortableConfirmOpen(false);
+      setSelectedPortableFile(null);
+      setPortableConfirmCode('');
+      // Refresh current folder
+      const currentObjId = portablePathHistory.length > 0 ? portablePathHistory[portablePathHistory.length - 1].id : '';
+      await browsePortable(selectedPortableDevice.device_id, currentObjId);
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete file from portable device');
+    } finally {
+      setIsPortableDeleting(false);
+    }
+  };
 
   // Real Filesystem state
   const [realFsPath, setRealFsPath] = useState<string>('');
@@ -183,7 +280,15 @@ export const FileEraserPage: React.FC = () => {
   useEffect(() => {
     loadAvailableImages();
     loadRealFs('');
+    loadPortableDevices();
   }, []);
+
+  useEffect(() => {
+    if (selectedPortableDevice) {
+      browsePortable(selectedPortableDevice.device_id, '');
+    }
+  }, [selectedPortableDevice?.device_id]);
+
 
   const handlePromptDelete = (file: ImageFileEntry) => {
     if (!inspectData?.can_modify) {
@@ -254,24 +359,24 @@ export const FileEraserPage: React.FC = () => {
                 onClick={() => setIsResetModalOpen(true)}
                 disabled={isLoading || isDeleting}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[13px] font-semibold text-[var(--primary-orange)] transition-all cursor-pointer shadow-xs"
-                title="Reset test-disk.img with fresh default sample files"
+                title="Reset test-disk.img with fresh default files"
               >
                 <RotateCcw size={16} />
-                <span>Reset Demo Disk (test-disk.img)</span>
+                <span>Reset Test Evidence Disk (test-disk.img)</span>
               </button>
               <span className="text-[11px] text-[var(--text-muted)] font-mono">
-                Restores clean sample FAT32 disk
+                Restores clean FAT32 test disk
               </span>
             </div>
           )}
         </div>
 
         {/* Mode Selector Tabs */}
-        <div className="flex items-center gap-3 pt-6">
+        <div className="flex flex-wrap items-center gap-3 pt-6">
           <button
             type="button"
             onClick={() => setModeTab('real_fs')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
               modeTab === 'real_fs'
                 ? 'bg-[var(--primary-orange)] text-white shadow-sm'
                 : 'bg-[var(--surface-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)]'
@@ -282,8 +387,23 @@ export const FileEraserPage: React.FC = () => {
           </button>
           <button
             type="button"
+            onClick={() => {
+              setModeTab('portable');
+              loadPortableDevices();
+            }}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
+              modeTab === 'portable'
+                ? 'bg-[var(--primary-orange)] text-white shadow-sm'
+                : 'bg-[var(--surface-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)]'
+            }`}
+          >
+            <Smartphone size={16} />
+            <span>Portable Devices (Android / MTP)</span>
+          </button>
+          <button
+            type="button"
             onClick={() => setModeTab('image')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-[13px] transition-all cursor-pointer ${
               modeTab === 'image'
                 ? 'bg-[var(--primary-orange)] text-white shadow-sm'
                 : 'bg-[var(--surface-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)]'
@@ -691,7 +811,254 @@ export const FileEraserPage: React.FC = () => {
         </div>
       )}
 
-      {/* Mode 2: Virtual Disk Image (.img) */}
+      {/* Mode 2: Portable Devices (Android Phones via MTP / WPD) */}
+      {modeTab === 'portable' && (
+        <div className="space-y-8">
+          {/* MTP Architecture & Notice Banner */}
+          <div className="p-5 rounded-2xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-[var(--primary-orange)] font-bold text-xs uppercase tracking-wide">
+                <Smartphone size={18} />
+                <span>Windows Portable Devices (WPD) Subsystem — Android MTP Protocol</span>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[var(--surface-primary)] text-[var(--text-secondary)] border border-[var(--border)]">
+                MTP Object Management
+              </span>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              Connected Android smartphones do not present raw physical disk blocks or drive letters (such as <code className="font-mono text-[var(--text-primary)]">E:\</code>) over USB. Instead, Windows communicates via the Media Transfer Protocol (MTP). ForensiVault utilizes the Windows Portable Device (WPD) COM subsystem to enumerate connected phones, browse storage hierarchies (<code className="font-mono text-[var(--text-primary)]">Internal storage &rarr; DCIM &rarr; Camera</code>), and perform verified MTP object deletions.
+            </p>
+            <div className="text-xs text-[var(--text-muted)] flex items-center gap-2">
+              <Info size={14} className="text-[var(--primary-orange)] shrink-0" />
+              <span>Note: MTP presents live active files. Raw sector carving is not possible over MTP due to Android device security restrictions.</span>
+            </div>
+          </div>
+
+          {/* Connected Portable Devices List */}
+          <div className="workstation-card p-5 lg:p-6 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+              <div>
+                <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                  <Smartphone size={16} className="text-[var(--primary-orange)]" />
+                  <span>Connected Android Phones / Portable Devices</span>
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  Devices currently recognized by the Windows Portable Device manager.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={loadPortableDevices}
+                disabled={isPortableLoading}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-xs font-semibold text-[var(--text-primary)] transition-all cursor-pointer shadow-xs"
+              >
+                <RefreshCw size={14} className={isPortableLoading ? 'animate-spin' : ''} />
+                <span>Refresh Devices</span>
+              </button>
+            </div>
+
+            {portableDevices.length === 0 ? (
+              <div className="p-8 text-center border border-dashed border-[var(--border)] rounded-xl space-y-2">
+                <Smartphone size={28} className="mx-auto text-[var(--text-muted)] opacity-60" />
+                <div className="text-xs font-semibold text-[var(--text-primary)]">
+                  No Android Phones or Portable Devices Detected
+                </div>
+                <p className="text-[11px] text-[var(--text-secondary)] max-w-md mx-auto">
+                  Ensure your phone is connected via USB cable and set to <strong>"File Transfer" / "MTP"</strong> mode in the Android USB notifications.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={loadPortableDevices}
+                    className="px-4 py-1.5 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] text-xs font-medium text-[var(--primary-orange)] hover:bg-[var(--surface-hover)]"
+                  >
+                    Check Again
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {portableDevices.map((dev) => {
+                  const isSelected = selectedPortableDevice?.device_id === dev.device_id;
+                  return (
+                    <div
+                      key={dev.device_id}
+                      onClick={() => setSelectedPortableDevice(dev)}
+                      className={`p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                        isSelected
+                          ? 'bg-[var(--primary-orange)]/10 border-[var(--primary-orange)] ring-1 ring-[var(--primary-orange)]/30'
+                          : 'bg-[var(--surface-secondary)] border-[var(--border)] hover:border-[var(--border-strong)]'
+                      }`}
+                    >
+                      <Smartphone size={22} className={isSelected ? 'text-[var(--primary-orange)] shrink-0' : 'text-[var(--text-muted)] shrink-0'} />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-[var(--text-primary)] truncate">
+                          {dev.name}
+                        </div>
+                        <div className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                          {dev.manufacturer} &bull; {dev.protocol}
+                        </div>
+                        <div className="text-[10px] font-mono text-[var(--text-muted)] mt-1 truncate">
+                          ID: {dev.device_id}
+                        </div>
+                        <div className="mt-2 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#2E7D32]"></span>
+                          <span className="text-[10.5px] font-medium text-[#2E7D32]">Connected (USB)</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* MTP Device Browser */}
+          {selectedPortableDevice && (
+            <div className="workstation-card p-5 lg:p-6 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <Folder size={16} className="text-[var(--primary-orange)]" />
+                    <span>Browse {selectedPortableDevice.name}</span>
+                  </h3>
+                  <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] font-mono mt-1">
+                    <button
+                      type="button"
+                      onClick={() => browsePortable(selectedPortableDevice.device_id, '', 'Root')}
+                      className="hover:underline text-[var(--primary-orange)]"
+                    >
+                      Root
+                    </button>
+                    {portablePathHistory.map((seg, idx) => (
+                      <React.Fragment key={seg.id}>
+                        <span>/</span>
+                        <button
+                          type="button"
+                          onClick={() => browsePortable(selectedPortableDevice.device_id, seg.id, seg.name)}
+                          className="hover:underline text-[var(--text-primary)] truncate max-w-[120px]"
+                        >
+                          {seg.name}
+                        </button>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentObjId = portablePathHistory.length > 0 ? portablePathHistory[portablePathHistory.length - 1].id : '';
+                    browsePortable(selectedPortableDevice.device_id, currentObjId);
+                  }}
+                  disabled={isPortableLoading}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-secondary)] border border-[var(--border)] text-xs text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
+                >
+                  <RefreshCw size={13} className={isPortableLoading ? 'animate-spin' : ''} />
+                  <span>Refresh Folder</span>
+                </button>
+              </div>
+
+              {/* Items Table */}
+              {isPortableLoading ? (
+                <div className="p-8 text-center text-xs text-[var(--text-muted)]">
+                  Loading files from phone via WPD...
+                </div>
+              ) : portableItems.length === 0 ? (
+                <div className="p-8 text-center text-xs text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-xl">
+                  Folder is empty or contents are inaccessible.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="table-fixed w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] uppercase tracking-wider font-mono text-[11px]">
+                        <th className="py-2 px-3 w-[45%]">Name</th>
+                        <th className="py-2 px-3 w-[20%]">Size</th>
+                        <th className="py-2 px-3 w-[20%]">Type</th>
+                        <th className="py-2 px-3 w-[15%] text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border)]">
+                      {portableItems.map((item) => (
+                        <tr
+                          key={item.object_id}
+                          className="hover:bg-[var(--surface-hover)] transition-colors"
+                        >
+                          <td className="py-2.5 px-3">
+                            <div className="flex items-center gap-2 min-w-0">
+                              {item.is_folder ? (
+                                <Folder size={16} className="text-[var(--primary-orange)] shrink-0" />
+                              ) : (
+                                <File size={16} className="text-[var(--text-muted)] shrink-0" />
+                              )}
+                              {item.is_folder ? (
+                                <button
+                                  type="button"
+                                  onClick={() => browsePortable(selectedPortableDevice.device_id, item.object_id, item.name)}
+                                  className="text-xs font-medium text-[var(--primary-orange)] hover:underline truncate text-left"
+                                >
+                                  {item.name}
+                                </button>
+                              ) : (
+                                <span className="text-xs font-medium text-[var(--text-primary)] truncate">
+                                  {item.name}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-3 font-mono text-xs text-[var(--text-secondary)]">
+                            {item.is_folder ? '&mdash;' : formatBytes(item.size_bytes)}
+                          </td>
+                          <td className="py-2.5 px-3 font-mono text-[11px] text-[var(--text-muted)] truncate">
+                            {item.is_folder ? 'Folder' : (item.content_type || 'File')}
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            {!item.is_folder && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedPortableFile(item);
+                                  setPortableConfirmCode('');
+                                  setPortableConfirmOpen(true);
+                                }}
+                                className="px-2.5 py-1 rounded bg-[#C53030]/10 hover:bg-[#C53030]/20 text-[#C53030] text-xs font-semibold inline-flex items-center gap-1 transition-colors"
+                              >
+                                <Trash2 size={12} />
+                                <span>Delete</span>
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Portable Device Deletion Verification Card */}
+          {portableDeleteResult && (
+            <div className="workstation-card p-6 border-[#2E7D32]/40 bg-[#2E7D32]/5 space-y-3 animate-fade-in">
+              <div className="flex items-center gap-2 text-[#2E7D32] font-bold text-[14px]">
+                <CheckCircle2 size={18} />
+                <span>MTP Object Deletion Verification Report</span>
+              </div>
+              <div className="text-xs font-mono space-y-1.5 text-[var(--text-primary)]">
+                <div><span className="text-[var(--text-muted)]">Device ID: </span>{portableDeleteResult.device_id}</div>
+                <div><span className="text-[var(--text-muted)]">Object ID: </span>{portableDeleteResult.object_id}</div>
+                <div><span className="text-[var(--text-muted)]">Protocol: </span>{portableDeleteResult.protocol || 'MTP'} (WPD COM)</div>
+                <div><span className="text-[var(--text-muted)]">Verification Status: </span><span className={`font-semibold ${portableDeleteResult.is_verified ? 'text-[#2E7D32]' : 'text-[#D97706]'}`}>{portableDeleteResult.verification_status || 'VERIFIED'} (Accessible After Deletion: {portableDeleteResult.accessible_after_deletion ? 'True' : 'False'})</span></div>
+                <div><span className="text-[var(--text-muted)]">Subsystem Result: </span>{portableDeleteResult.message}</div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Mode 3: Virtual Disk Image (.img) */}
       {modeTab === 'image' && (
         <div className="space-y-10">
           {/* Safety & Real-Time Notice */}
@@ -926,7 +1293,7 @@ export const FileEraserPage: React.FC = () => {
                           : 'No files detected in directory table.'}
                     </div>
                     <p className="text-xs text-[var(--text-muted)]">
-                      {fileFilter === 'active' && 'All files have been deleted or wiped. You can inspect tombstone records in the "Deleted / 0xE5 Records" tab or reset the demo disk.'}
+                      {fileFilter === 'active' && 'All files have been deleted or wiped. You can inspect tombstone records in the "Deleted / 0xE5 Records" tab or reset the test evidence disk.'}
                     </p>
                   </div>
                 ) : (
@@ -1159,11 +1526,11 @@ export const FileEraserPage: React.FC = () => {
         </div>
       </Modal>
 
-      {/* Reset Demo Disk Modal */}
+      {/* Reset Test Disk Modal */}
       <Modal
         isOpen={isResetModalOpen}
         onClose={() => setIsResetModalOpen(false)}
-        title="Reset Standard Demo Disk?"
+        title="Reset Standard Test Disk?"
         variant="warning"
         confirmText="Reset Test Disk"
         cancelText="Cancel"
@@ -1175,7 +1542,7 @@ export const FileEraserPage: React.FC = () => {
       >
         <div className="space-y-4 text-xs">
           <p className="text-[13.5px] text-[var(--text-primary)] font-medium">
-            You are about to recreate the demo disk <code className="font-mono text-[var(--primary-orange)]">test-disk.img</code> with fresh sample files.
+            You are about to recreate the test disk <code className="font-mono text-[var(--primary-orange)]">test-disk.img</code> with fresh test files.
           </p>
 
           <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] space-y-2 text-[var(--text-secondary)]">
@@ -1231,6 +1598,48 @@ export const FileEraserPage: React.FC = () => {
               value={realFsConfirmInput}
               onChange={(e) => setRealFsConfirmInput(e.target.value)}
               placeholder="PERMANENTLY DELETE"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] font-mono text-xs focus:outline-none focus:border-[#C53030]"
+            />
+          </div>
+        </div>
+      </Modal>
+
+      {/* Portable Device Confirmation Modal */}
+      <Modal
+        isOpen={portableConfirmOpen}
+        onClose={() => setPortableConfirmOpen(false)}
+        title="Confirm Portable Device File Deletion"
+        variant="danger"
+        confirmText={isPortableDeleting ? 'Deleting...' : 'Delete File'}
+        cancelText="Cancel"
+        onConfirm={handleDeletePortableFile}
+        isLoading={isPortableDeleting}
+        isConfirmDisabled={isPortableDeleting || portableConfirmCode.trim().toUpperCase() !== 'DELETE'}
+      >
+        <div className="space-y-4 text-xs">
+          <div className="p-3 rounded-xl bg-[#C53030]/15 border border-[#C53030]/30 text-[#C53030] text-[12.5px] font-medium flex items-start gap-2.5">
+            <AlertTriangle size={18} className="flex-shrink-0 mt-0.5" />
+            <div>
+              <strong>CAUTION:</strong> Deleting an object via the Windows Portable Device (MTP) protocol removes it from the connected phone's storage.
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] font-mono space-y-1.5">
+            <div><span className="text-[var(--text-muted)]">Device: </span><strong className="text-[var(--text-primary)]">{selectedPortableDevice?.name}</strong></div>
+            <div><span className="text-[var(--text-muted)]">File Name: </span><strong className="text-[#C53030]">{selectedPortableFile?.name}</strong></div>
+            <div><span className="text-[var(--text-muted)]">File Size: </span>{selectedPortableFile ? formatBytes(selectedPortableFile.size_bytes) : '0 B'}</div>
+            <div><span className="text-[var(--text-muted)]">Protocol: </span>MTP (WPD)</div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-[12px] font-semibold text-[var(--text-primary)]">
+              To confirm deletion, type <span className="font-mono text-[#C53030] font-bold">DELETE</span> below:
+            </label>
+            <input
+              type="text"
+              value={portableConfirmCode}
+              onChange={(e) => setPortableConfirmCode(e.target.value)}
+              placeholder="DELETE"
               className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--surface-secondary)] border border-[var(--border)] text-[var(--text-primary)] font-mono text-xs focus:outline-none focus:border-[#C53030]"
             />
           </div>

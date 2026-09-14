@@ -2,6 +2,13 @@
 #include <system_error>
 #include <limits>
 #include <iostream>
+#include <cstring>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winioctl.h>
+#endif
 
 namespace forensivault::core {
 
@@ -22,10 +29,14 @@ DiskImageReader::DiskImageReader(DiskImageReader&& other) noexcept {
     fileSize_ = other.fileSize_;
     totalSectors_ = other.totalSectors_;
     stream_ = std::move(other.stream_);
+    winDeviceHandle_ = other.winDeviceHandle_;
+    currentOffset_ = other.currentOffset_;
     lastError_ = std::move(other.lastError_);
 
+    other.winDeviceHandle_ = nullptr;
     other.fileSize_ = 0;
     other.totalSectors_ = 0;
+    other.currentOffset_ = 0;
 }
 
 DiskImageReader& DiskImageReader::operator=(DiskImageReader&& other) noexcept {
@@ -37,10 +48,14 @@ DiskImageReader& DiskImageReader::operator=(DiskImageReader&& other) noexcept {
         fileSize_ = other.fileSize_;
         totalSectors_ = other.totalSectors_;
         stream_ = std::move(other.stream_);
+        winDeviceHandle_ = other.winDeviceHandle_;
+        currentOffset_ = other.currentOffset_;
         lastError_ = std::move(other.lastError_);
 
+        other.winDeviceHandle_ = nullptr;
         other.fileSize_ = 0;
         other.totalSectors_ = 0;
+        other.currentOffset_ = 0;
     }
     return *this;
 }
@@ -63,7 +78,70 @@ bool DiskImageReader::open(const std::string& filepath, uint32_t sectorSize) {
     filepath_ = filepath;
     sectorSize_ = sectorSize;
 
-    // Open strictly read-only binary stream
+#if defined(_WIN32)
+    // 1. Check for Windows raw device namespaces or logical drive letters (e.g. D:, D:\, \\.\PhysicalDrive0, \\.\D:)
+    std::string devPath = filepath_;
+    bool isDriveLetter = (devPath.size() == 2 && devPath[1] == ':') ||
+                         (devPath.size() == 3 && devPath[1] == ':' && (devPath[2] == '\\' || devPath[2] == '/'));
+    if (isDriveLetter) {
+        devPath = "\\\\.\\" + devPath.substr(0, 2);
+    }
+    bool isWinDevice = (devPath.rfind("\\\\.\\", 0) == 0) || (devPath.rfind("\\\\?\\", 0) == 0);
+    if (isWinDevice) {
+        std::wstring wPath(devPath.begin(), devPath.end());
+        HANDLE hDevice = CreateFileW(
+            wPath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+        );
+        if (hDevice == INVALID_HANDLE_VALUE) {
+            DWORD dwErr = GetLastError();
+            if (dwErr == ERROR_ACCESS_DENIED) {
+                setErrorWithCode("Windows Access Denied (Error 5): Direct sector-level access to raw drive/volume '" + filepath_ +
+                                 "' requires administrative elevation (Run as Administrator).", 5);
+            } else if (dwErr == ERROR_FILE_NOT_FOUND) {
+                setErrorWithCode("Storage device not found (Windows Error 2): " + filepath_, 2);
+            } else {
+                setErrorWithCode("Failed to open storage device '" + filepath_ + "' (Windows Error " + std::to_string(dwErr) + ")", dwErr);
+            }
+            return false;
+        }
+
+        // Query size of the raw storage device or volume
+        DISK_GEOMETRY_EX geomEx = {0};
+        DWORD bytesRet = 0;
+        if (DeviceIoControl(hDevice, IOCTL_DISK_GET_DRIVE_GEOMETRY_EX, NULL, 0, &geomEx, sizeof(geomEx), &bytesRet, NULL)) {
+            fileSize_ = geomEx.DiskSize.QuadPart;
+            if (geomEx.Geometry.BytesPerSector > 0) {
+                sectorSize_ = geomEx.Geometry.BytesPerSector;
+            }
+        } else {
+            LARGE_INTEGER liSize = {0};
+            if (GetFileSizeEx(hDevice, &liSize) && liSize.QuadPart > 0) {
+                fileSize_ = liSize.QuadPart;
+            } else {
+                DISK_GEOMETRY geom = {0};
+                if (DeviceIoControl(hDevice, IOCTL_DISK_GET_DRIVE_GEOMETRY, NULL, 0, &geom, sizeof(geom), &bytesRet, NULL)) {
+                    fileSize_ = geom.Cylinders.QuadPart * geom.TracksPerCylinder * geom.SectorsPerTrack * geom.BytesPerSector;
+                    if (geom.BytesPerSector > 0) {
+                        sectorSize_ = geom.BytesPerSector;
+                    }
+                }
+            }
+        }
+
+        totalSectors_ = (fileSize_ + sectorSize_ - 1) / sectorSize_;
+        winDeviceHandle_ = reinterpret_cast<void*>(hDevice);
+        currentOffset_ = 0;
+        return true;
+    }
+#endif
+
+    // 2. Open standard disk image file (.img, .dd, .raw) in binary read-only mode
     stream_ = std::make_unique<std::ifstream>(filepath_, std::ios::binary | std::ios::in);
     if (!stream_ || !stream_->is_open()) {
         setError("Failed to open image file '" + filepath_ + "' in binary read-only mode");
@@ -97,18 +175,25 @@ bool DiskImageReader::open(const std::string& filepath, uint32_t sectorSize) {
 }
 
 void DiskImageReader::close() {
+#if defined(_WIN32)
+    if (winDeviceHandle_) {
+        CloseHandle(reinterpret_cast<HANDLE>(winDeviceHandle_));
+        winDeviceHandle_ = nullptr;
+    }
+#endif
     if (stream_ && stream_->is_open()) {
         stream_->close();
     }
     stream_.reset();
     fileSize_ = 0;
     totalSectors_ = 0;
+    currentOffset_ = 0;
     filepath_.clear();
 }
 
 bool DiskImageReader::isOpen() const {
     std::lock_guard<std::mutex> lock(ioMutex_);
-    return stream_ && stream_->is_open();
+    return (stream_ && stream_->is_open()) || (winDeviceHandle_ != nullptr);
 }
 
 uint64_t DiskImageReader::size() const {
@@ -134,6 +219,25 @@ const std::string& DiskImageReader::filepath() const {
 bool DiskImageReader::seek(uint64_t offset) {
     std::lock_guard<std::mutex> lock(ioMutex_);
     clearError();
+
+#if defined(_WIN32)
+    if (winDeviceHandle_) {
+        if (fileSize_ > 0 && offset > fileSize_) {
+            setError("Seek offset out of bounds: requested offset " + std::to_string(offset) +
+                     ", total size " + std::to_string(fileSize_));
+            return false;
+        }
+        LARGE_INTEGER li;
+        li.QuadPart = static_cast<LONGLONG>(offset);
+        if (!SetFilePointerEx(reinterpret_cast<HANDLE>(winDeviceHandle_), li, NULL, FILE_BEGIN)) {
+            DWORD dwErr = GetLastError();
+            setError("Device seek failed at offset " + std::to_string(offset) + " (Windows Error " + std::to_string(dwErr) + ")");
+            return false;
+        }
+        currentOffset_ = offset;
+        return true;
+    }
+#endif
 
     if (!stream_ || !stream_->is_open()) {
         setError("Seek failed: no disk image opened");
@@ -161,6 +265,11 @@ bool DiskImageReader::seek(uint64_t offset) {
 
 uint64_t DiskImageReader::tell() {
     std::lock_guard<std::mutex> lock(ioMutex_);
+#if defined(_WIN32)
+    if (winDeviceHandle_) {
+        return currentOffset_;
+    }
+#endif
     if (!stream_ || !stream_->is_open()) {
         return 0;
     }
@@ -171,6 +280,91 @@ uint64_t DiskImageReader::tell() {
 bool DiskImageReader::read(uint64_t offset, uint8_t* buffer, size_t size) {
     std::lock_guard<std::mutex> lock(ioMutex_);
     clearError();
+
+#if defined(_WIN32)
+    if (winDeviceHandle_) {
+        if (!buffer && size > 0) {
+            setError("Read failed: destination buffer is null");
+            return false;
+        }
+        if (size == 0) {
+            return true;
+        }
+        if (fileSize_ > 0 && (offset > fileSize_ || (fileSize_ - offset) < size)) {
+            setError("Read bounds error: offset " + std::to_string(offset) + " + length " +
+                     std::to_string(size) + " exceeds device size " + std::to_string(fileSize_));
+            return false;
+        }
+
+        uint32_t secSize = sectorSize_ > 0 ? sectorSize_ : 512;
+        uint64_t alignedOffset = (offset / secSize) * secSize;
+        uint64_t endOffset = offset + size;
+        uint64_t alignedEnd = ((endOffset + secSize - 1) / secSize) * secSize;
+        uint64_t alignedBytes = alignedEnd - alignedOffset;
+
+        if (offset == alignedOffset && size == alignedBytes) {
+            LARGE_INTEGER li;
+            li.QuadPart = static_cast<LONGLONG>(alignedOffset);
+            if (!SetFilePointerEx(reinterpret_cast<HANDLE>(winDeviceHandle_), li, NULL, FILE_BEGIN)) {
+                DWORD dwErr = GetLastError();
+                setError("Device seek prior to read failed at offset " + std::to_string(offset) + " (Windows Error " + std::to_string(dwErr) + ")");
+                return false;
+            }
+
+            DWORD bytesToRead = static_cast<DWORD>(size);
+            DWORD bytesRead = 0;
+            if (!ReadFile(reinterpret_cast<HANDLE>(winDeviceHandle_), buffer, bytesToRead, &bytesRead, NULL)) {
+                DWORD dwErr = GetLastError();
+                setError("Device read failed at offset " + std::to_string(offset) + " (Windows Error " + std::to_string(dwErr) + ")");
+                return false;
+            }
+
+            currentOffset_ = offset + bytesRead;
+
+            if (bytesRead != bytesToRead) {
+                setError("Short read encountered: requested " + std::to_string(size) +
+                         " bytes, but only read " + std::to_string(bytesRead) + " bytes");
+                return false;
+            }
+            return true;
+        } else {
+            LARGE_INTEGER li;
+            li.QuadPart = static_cast<LONGLONG>(alignedOffset);
+            if (!SetFilePointerEx(reinterpret_cast<HANDLE>(winDeviceHandle_), li, NULL, FILE_BEGIN)) {
+                DWORD dwErr = GetLastError();
+                setError("Device seek prior to read failed at aligned offset " + std::to_string(alignedOffset) + " (Windows Error " + std::to_string(dwErr) + ")");
+                return false;
+            }
+
+            std::vector<uint8_t> bounceBuffer(alignedBytes);
+            DWORD bytesToRead = static_cast<DWORD>(alignedBytes);
+            DWORD bytesRead = 0;
+            if (!ReadFile(reinterpret_cast<HANDLE>(winDeviceHandle_), bounceBuffer.data(), bytesToRead, &bytesRead, NULL)) {
+                DWORD dwErr = GetLastError();
+                setError("Device read failed at aligned offset " + std::to_string(alignedOffset) + " (Windows Error " + std::to_string(dwErr) + ")");
+                return false;
+            }
+
+            size_t leadOffset = static_cast<size_t>(offset - alignedOffset);
+            if (bytesRead <= leadOffset) {
+                setError("Device short read: target byte offset unreachable in sector chunk");
+                return false;
+            }
+
+            size_t available = bytesRead - leadOffset;
+            size_t copyBytes = std::min(size, available);
+            std::memcpy(buffer, bounceBuffer.data() + leadOffset, copyBytes);
+            currentOffset_ = offset + copyBytes;
+
+            if (copyBytes < size) {
+                setError("Short read encountered: requested " + std::to_string(size) +
+                         " bytes, but only read " + std::to_string(copyBytes) + " bytes");
+                return false;
+            }
+            return true;
+        }
+    }
+#endif
 
     if (!stream_ || !stream_->is_open()) {
         setError("Read failed: no disk image opened");
@@ -247,16 +441,25 @@ bool DiskImageReader::readSectors(uint64_t startSector, uint64_t count, uint8_t*
 }
 
 const std::string& DiskImageReader::lastError() const {
-    std::lock_guard<std::mutex> lock(ioMutex_);
     return lastError_;
+}
+
+uint32_t DiskImageReader::lastErrorCode() const {
+    return lastErrorCode_;
 }
 
 void DiskImageReader::setError(const std::string& errorMsg) const {
     lastError_ = errorMsg;
 }
 
+void DiskImageReader::setErrorWithCode(const std::string& errorMsg, uint32_t errorCode) const {
+    lastError_ = errorMsg;
+    lastErrorCode_ = errorCode;
+}
+
 void DiskImageReader::clearError() const {
     lastError_.clear();
+    lastErrorCode_ = 0;
 }
 
 } // namespace forensivault::core

@@ -58,13 +58,15 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [fetchBackendStatus]);
 
-  // Load cases to set default active case if available
+  // Do not auto-select sample cases; activeCase stays null until the examiner selects or creates one
   useEffect(() => {
-    if (session.isAuthenticated) {
+    // If activeCase is set, we can validate it against listCases
+    if (session.isAuthenticated && activeCase) {
       api.listCases()
         .then((res) => {
-          if (res.cases && res.cases.length > 0 && !activeCase) {
-            setActiveCase(res.cases[0]);
+          const exists = res.cases?.some(c => c.case_id === activeCase.case_id);
+          if (!exists) {
+            setActiveCase(null);
           }
         })
         .catch(() => {});
@@ -183,7 +185,7 @@ export const App: React.FC = () => {
         />
 
         {/* Scrollable View Container */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 bg-[var(--bg-main)] box-border">
+        <main className="flex-1 overflow-y-auto min-w-0 bg-[var(--bg-main)] box-border">
           {renderActivePage()}
         </main>
       </div>

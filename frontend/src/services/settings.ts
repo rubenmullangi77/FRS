@@ -14,8 +14,8 @@ const STORAGE_KEY = 'forensivault_settings_v1';
 const DEFAULT_SETTINGS: Omit<UserSettings, 'theme'> = {
   examinerName: '',
   agencyName: 'National Cyber Crime Forensics Lab',
-  defaultCaseName: 'SIH Demo Case',
-  defaultEvidenceFolder: 'test_data',
+  defaultCaseName: 'Forensic Investigation Case',
+  defaultEvidenceFolder: '',
   notificationsEnabled: true
 };
 

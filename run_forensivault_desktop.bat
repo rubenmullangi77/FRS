@@ -6,6 +6,14 @@ echo       FORENSIVAULT - Professional Digital Forensics Workstation
 echo                 Smart India Hackathon 2026 Edition
 echo =====================================================================
 echo.
+
+net session >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    echo [+] Running with verified Windows Administrator privileges.
+) else (
+    echo [*] Running with Standard User privileges.
+)
+
 echo [*] Checking FastAPI backend on port 8765...
 
 curl -s http://127.0.0.1:8765/api/status >nul 2>&1
@@ -23,7 +31,7 @@ echo [*] Demo Credentials: Username: Ruben  ^|  Password: rube
 echo.
 
 cd /d "%~dp0frontend"
-call npx electron electron/main.cjs
+call npx electron electron/main.cjs %*
 
 echo.
 echo [*] ForensiVault session terminated.

@@ -1,64 +1,64 @@
 @import "tailwindcss";
 
 :root, [data-theme="light"] {
-  --bg-primary: #F7F3EB;
-  --bg-secondary: #F1EBDD;
-  --bg-main: #F7F3EB;
-  --surface: #FFFDF8;
-  --surface-secondary: #F1EBDD;
-  --surface-hover: #F8F3EA;
-  --border: #DDD2C5;
-  --border-subtle: #EBE3D7;
+  --bg-primary: #FFF8EE;
+  --bg-secondary: #FFF3E0;
+  --bg-main: #FFF8EE;
+  --surface: #FFFFFF;
+  --surface-secondary: #FFFDF9;
+  --surface-hover: #FDF6EB;
+  --border: #E7E0D5;
+  --border-subtle: #F0EAE1;
   
-  --primary-orange: #D96B27;
-  --accent: #D96B27;
-  --dark-orange: #B95720;
-  --accent-hover: #B95720;
-  --light-orange: #F3D5BF;
+  --primary-orange: #D97706;
+  --accent: #D97706;
+  --dark-orange: #B45309;
+  --accent-hover: #B45309;
+  --light-orange: #FEF3C7;
   
-  --text-primary: #29231F;
-  --text-secondary: #756B63;
-  --text-muted: #9E9287;
+  --text-primary: #292524;
+  --text-secondary: #78716C;
+  --text-muted: #A8A29E;
   
-  --status-success: #2E7D32;
-  --status-warning: #B7791F;
-  --status-danger: #C53030;
+  --status-success: #D97706;
+  --status-warning: #D97706;
+  --status-danger: #B45309;
 
-  --input-bg: #F1EBDD;
-  --table-bg: #FFFDF8;
-  --sidebar-bg: #FFFDF8;
+  --input-bg: #FFFFFF;
+  --table-bg: #FFFFFF;
+  --sidebar-bg: #FFFFFF;
 
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Consolas", "Courier New", monospace;
 }
 
 html.dark, :root.dark, [data-theme="dark"] {
-  --bg-primary: #11110F;
-  --bg-secondary: #181714;
-  --bg-main: #11110F;
-  --surface: #211F1B;
-  --surface-secondary: #28251F;
-  --surface-hover: #312D26;
-  --border: #3A352F;
-  --border-subtle: #2C2822;
+  --bg-primary: #1C1917;
+  --bg-secondary: #292524;
+  --bg-main: #1C1917;
+  --surface: #292524;
+  --surface-secondary: #35302D;
+  --surface-hover: #44403C;
+  --border: #44403C;
+  --border-subtle: #383431;
   
-  --primary-orange: #D96B27;
-  --accent: #D96B27;
-  --dark-orange: #B9541D;
-  --accent-hover: #B9541D;
-  --light-orange: #452614;
+  --primary-orange: #D97706;
+  --accent: #D97706;
+  --dark-orange: #B45309;
+  --accent-hover: #B45309;
+  --light-orange: #35302D;
   
-  --text-primary: #F4EFE8;
-  --text-secondary: #B9B0A7;
-  --text-muted: #8F877F;
+  --text-primary: #FAF8F5;
+  --text-secondary: #D6D3D1;
+  --text-muted: #A8A29E;
   
-  --status-success: #34D399;
-  --status-warning: #FBBF24;
-  --status-danger: #F87171;
+  --status-success: #D97706;
+  --status-warning: #D97706;
+  --status-danger: #B45309;
 
-  --input-bg: #28251F;
-  --table-bg: #211F1B;
-  --sidebar-bg: #211F1B;
+  --input-bg: #292524;
+  --table-bg: #292524;
+  --sidebar-bg: #1C1917;
 }
 
 @theme {
@@ -90,8 +90,17 @@ html, body, #root {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-body {
-  overflow-x: hidden;
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+svg {
+  user-select: none;
+  pointer-events: none;
+  speak: none;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .bg-main {
@@ -196,6 +205,8 @@ body {
   padding: 14px 22px;
   border-bottom: 1px solid var(--border);
   text-align: left;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .workstation-table td {
@@ -204,6 +215,8 @@ body {
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-primary);
   transition: background-color 0.15s ease;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .workstation-table tr:hover td {

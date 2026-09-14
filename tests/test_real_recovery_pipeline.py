@@ -8,7 +8,7 @@ Verifies:
 5. Allocation-Based Extraction to D:\\SIH\\ForensiVault_Recovered\\<CASE_ID>\\
 6. Real SHA-256 Calculation & Byte-for-Byte Validation
 7. Unrecoverable / Overwritten Allocation Reporting
-8. Pre & Post Evidence Immutability Verification (Hardware Write-Blocker Emulation)
+8. Pre & Post Evidence Immutability Verification (Software Read-Only Analysis Mode)
 9. Raw File Carving Fallback on Unallocated Sectors
 """
 
